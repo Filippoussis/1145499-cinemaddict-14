@@ -1,53 +1,53 @@
-import {NumberFilms, InsertPlace} from './const';
+import {FilmCount, InsertPlace} from './const';
 import {renderViewComponent} from './utils';
 
-import {profileComponent} from './view/profile';
-import {navigationComponent} from './view/navigation';
-import {sortComponent} from './view/sort';
-import {mainContentComponent} from './view/main-content';
-import {allFilmsComponent} from './view/all-films';
-import {filmCardComponent} from './view/film-card';
-import {showMoreButtonComponent} from './view/show-more-button';
-import {topRatedFilmsComponent} from './view/top-rated-films';
-import {mostCommentedFilmsComponent} from './view/most-commented-films';
-import {statisticsComponent} from './view/statistics';
+import {getProfileTemplate} from './view/profile';
+import {getNavigationTemplate} from './view/navigation';
+import {getSortTemplate} from './view/sort';
+import {getMainContentTemplate} from './view/main-content';
+import {getAllFilmsTemplate} from './view/all-films';
+import {getFilmCardTemplate} from './view/film-card';
+import {getShowMoreButtonTemplate} from './view/show-more-button';
+import {getTopRatedFilmsTemplate} from './view/top-rated-films';
+import {getMostCommentedFilmsTemplate} from './view/most-commented-films';
+import {getStatisticsTemplate} from './view/statistics';
 
 const header = document.querySelector('.header');
 const main = document.querySelector('.main');
 const footer = document.querySelector('.footer');
 
-renderViewComponent(header, profileComponent());
+renderViewComponent(header, getProfileTemplate());
 
-renderViewComponent(main, navigationComponent());
-renderViewComponent(main, sortComponent());
+renderViewComponent(main, getNavigationTemplate());
+renderViewComponent(main, getSortTemplate());
 
-renderViewComponent(main, mainContentComponent());
+renderViewComponent(main, getMainContentTemplate());
 const mainContent = document.querySelector('.films');
 
-renderViewComponent(mainContent, allFilmsComponent());
+renderViewComponent(mainContent, getAllFilmsTemplate());
 const allFilmsSection = mainContent.querySelector('#all-films');
 const allFilmsList = allFilmsSection.querySelector('.films-list__container');
 
-for (let i = 0; i < NumberFilms.STEP; i++) {
-  renderViewComponent(allFilmsList, filmCardComponent());
+for (let i = 0; i < FilmCount.STEP; i++) {
+  renderViewComponent(allFilmsList, getFilmCardTemplate());
 }
 
-renderViewComponent(allFilmsList, showMoreButtonComponent(), InsertPlace.AFTEREND);
+renderViewComponent(allFilmsList, getShowMoreButtonTemplate(), InsertPlace.AFTER_END);
 
-renderViewComponent(mainContent, topRatedFilmsComponent());
+renderViewComponent(mainContent, getTopRatedFilmsTemplate());
 const topRatedFilmsSection = mainContent.querySelector('#top-rated-films');
 const topRatedFilmsList = topRatedFilmsSection.querySelector('.films-list__container');
 
-for (let i = 0; i < NumberFilms.EXTRA; i++) {
-  renderViewComponent(topRatedFilmsList, filmCardComponent());
+for (let i = 0; i < FilmCount.EXTRA; i++) {
+  renderViewComponent(topRatedFilmsList, getFilmCardTemplate());
 }
 
-renderViewComponent(mainContent, mostCommentedFilmsComponent());
+renderViewComponent(mainContent, getMostCommentedFilmsTemplate());
 const mostCommentedFilmsSection = mainContent.querySelector('#most-commented-films');
 const mostCommentedFilmsList = mostCommentedFilmsSection.querySelector('.films-list__container');
 
-for (let i = 0; i < NumberFilms.EXTRA; i++) {
-  renderViewComponent(mostCommentedFilmsList, filmCardComponent());
+for (let i = 0; i < FilmCount.EXTRA; i++) {
+  renderViewComponent(mostCommentedFilmsList, getFilmCardTemplate());
 }
 
-renderViewComponent(footer, statisticsComponent());
+renderViewComponent(footer, getStatisticsTemplate());
