@@ -1,4 +1,4 @@
-export const mostCommentedFilmsComponent = () => {
+export const getMostCommentedFilmsTemplate = () => {
   return (
     `<section class="films-list films-list--extra" id="most-commented-films">
       <h2 class="films-list__title">Most commented</h2>

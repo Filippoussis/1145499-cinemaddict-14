@@ -1,3 +1,6 @@
-export const mainContentComponent = () => {
-  return `<section class="films"></section>`;
+export const getMainContentTemplate = () => {
+  return (
+    `<section class="films">
+    </section>`
+  );
 };

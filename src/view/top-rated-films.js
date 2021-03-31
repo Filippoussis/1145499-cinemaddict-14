@@ -1,4 +1,4 @@
-export const topRatedFilmsComponent = () => {
+export const getTopRatedFilmsTemplate = () => {
   return (
     `<section class="films-list films-list--extra" id="top-rated-films">
       <h2 class="films-list__title">Top rated</h2>

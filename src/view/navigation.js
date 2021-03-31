@@ -1,4 +1,4 @@
-export const navigationComponent = () => {
+export const getNavigationTemplate = () => {
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
