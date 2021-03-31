@@ -1,14 +1,14 @@
-const NumberFilms = {
+const FilmCount = {
   STEP: 5,
   EXTRA: 2,
 };
 
 const InsertPlace = {
-  BEFOREEND: 'beforeend',
-  AFTEREND: 'afterend',
+  BEFORE_END: 'beforeend',
+  AFTER_END: 'afterend',
 };
 
 export {
-  NumberFilms,
+  FilmCount,
   InsertPlace
 };
