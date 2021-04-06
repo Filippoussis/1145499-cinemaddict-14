@@ -1,10 +1,10 @@
 export const getFooterStatisticsTemplate = (films) => {
 
-  const filmsNumber = films.length;
+  const filmCount = films.length;
 
   return (
     `<section class="footer__statistics">
-      <p>${filmsNumber} movies inside</p>
+      <p>${filmCount} movies inside</p>
     </section>`
   );
 };
