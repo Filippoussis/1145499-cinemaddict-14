@@ -1,4 +1,4 @@
-import {FilmCount, InsertPlace} from './const';
+import {FilmCount, InsertPlace, OPENING_POPUP_CLASS_NAMES} from './const';
 import {renderViewComponent} from './utils/render';
 
 import {getProfileTemplate} from './view/profile';
@@ -15,25 +15,12 @@ import {getFooterStatisticsTemplate} from './view/footer-statistics';
 // import {getMostCommentedFilmsTemplate} from './view/most-commented-films';
 
 // mocks
-import {Count} from './mock/const-data';
+import {Count as DataCount} from './mock/const-data';
 import {getFilmData} from './mock/film-data';
 import {getCommentData} from './mock/comment-data';
 
-let filmId = 0;
-const films = new Array(Count.FILM).fill().map(() => {
-  filmId++;
-  return getFilmData(filmId);
-});
-
-let commentId = 0;
-const comments = new Array(Count.COMMENT).fill().map(() => {
-  commentId++;
-  return getCommentData(commentId);
-});
-
-const getCommentCount = (comments, film) => {
-  return comments.filter((comment) => comment.filmId === film.id).length;
-};
+const films = new Array(DataCount.FILM).fill(null).map((_, idx) => getFilmData(idx + 1));
+const commentsData = new Array(DataCount.COMMENT).fill(null).map((_, idx) => getCommentData(idx + 1));
 
 const header = document.querySelector('.header');
 const main = document.querySelector('.main');
@@ -52,8 +39,7 @@ const allFilmsSection = mainContent.querySelector('#all-films');
 const allFilmsList = allFilmsSection.querySelector('.films-list__container');
 
 for (let i = 0; i < Math.min(films.length, FilmCount.STEP); i++) {
-  const commentCount = getCommentCount(comments, films[i]);
-  renderViewComponent(allFilmsList, getFilmCardTemplate(films[i], commentCount));
+  renderViewComponent(allFilmsList, getFilmCardTemplate(films[i]));
 }
 
 if (films.length > FilmCount.STEP) {
@@ -67,8 +53,7 @@ if (films.length > FilmCount.STEP) {
     films
       .slice(currentFilmCount, currentFilmCount + FilmCount.STEP)
       .forEach((film) => {
-        const commentCount = getCommentCount(comments, film);
-        return renderViewComponent(allFilmsList, getFilmCardTemplate(film, commentCount));
+        return renderViewComponent(allFilmsList, getFilmCardTemplate(film));
       });
 
     currentFilmCount += FilmCount.STEP;
@@ -84,34 +69,28 @@ renderViewComponent(footer, getFooterStatisticsTemplate(films));
 mainContent.addEventListener('click', (evt) => {
   evt.preventDefault();
 
-  const CLASS_NAME_TARGETS = [
-    'film-card__poster',
-    'film-card__description',
-    'film-card__comments',
-  ];
-
-  if (CLASS_NAME_TARGETS.includes(evt.target.className)) {
+  if (OPENING_POPUP_CLASS_NAMES.includes(evt.target.className)) {
 
     const card = evt.target.closest('.film-card');
     const cardId = card.dataset.id;
     const selectedFilm = films.find((film) => film.id == cardId);
-    const commentsFilm = comments.filter((comment) => comment.filmId === selectedFilm.id);
+    const filmComments = selectedFilm.comments.map((commentId) => commentsData.find((item) => item.id === commentId));
 
-    renderViewComponent(footer, getFilmDetailsTemplate(selectedFilm, commentsFilm), InsertPlace.AFTER_END);
+    renderViewComponent(footer, getFilmDetailsTemplate(selectedFilm, filmComments), InsertPlace.AFTER_END);
 
     const filmDetails = document.querySelector('.film-details');
 
-    const handlePressEsc = (evt) => {
+    const buttonEscKeydownHandler = (evt) => {
       if (evt.key === 'Escape') {
         removeFilmDetails();
       }
     };
 
-    document.addEventListener('keydown', handlePressEsc);
+    document.addEventListener('keydown', buttonEscKeydownHandler);
 
     const removeFilmDetails = () => {
       filmDetails.remove();
-      document.removeEventListener('keydown', handlePressEsc);
+      document.removeEventListener('keydown', buttonEscKeydownHandler);
     };
 
     const buttonClose = filmDetails.querySelector('.film-details__close-btn');
