@@ -1,6 +1,6 @@
-import {Comment, FilmIdRange, CommentDateRange} from './const-data';
+import {Comment, CommentDateRange} from './const-data';
 
-import {getRandomInteger, getRandomElementFromArray, getRandomDate} from '../utils/common';
+import {getRandomElementFromArray, getRandomDate} from '../utils/random';
 
 export const getCommentData = (id) => {
   return {
@@ -9,6 +9,5 @@ export const getCommentData = (id) => {
     emoji: getRandomElementFromArray(Comment.EMOJI),
     author: getRandomElementFromArray(Comment.AUTHOR),
     date: getRandomDate(CommentDateRange.YEAR.MIN, CommentDateRange.YEAR.MAX),
-    filmId: getRandomInteger(FilmIdRange.MIN, FilmIdRange.MAX),
   };
 };

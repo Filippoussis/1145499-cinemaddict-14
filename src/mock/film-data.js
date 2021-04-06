@@ -10,10 +10,12 @@ import {
   GenresRange,
   RatingRange,
   ReleaseDateRange,
-  TimeRange,
+  TimeMinutesRange,
   AgeRange,
   StarsRange,
-  WritersRange
+  WritersRange,
+  ListCommentIdRange,
+  CommentIdRange
 } from './const-data';
 
 import {
@@ -22,7 +24,9 @@ import {
   getRandomElementFromArray,
   getArrayRandomLength,
   getRandomDate
-} from '../utils/common';
+} from '../utils/random';
+
+const MINUTES_IN_HOUR = 60;
 
 // получение описания к фильму из неповторяющихся предложений
 const getRandomDescription = (descriptionString) => {
@@ -40,8 +44,14 @@ const getRandomDescription = (descriptionString) => {
   return randomDescription;
 };
 
-const getRandomTime = (minHours, maxHours, minMinutes, maxMinutes) => {
-  return `${getRandomInteger(minHours, maxHours)}h ${getRandomInteger(minMinutes, maxMinutes)}m`;
+const getRandomTime = (minMinutes, maxMinutes) => {
+  const totalMinutes = getRandomInteger(minMinutes, maxMinutes);
+  return `${Math.trunc(totalMinutes/MINUTES_IN_HOUR)}h ${totalMinutes%MINUTES_IN_HOUR}m`;
+};
+
+const getListIdComments = () => {
+  const randomLengthListCommentId = getRandomInteger(ListCommentIdRange.MIN, ListCommentIdRange.MAX);
+  return new Array(randomLengthListCommentId).fill(null).map(() => getRandomInteger(CommentIdRange.MIN, CommentIdRange.MAX));
 };
 
 export const getFilmData = (id) => {
@@ -54,17 +64,18 @@ export const getFilmData = (id) => {
     origin: title,
     description: getRandomDescription(DESCRIPTION),
     poster: getRandomElementFromArray(POSTERS),
-    rating: getRandomFloat(RatingRange.MIN, RatingRange.MAX),
+    rating: Number(getRandomFloat(RatingRange.MIN, RatingRange.MAX)),
     release: getRandomDate(ReleaseDateRange.YEAR.MIN, ReleaseDateRange.YEAR.MAX),
-    genre: getArrayRandomLength(GENRES, GenresRange.MIN, GenresRange.MAX),
-    time: getRandomTime(TimeRange.HOUR.MIN, TimeRange.HOUR.MAX, TimeRange.MINUTES.MIN, TimeRange.MINUTES.MAX),
+    genres: getArrayRandomLength(GENRES, GenresRange.MIN, GenresRange.MAX),
+    time: getRandomTime(TimeMinutesRange.MIN, TimeMinutesRange.MAX),
     director: getRandomElementFromArray(DIRECTORS),
-    stars: getArrayRandomLength(STARS, StarsRange.MIN, StarsRange.MAX).join(', '),
-    writers: getArrayRandomLength(WRITERS, WritersRange.MIN, WritersRange.MAX).join(', '),
+    stars: getArrayRandomLength(STARS, StarsRange.MIN, StarsRange.MAX),
+    writers: getArrayRandomLength(WRITERS, WritersRange.MIN, WritersRange.MAX),
     country: getRandomElementFromArray(COUNTRIES),
     age: getRandomInteger(AgeRange.MIN, AgeRange.MAX),
     isWatchlist: Boolean(getRandomInteger()),
     isWatched: Boolean(getRandomInteger()),
     isFavorite: Boolean(getRandomInteger()),
+    comments: getListIdComments(),
   };
 };
