@@ -1,8 +1,8 @@
 export const getFilterTemplate = (films) => {
 
-  const watchlistCount = films.filter((film) => film.isWatchlist).length;
-  const historyCount = films.filter((film) => film.isWatched).length;
-  const favoriteCount = films.filter((film) => film.isFavorite).length;
+  const watchlistCount = films.reduce((sum, {isWatchlist}) => sum + isWatchlist, 0);
+  const historyCount= films.reduce((sum, {isWatched}) => sum + isWatched, 0);
+  const favoriteCount = films.reduce((sum, {isFavorite}) => sum + isFavorite, 0);
 
   return (
     `<nav class="main-navigation">
