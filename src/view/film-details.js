@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {addAttributeChecked} from '../const';
 
 const renderGenreTemplate = (genre) => {
   return genre.map((item) => `<span class="film-details__genre">${item}</span>`).join('');
@@ -27,19 +28,29 @@ const getCommentTemplate = (comment) => {
 };
 
 const renderCommentsTemplate = (comments) => {
-  return comments.map((comment) => getCommentTemplate(comment)).join('');
+  return comments.map(getCommentTemplate).join('');
 };
 
-export const getFilmDetailsTemplate = (film, commentsFilm) => {
+export const getFilmDetailsTemplate = (film, filmComments) => {
 
-  const {title, origin, rating, director, writers, stars, release, time, country, poster, description, age, genre} = film;
+  const {
+    title, origin, rating, director, writers, stars,
+    release, time, country, poster, description, age,
+    genres, isWatchlist, isWatched, isFavorite, comments,
+  } = film;
 
+  const writersFormated = writers.join(', ');
+  const starsFormated = stars.join(', ');
   const releaseFormated = dayjs(release).format('D MMMM YYYY');
-  const genreTitle = genre.length > 1 ? 'Genres' : 'Genre';
-  const genreTemplate = renderGenreTemplate(genre);
+  const genre = genres.length > 1 ? 'Genres' : 'Genre';
+  const genreTemplate = renderGenreTemplate(genres);
 
-  const commentsCount = commentsFilm.length;
-  const commentsList = commentsCount ? renderCommentsTemplate(commentsFilm) : '';
+  const commentsCount = comments.length;
+  const commentsList = commentsCount > 0 ? renderCommentsTemplate(filmComments) : '';
+
+  const isCheckedWatchlist = addAttributeChecked(isWatchlist);
+  const isCheckedWatched = addAttributeChecked(isWatched);
+  const isCheckedFavorite = addAttributeChecked(isFavorite);
 
   return (
     `<section class="film-details">
@@ -50,7 +61,7 @@ export const getFilmDetailsTemplate = (film, commentsFilm) => {
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="./images/posters/${poster}" alt=${title}>
+              <img class="film-details__poster-img" src=${poster} alt=${title}>
 
               <p class="film-details__age">${age}+</p>
             </div>
@@ -74,11 +85,11 @@ export const getFilmDetailsTemplate = (film, commentsFilm) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Writers</td>
-                  <td class="film-details__cell">${writers}</td>
+                  <td class="film-details__cell">${writersFormated}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Actors</td>
-                  <td class="film-details__cell">${stars}</td>
+                  <td class="film-details__cell">${starsFormated}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
@@ -93,7 +104,7 @@ export const getFilmDetailsTemplate = (film, commentsFilm) => {
                   <td class="film-details__cell">${country}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">${genreTitle}</td>
+                  <td class="film-details__term">${genre}</td>
                   <td class="film-details__cell">${genreTemplate}</td>
                 </tr>
               </table>
@@ -103,13 +114,13 @@ export const getFilmDetailsTemplate = (film, commentsFilm) => {
           </div>
 
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${isCheckedWatchlist}>
             <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isCheckedWatched}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isCheckedFavorite}>
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>
