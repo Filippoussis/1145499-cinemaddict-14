@@ -1,8 +1,37 @@
-import {getProfileRank} from '../const';
+import {createElement} from '../utils/render';
 
-export const getProfileTemplate = (films) => {
+const RankNovice = {
+  MIN: 1,
+  MAX: 10,
+  TITLE: 'Novice',
+};
 
-  const watchedFilmsCount = films.filter((film) => film.isWatched).length;
+const RankFan = {
+  MIN: 11,
+  MAX: 20,
+  TITLE: 'Fan',
+};
+
+const RankMovieBuff = {
+  MIN: 21,
+  TITLE: 'Movie Buff',
+};
+
+const getProfileRank = (watchedFilmsCount) => {
+  switch(true) {
+    case watchedFilmsCount >= RankNovice.MIN && watchedFilmsCount <= RankNovice.MAX:
+      return RankNovice.TITLE;
+    case watchedFilmsCount >= RankFan.MIN && watchedFilmsCount <= RankFan.MAX:
+      return RankFan.TITLE;
+    case watchedFilmsCount >= RankMovieBuff.MIN:
+      return RankMovieBuff.TITLE;
+    default:
+      return '';
+  }
+};
+
+const createProfileTemplate = (watchedFilmsCount) => {
+
   const rank = getProfileRank(watchedFilmsCount);
 
   return (
@@ -12,3 +41,26 @@ export const getProfileTemplate = (films) => {
     </section>`
   );
 };
+
+export default class Profile {
+  constructor(watchedFilmsCount) {
+    this._element = null;
+    this._watchedFilmsCount = watchedFilmsCount;
+  }
+
+  getTemplate() {
+    return createProfileTemplate(this._watchedFilmsCount);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
