@@ -1,7 +1,22 @@
 import dayjs from 'dayjs';
-import {DESCRIPTION_MAX_LENGTH, addClassModActive} from '../const';
+import {createElement} from '../utils/render';
 
-export const getFilmCardTemplate = (film) => {
+const DESCRIPTION_MAX_LENGTH = 140;
+const CLASS_MOD_NAME = 'film-card__controls-item--active';
+
+export const addClassModActive = (isContolActive) => {
+  return isContolActive ? CLASS_MOD_NAME : '';
+};
+
+const createControlTemplate = (id, text, isMod) => {
+  return (
+    `<button class="film-card__controls-item button film-card__controls-item--${id} ${isMod}" type="button">
+      ${text}
+    </button>`
+  );
+};
+
+const createFilmCardTemplate = (film) => {
 
   const {id, title, rating, release, time, genres, poster, description, isWatchlist, isWatched, isFavorite, comments} = film;
 
@@ -26,10 +41,33 @@ export const getFilmCardTemplate = (film) => {
       <p class="film-card__description">${previewDescription}</p>
       <a class="film-card__comments">${commentsCount} comments</a>
       <div class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isCheckedWatchlist}" type="button">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isCheckedWatched}" type="button">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite ${isCheckedFavorite}" type="button">Mark as favorite</button>
+        ${createControlTemplate('add-to-watchlist', 'Add to watchlist', isCheckedWatchlist)}
+        ${createControlTemplate('mark-as-watched', 'Mark as watched', isCheckedWatched)}
+        ${createControlTemplate('favorite', 'Mark as favorite', isCheckedFavorite)}
       </div>
     </article>`
   );
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
