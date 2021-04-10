@@ -1,5 +1,9 @@
 import dayjs from 'dayjs';
-import {addAttributeChecked} from '../const';
+import {createElement} from '../utils/render';
+
+const addAttributeChecked = (isContolActive) => {
+  return isContolActive ? 'checked' : '';
+};
 
 const renderGenreTemplate = (genre) => {
   return genre.map((item) => `<span class="film-details__genre">${item}</span>`).join('');
@@ -31,7 +35,7 @@ const renderCommentsTemplate = (comments) => {
   return comments.map(getCommentTemplate).join('');
 };
 
-export const getFilmDetailsTemplate = (film, filmComments) => {
+const createFilmDetailsTemplate = (film, filmComments) => {
 
   const {
     title, origin, rating, director, writers, stars,
@@ -168,3 +172,27 @@ export const getFilmDetailsTemplate = (film, filmComments) => {
     </section>`
   );
 };
+
+export default class FilmDetails {
+  constructor(film, comments) {
+    this._element = null;
+    this._film = film;
+    this._comments = comments;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._film, this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
