@@ -4,13 +4,12 @@ import {createElement} from '../utils/render';
 const DESCRIPTION_MAX_LENGTH = 140;
 const CLASS_MOD_NAME = 'film-card__controls-item--active';
 
-export const addClassModActive = (isContolActive) => {
-  return isContolActive ? CLASS_MOD_NAME : '';
-};
+const createControlTemplate = (id, text, isActive = false) => {
 
-const createControlTemplate = (id, text, isMod) => {
+  const classMod = isActive === true ? CLASS_MOD_NAME : '';
+
   return (
-    `<button class="film-card__controls-item button film-card__controls-item--${id} ${isMod}" type="button">
+    `<button class="film-card__controls-item button film-card__controls-item--${id} ${classMod}" type="button">
       ${text}
     </button>`
   );
@@ -23,9 +22,6 @@ const createFilmCardTemplate = (film) => {
   const previewRelease = dayjs(release).format('YYYY');
   const previewGenre = genres.join(' ');
   const previewDescription = description.length > DESCRIPTION_MAX_LENGTH ? description.slice(0, DESCRIPTION_MAX_LENGTH - 1) + '\u2026' : description;
-  const isCheckedWatchlist = addClassModActive(isWatchlist);
-  const isCheckedWatched = addClassModActive(isWatched);
-  const isCheckedFavorite = addClassModActive(isFavorite);
   const commentsCount = comments.length;
 
   return (
@@ -41,9 +37,9 @@ const createFilmCardTemplate = (film) => {
       <p class="film-card__description">${previewDescription}</p>
       <a class="film-card__comments">${commentsCount} comments</a>
       <div class="film-card__controls">
-        ${createControlTemplate('add-to-watchlist', 'Add to watchlist', isCheckedWatchlist)}
-        ${createControlTemplate('mark-as-watched', 'Mark as watched', isCheckedWatched)}
-        ${createControlTemplate('favorite', 'Mark as favorite', isCheckedFavorite)}
+        ${createControlTemplate('add-to-watchlist', 'Add to watchlist', isWatchlist)}
+        ${createControlTemplate('mark-as-watched', 'Mark as watched', isWatched)}
+        ${createControlTemplate('favorite', 'Mark as favorite', isFavorite)}
       </div>
     </article>`
   );
