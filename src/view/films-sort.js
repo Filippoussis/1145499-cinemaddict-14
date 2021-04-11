@@ -1,6 +1,6 @@
 import {createElement} from '../utils/render';
 
-const createSortTemplate = () => {
+const createFilmsSortTemplate = () => {
   return (
     `<ul class="sort">
       <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
@@ -10,13 +10,13 @@ const createSortTemplate = () => {
   );
 };
 
-export default class Sort {
+export default class FilmsSort {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createSortTemplate();
+    return createFilmsSortTemplate();
   }
 
   getElement() {
