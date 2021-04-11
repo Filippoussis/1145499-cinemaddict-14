@@ -1,9 +1,9 @@
 import {createElement} from '../utils/render';
 
-const createFilmsTotalTemplate = (filmsTotalCount) => {
+const createFilmsTotalTemplate = (count) => {
   return (
     `<section class="footer__statistics">
-      <p>${filmsTotalCount} movies inside</p>
+      <p>${count} movies inside</p>
     </section>`
   );
 };
