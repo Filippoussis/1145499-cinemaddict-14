@@ -1,6 +1,6 @@
 import {InsertPlace} from './const';
 import {render} from './utils/render';
-import {getProfileRank} from './utils/rating';
+import {getRatingTitle} from './utils/rating';
 import {getFilterStats} from './utils/filter';
 
 import UserProfileView from './view/user-profile';
@@ -43,7 +43,7 @@ const filterStats = getFilterStats(films);
 const filmsTotalCount = films.length;
 const watchedFilmsCount = filterStats.watchedCount;
 
-const rank = getProfileRank(watchedFilmsCount);
+const rank = getRatingTitle(watchedFilmsCount);
 
 const header = document.querySelector('.header');
 const main = document.querySelector('.main');
