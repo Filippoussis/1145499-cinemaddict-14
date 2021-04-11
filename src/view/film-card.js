@@ -6,7 +6,7 @@ const CLASS_MOD_NAME = 'film-card__controls-item--active';
 
 const createControlTemplate = (id, text, isActive = false) => {
 
-  const classMod = isActive === true ? CLASS_MOD_NAME : '';
+  const classMod = isActive ? CLASS_MOD_NAME : '';
 
   return (
     `<button class="film-card__controls-item button film-card__controls-item--${id} ${classMod}" type="button">
