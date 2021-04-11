@@ -1,25 +1,10 @@
-const profileRatings = [
-  {
-    title: 'Novice',
-    range: {
-      min: 1,
-      max: 10,
-    },
-  }, {
-    title: 'Fan',
-    range: {
-      min: 11,
-      max: 20,
-    },
-  }, {
-    title: 'Movie Buff',
-    range: {
-      min: 21,
-      max: Number.MAX_SAFE_INTEGER,
-    },
-  },
+const RATING_TITLES = [
+  {rating: 21, title: 'Movie Buff'},
+  {rating: 11, title: 'Fan'},
+  {rating: 1, title: 'Novice'},
+  {rating: 0, title: ''},
 ];
 
-export const getProfileRank = (value) => {
-  return value !== 0 ? (profileRatings.find((item) => value >= item.range.min && value <= item.range.max)).title : '';
-};
+export const getRatingTitle = (value) => RATING_TITLES
+  .find(({rating}) => rating <= value)
+  .title || '';
