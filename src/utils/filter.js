@@ -1,8 +1,14 @@
 export const getFilterStats = (films) => {
   return films.reduce((stats, {isWatchlist, isWatched, isFavorite}) => {
-    if (isWatchlist) stats.watchlistCount += Number(isWatchlist);
-    if (isWatched) stats.watchedCount += Number(isWatched);
-    if (isFavorite) stats.favoriteCount += Number(isFavorite);
+    if (isWatchlist) {
+      stats.watchlistCount += 1;
+    }
+    if (isWatched) {
+      stats.watchedCount += 1;
+    }
+    if (isFavorite) {
+      stats.favoriteCount += 1;
+    }
 
     return stats;
 
