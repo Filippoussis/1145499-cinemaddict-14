@@ -1,6 +1,6 @@
 import {createElement} from '../utils/render';
 
-const createFilterTemplate = ({watchlistCount, watchedCount, favoriteCount}) => {
+const createFilmsFilterTemplate = ({watchlistCount, watchedCount, favoriteCount}) => {
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
@@ -14,14 +14,14 @@ const createFilterTemplate = ({watchlistCount, watchedCount, favoriteCount}) => 
   );
 };
 
-export default class Filter {
-  constructor(filterResult) {
+export default class FilmsFilter {
+  constructor(value) {
     this._element = null;
-    this._filterResult = filterResult;
+    this._state = value;
   }
 
   getTemplate() {
-    return createFilterTemplate(this._filterResult);
+    return createFilmsFilterTemplate(this._state);
   }
 
   getElement() {
