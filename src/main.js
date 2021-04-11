@@ -1,7 +1,7 @@
 import {InsertPlace} from './const';
 import {render} from './utils/render';
 
-import UserProfileView from './view/profile';
+import UserProfileView from './view/user-profile';
 import FilmsFilterView from './view/films-filter';
 import FilmsSortView from './view/films-sort';
 import MainContentView from './view/main-content';
