@@ -12,8 +12,8 @@ export const render = (container, element, place = InsertPlace.BEFORE_END) => {
 };
 
 export const createElement = (template) => {
-  const newElement = document.createElement('div');
-  newElement.innerHTML = template;
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = template;
 
-  return newElement.firstChild;
+  return wrapper.firstChild;
 };
