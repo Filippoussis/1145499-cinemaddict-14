@@ -1,6 +1,7 @@
 import {InsertPlace} from './const';
 import {render} from './utils/render';
 import {getProfileRank} from './utils/rating';
+import {getFilterStats} from './utils/filter';
 
 import UserProfileView from './view/user-profile';
 import FilmsFilterView from './view/films-filter';
@@ -37,16 +38,10 @@ const NO_SCROLL_CLASS_NAME = 'hide-overflow';
 const films = new Array(DataCount.FILM).fill(null).map((_, idx) => getFilmData(idx + 1));
 const commentsData = new Array(DataCount.COMMENT).fill(null).map((_, idx) => getCommentData(idx + 1));
 
-const filterResult = films.reduce((sum, {isWatchlist, isWatched, isFavorite}) => {
-  return ({
-    watchlistCount: sum.watchlistCount + isWatchlist,
-    watchedCount: sum.watchedCount + isWatched,
-    favoriteCount: sum.favoriteCount + isFavorite,
-  });
-}, {watchlistCount: 0, watchedCount: 0, favoriteCount: 0});
+const filterStats = getFilterStats(films);
 
 const filmsTotalCount = films.length;
-const watchedFilmsCount = filterResult.watchedCount;
+const watchedFilmsCount = filterStats.watchedCount;
 
 const rank = getProfileRank(watchedFilmsCount);
 
@@ -55,7 +50,7 @@ const main = document.querySelector('.main');
 const footer = document.querySelector('.footer');
 
 render(header, new UserProfileView(rank).getElement());
-render(main, new FilmsFilterView(filterResult).getElement());
+render(main, new FilmsFilterView(filterStats).getElement());
 render(main, new FilmsSortView().getElement());
 
 const mainContentView = new MainContentView();
