@@ -58,8 +58,8 @@ render(header, new ProfileView(watchedFilmsCount).getElement());
 render(main, new FilmsFilterView(filterResult).getElement());
 render(main, new FilmsSortView().getElement());
 
-const mainContentComponent = new MainContentView();
-render(main, mainContentComponent.getElement());
+const mainContentView = new MainContentView();
+render(main, mainContentView.getElement());
 
 render(footer, new FilmsTotalView(filmsTotalCount).getElement());
 
@@ -68,41 +68,41 @@ const renderFilmCard = (container, film) => {
 };
 
 const renderFilmsList = (container) => {
-  const allFilmsComponent = new AllFilmsView();
-  render(container.getElement(), allFilmsComponent.getElement());
+  const allFilmsView = new AllFilmsView();
+  render(container.getElement(), allFilmsView.getElement());
 
-  const filmsContainerComponent = new FilmsContainerView();
-  render(allFilmsComponent.getElement(), filmsContainerComponent.getElement());
+  const filmsContainerView = new FilmsContainerView();
+  render(allFilmsView.getElement(), filmsContainerView.getElement());
 
   for (let i = 0; i < Math.min(films.length, FilmCount.STEP); i++) {
-    renderFilmCard(filmsContainerComponent, films[i]);
+    renderFilmCard(filmsContainerView, films[i]);
   }
 
   if (films.length > FilmCount.STEP) {
-    const showMoreButtonComponent = new ShowMoreButton();
+    const showMoreButtonView = new ShowMoreButton();
     let currentFilmCount = FilmCount.STEP;
 
-    render(filmsContainerComponent.getElement(), showMoreButtonComponent.getElement(), InsertPlace.AFTER_END);
+    render(filmsContainerView.getElement(), showMoreButtonView.getElement(), InsertPlace.AFTER_END);
 
-    showMoreButtonComponent.getElement().addEventListener('click', (evt) => {
+    showMoreButtonView.getElement().addEventListener('click', (evt) => {
       evt.preventDefault();
       films
         .slice(currentFilmCount, currentFilmCount + FilmCount.STEP)
         .forEach((film) => {
-          return renderFilmCard(filmsContainerComponent, film);
+          return renderFilmCard(filmsContainerView, film);
         });
 
       currentFilmCount += FilmCount.STEP;
 
       if (currentFilmCount >= films.length) {
-        showMoreButtonComponent.getElement().remove();
-        showMoreButtonComponent.removeElement();
+        showMoreButtonView.getElement().remove();
+        showMoreButtonView.removeElement();
       }
     });
   }
 };
 
-mainContentComponent.getElement().addEventListener('click', (evt) => {
+mainContentView.getElement().addEventListener('click', (evt) => {
   evt.preventDefault();
 
   if (OPENING_POPUP_CLASS_NAMES.includes(evt.target.className)) {
@@ -112,9 +112,9 @@ mainContentComponent.getElement().addEventListener('click', (evt) => {
     const selectedFilm = films.find((film) => film.id == cardId);
     const filmComments = selectedFilm.comments.map((commentId) => commentsData.find((item) => item.id === commentId));
 
-    const filmDetailsComponent = new FilmDetailsView(selectedFilm, filmComments);
+    const filmDetailsView = new FilmDetailsView(selectedFilm, filmComments);
 
-    render(footer, filmDetailsComponent.getElement(), InsertPlace.AFTER_END);
+    render(footer, filmDetailsView.getElement(), InsertPlace.AFTER_END);
     document.body.classList.add(ClassName.NO_SCROLL);
 
     const buttonEscKeydownHandler = (evt) => {
@@ -126,13 +126,13 @@ mainContentComponent.getElement().addEventListener('click', (evt) => {
     document.addEventListener('keydown', buttonEscKeydownHandler);
 
     const removeFilmDetails = () => {
-      filmDetailsComponent.getElement().remove();
-      filmDetailsComponent.removeElement();
+      filmDetailsView.getElement().remove();
+      filmDetailsView.removeElement();
       document.removeEventListener('keydown', buttonEscKeydownHandler);
       document.body.classList.remove(ClassName.NO_SCROLL);
     };
 
-    const buttonCloseComponent = filmDetailsComponent.getElement().querySelector(ClassName.CLOSE_BTN);
+    const buttonCloseComponent = filmDetailsView.getElement().querySelector(ClassName.CLOSE_BTN);
     buttonCloseComponent.addEventListener('click', (evt) => {
       evt.preventDefault();
       removeFilmDetails();
@@ -140,7 +140,7 @@ mainContentComponent.getElement().addEventListener('click', (evt) => {
   }
 });
 
-renderFilmsList(mainContentComponent);
+renderFilmsList(mainContentView);
 
 // чуть позднее :)
 // renderViewComponent(mainContent, getTopRatedFilmsTemplate());
