@@ -31,10 +31,7 @@ const OPENING_POPUP_CLASS_NAMES = [
   'film-card__comments',
 ];
 
-const ClassName = {
-  NO_SCROLL: 'hide-overflow',
-  CLOSE_BTN: '.film-details__close-btn',
-};
+const NO_SCROLL_CLASS_NAME = 'hide-overflow';
 
 const films = new Array(DataCount.FILM).fill(null).map((_, idx) => getFilmData(idx + 1));
 const commentsData = new Array(DataCount.COMMENT).fill(null).map((_, idx) => getCommentData(idx + 1));
@@ -115,7 +112,7 @@ mainContentView.getElement().addEventListener('click', (evt) => {
     const filmDetailsView = new FilmDetailsView(selectedFilm, filmComments);
 
     render(footer, filmDetailsView.getElement(), InsertPlace.AFTER_END);
-    document.body.classList.add(ClassName.NO_SCROLL);
+    document.body.classList.add(NO_SCROLL_CLASS_NAME);
 
     const buttonEscKeydownHandler = (evt) => {
       if (evt.key === 'Escape') {
@@ -129,11 +126,11 @@ mainContentView.getElement().addEventListener('click', (evt) => {
       filmDetailsView.getElement().remove();
       filmDetailsView.removeElement();
       document.removeEventListener('keydown', buttonEscKeydownHandler);
-      document.body.classList.remove(ClassName.NO_SCROLL);
+      document.body.classList.remove(NO_SCROLL_CLASS_NAME);
     };
 
-    const buttonCloseComponent = filmDetailsView.getElement().querySelector(ClassName.CLOSE_BTN);
-    buttonCloseComponent.addEventListener('click', (evt) => {
+    const buttonClose = document.querySelector('.film-details__close-btn');
+    buttonClose.addEventListener('click', (evt) => {
       evt.preventDefault();
       removeFilmDetails();
     });
