@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import {createElement} from '../utils/render';
 
-const addAttributeChecked = (isContolActive) => {
-  return isContolActive ? 'checked' : '';
+const getAttributeChecked = (isActive = false) => {
+  return isActive ? 'checked' : '';
 };
 
 const renderGenreTemplate = (genre) => {
@@ -51,10 +51,6 @@ const createFilmDetailsTemplate = (film, filmComments) => {
 
   const commentsCount = comments.length;
   const commentsList = commentsCount > 0 ? renderCommentsTemplate(filmComments) : '';
-
-  const isCheckedWatchlist = addAttributeChecked(isWatchlist);
-  const isCheckedWatched = addAttributeChecked(isWatched);
-  const isCheckedFavorite = addAttributeChecked(isFavorite);
 
   return (
     `<section class="film-details">
@@ -118,13 +114,13 @@ const createFilmDetailsTemplate = (film, filmComments) => {
           </div>
 
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${isCheckedWatchlist}>
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${getAttributeChecked(isWatchlist)}>
             <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isCheckedWatched}>
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${getAttributeChecked(isWatched)}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isCheckedFavorite}>
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${getAttributeChecked(isFavorite)}>
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>
