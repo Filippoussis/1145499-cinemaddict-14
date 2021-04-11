@@ -9,7 +9,7 @@ import AllFilmsView from './view/all-films';
 import FilmsContainerView from './view/films-container';
 import FilmCardView from './view/film-card';
 import FilmDetailsView from './view/film-details';
-import ShowMoreButton from './view/show-more-button';
+import ShowMoreButtonView from './view/show-more-button';
 import FilmsTotalView from './view/films-total';
 
 // import {getTopRatedFilmsTemplate} from './view/top-rated-films';
@@ -79,7 +79,7 @@ const renderFilmsList = (container) => {
   }
 
   if (films.length > FilmCount.STEP) {
-    const showMoreButtonView = new ShowMoreButton();
+    const showMoreButtonView = new ShowMoreButtonView();
     let currentFilmCount = FilmCount.STEP;
 
     render(filmsContainerView.getElement(), showMoreButtonView.getElement(), InsertPlace.AFTER_END);
