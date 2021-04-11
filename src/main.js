@@ -2,8 +2,8 @@ import {InsertPlace} from './const';
 import {render} from './utils/render';
 
 import ProfileView from './view/profile';
-import FilterView from './view/filter';
-import SortView from './view/sort';
+import FilmsFilterView from './view/films-filter';
+import FilmsSortView from './view/films-sort';
 import MainContentView from './view/main-content';
 import AllFilmsView from './view/all-films';
 import FilmsContainerView from './view/films-container';
@@ -55,8 +55,8 @@ const main = document.querySelector('.main');
 const footer = document.querySelector('.footer');
 
 render(header, new ProfileView(watchedFilmsCount).getElement());
-render(main, new FilterView(filterResult).getElement());
-render(main, new SortView().getElement());
+render(main, new FilmsFilterView(filterResult).getElement());
+render(main, new FilmsSortView().getElement());
 
 const mainContentComponent = new MainContentView();
 render(main, mainContentComponent.getElement());
