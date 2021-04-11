@@ -33,7 +33,7 @@ const OPENING_POPUP_CLASS_NAMES = [
 
 const ClassName = {
   NO_SCROLL: 'hide-overflow',
-  CLOSE_BTN: 'film-details__close-btn',
+  CLOSE_BTN: '.film-details__close-btn',
 };
 
 const films = new Array(DataCount.FILM).fill(null).map((_, idx) => getFilmData(idx + 1));
@@ -115,7 +115,7 @@ mainContentComponent.getElement().addEventListener('click', (evt) => {
     const filmDetailsComponent = new FilmDetailsView(selectedFilm, filmComments);
 
     render(footer, filmDetailsComponent.getElement(), InsertPlace.AFTER_END);
-    document.querySelector('body').classList.add(ClassName.NO_SCROLL);
+    document.body.classList.add(ClassName.NO_SCROLL);
 
     const buttonEscKeydownHandler = (evt) => {
       if (evt.key === 'Escape') {
@@ -129,7 +129,7 @@ mainContentComponent.getElement().addEventListener('click', (evt) => {
       filmDetailsComponent.getElement().remove();
       filmDetailsComponent.removeElement();
       document.removeEventListener('keydown', buttonEscKeydownHandler);
-      document.querySelector('body').classList.remove(ClassName.NO_SCROLL);
+      document.body.classList.remove(ClassName.NO_SCROLL);
     };
 
     const buttonCloseComponent = filmDetailsComponent.getElement().querySelector(ClassName.CLOSE_BTN);
