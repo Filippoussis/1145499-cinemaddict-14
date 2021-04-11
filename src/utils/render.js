@@ -8,7 +8,8 @@ export const render = (container, element, place = InsertPlace.BEFORE_END) => {
     case InsertPlace.AFTER_END:
       container.after(element);
       break;
-    default: throw new Error('place должен быть InsertPlace.BEFORE_END или InsertPlace.AFTER_END');
+    default:
+      throw new Error(`Unknown render position: ${place}. Possible values: ${Object.values(InsertPlace).join(', ')}`);
   }
 };
 
