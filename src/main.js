@@ -1,7 +1,7 @@
 import {InsertPlace} from './const';
 import {render} from './utils/render';
 
-import ProfileView from './view/profile';
+import UserProfileView from './view/profile';
 import FilmsFilterView from './view/films-filter';
 import FilmsSortView from './view/films-sort';
 import MainContentView from './view/main-content';
@@ -19,6 +19,28 @@ import FilmsTotalView from './view/films-total';
 import {Count as DataCount} from './mock/const-data';
 import {getFilmData} from './mock/film-data';
 import {getCommentData} from './mock/comment-data';
+
+const profileRatings = [
+  {
+    title: 'Novice',
+    range: {
+      min: 1,
+      max: 10,
+    },
+  }, {
+    title: 'Fan',
+    range: {
+      min: 11,
+      max: 20,
+    },
+  }, {
+    title: 'Movie Buff',
+    range: {
+      min: 21,
+      max: Number.MAX_SAFE_INTEGER,
+    },
+  },
+];
 
 const FilmCount = {
   STEP: 5,
@@ -44,14 +66,20 @@ const filterResult = films.reduce((sum, {isWatchlist, isWatched, isFavorite}) =>
   });
 }, {watchlistCount: 0, watchedCount: 0, favoriteCount: 0});
 
-const watchedFilmsCount = filterResult.watchedCount;
 const filmsTotalCount = films.length;
+const watchedFilmsCount = filterResult.watchedCount;
+
+const getProfileRank = (value) => {
+  return value !== 0 ? (profileRatings.find((item) => value >= item.range.min && value <= item.range.max)).title : '';
+};
+
+const rank = getProfileRank(watchedFilmsCount);
 
 const header = document.querySelector('.header');
 const main = document.querySelector('.main');
 const footer = document.querySelector('.footer');
 
-render(header, new ProfileView(watchedFilmsCount).getElement());
+render(header, new UserProfileView(rank).getElement());
 render(main, new FilmsFilterView(filterResult).getElement());
 render(main, new FilmsSortView().getElement());
 
