@@ -1,5 +1,21 @@
 import {InsertPlace} from '../const';
 
-export const renderViewComponent = (container, component, place = InsertPlace.BEFORE_END) => {
-  return container.insertAdjacentHTML(place, component);
+export const render = (container, element, place = InsertPlace.BEFORE_END) => {
+  switch (place) {
+    case InsertPlace.BEFORE_END:
+      container.append(element);
+      break;
+    case InsertPlace.AFTER_END:
+      container.after(element);
+      break;
+    default:
+      throw new Error(`Unknown render position: ${place}. Possible values: ${Object.values(InsertPlace).join(', ')}`);
+  }
+};
+
+export const createElement = (template) => {
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = template;
+
+  return wrapper.firstChild;
 };

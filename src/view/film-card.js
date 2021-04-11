@@ -1,16 +1,27 @@
 import dayjs from 'dayjs';
-import {DESCRIPTION_MAX_LENGTH, addClassModActive} from '../const';
+import {createElement} from '../utils/render';
 
-export const getFilmCardTemplate = (film) => {
+const DESCRIPTION_MAX_LENGTH = 140;
+const CLASS_MOD_NAME = 'film-card__controls-item--active';
+
+const createControlTemplate = (id, text, isActive = false) => {
+
+  const classMod = isActive ? CLASS_MOD_NAME : '';
+
+  return (
+    `<button class="film-card__controls-item button film-card__controls-item--${id} ${classMod}" type="button">
+      ${text}
+    </button>`
+  );
+};
+
+const createFilmCardTemplate = (film) => {
 
   const {id, title, rating, release, time, genres, poster, description, isWatchlist, isWatched, isFavorite, comments} = film;
 
   const previewRelease = dayjs(release).format('YYYY');
   const previewGenre = genres.join(' ');
   const previewDescription = description.length > DESCRIPTION_MAX_LENGTH ? description.slice(0, DESCRIPTION_MAX_LENGTH - 1) + '\u2026' : description;
-  const isCheckedWatchlist = addClassModActive(isWatchlist);
-  const isCheckedWatched = addClassModActive(isWatched);
-  const isCheckedFavorite = addClassModActive(isFavorite);
   const commentsCount = comments.length;
 
   return (
@@ -26,10 +37,33 @@ export const getFilmCardTemplate = (film) => {
       <p class="film-card__description">${previewDescription}</p>
       <a class="film-card__comments">${commentsCount} comments</a>
       <div class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isCheckedWatchlist}" type="button">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isCheckedWatched}" type="button">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite ${isCheckedFavorite}" type="button">Mark as favorite</button>
+        ${createControlTemplate('add-to-watchlist', 'Add to watchlist', isWatchlist)}
+        ${createControlTemplate('mark-as-watched', 'Mark as watched', isWatched)}
+        ${createControlTemplate('favorite', 'Mark as favorite', isFavorite)}
       </div>
     </article>`
   );
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

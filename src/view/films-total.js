@@ -1,20 +1,21 @@
 import {createElement} from '../utils/render';
 
-const createAllFilmsTemplate = () => {
+const createFilmsTotalTemplate = (count) => {
   return (
-    `<section class="films-list" id="all-films">
-      <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+    `<section class="footer__statistics">
+      <p>${count} movies inside</p>
     </section>`
   );
 };
 
-export default class AllFilms {
-  constructor() {
+export default class FilmsTotal {
+  constructor(value) {
     this._element = null;
+    this._state = value;
   }
 
   getTemplate() {
-    return createAllFilmsTemplate();
+    return createFilmsTotalTemplate(this._state);
   }
 
   getElement() {
