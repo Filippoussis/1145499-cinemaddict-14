@@ -13,6 +13,7 @@ import FilmCardView from './view/film-card';
 import FilmDetailsView from './view/film-details';
 import ShowMoreButtonView from './view/show-more-button';
 import FilmsTotalView from './view/films-total';
+import NoFilmsView from './view/no-films';
 
 // import {getTopRatedFilmsTemplate} from './view/top-rated-films';
 // import {getMostCommentedFilmsTemplate} from './view/most-commented-films';
@@ -62,16 +63,21 @@ const renderFilmCard = (container, film) => {
   return render(container.getElement(), new FilmCardView(film).getElement());
 };
 
-const renderFilmsList = (container) => {
+const renderFilmsList = (container, films) => {
   const allFilmsView = new AllFilmsView();
   render(container.getElement(), allFilmsView.getElement());
 
   const filmsContainerView = new FilmsContainerView();
   render(allFilmsView.getElement(), filmsContainerView.getElement());
 
-  for (let i = 0; i < Math.min(films.length, FilmCount.STEP); i++) {
-    renderFilmCard(filmsContainerView, films[i]);
+  if (films.length === 0) {
+    render(container.getElement(), new NoFilmsView().getElement());
+    return;
   }
+
+  films
+    .slice(0, Math.min(films.length, FilmCount.STEP))
+    .forEach((film) => renderFilmCard(filmsContainerView, film));
 
   if (films.length > FilmCount.STEP) {
     const showMoreButtonView = new ShowMoreButtonView();
@@ -135,7 +141,7 @@ mainContentView.getElement().addEventListener('click', (evt) => {
   }
 });
 
-renderFilmsList(mainContentView);
+renderFilmsList(mainContentView, films);
 
 // чуть позднее :)
 // renderViewComponent(mainContent, getTopRatedFilmsTemplate());
