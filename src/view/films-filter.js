@@ -1,4 +1,4 @@
-import {createElement} from '../utils/render';
+import AbstractView from './abstract';
 
 const createFilmsFilterTemplate = ({watchlistCount, watchedCount, favoriteCount}) => {
   return (
@@ -14,25 +14,13 @@ const createFilmsFilterTemplate = ({watchlistCount, watchedCount, favoriteCount}
   );
 };
 
-export default class FilmsFilter {
+export default class FilmsFilter extends AbstractView {
   constructor(value) {
-    this._element = null;
+    super();
     this._state = value;
   }
 
   getTemplate() {
     return createFilmsFilterTemplate(this._state);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

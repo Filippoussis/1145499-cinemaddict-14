@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement} from '../utils/render';
+import AbstractView from './abstract';
 
 const getAttributeChecked = (isActive = false) => {
   return isActive ? 'checked' : '';
@@ -169,26 +169,26 @@ const createFilmDetailsTemplate = (film, filmComments) => {
   );
 };
 
-export default class FilmDetails {
+export default class FilmDetails extends AbstractView {
   constructor(film, comments) {
-    this._element = null;
+    super();
+
     this._film = film;
     this._comments = comments;
+    this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._film, this._comments);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeButtonClickHandler);
   }
 
-  removeElement() {
-    this._element = null;
+  _closeButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 }
