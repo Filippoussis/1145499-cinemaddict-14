@@ -85,8 +85,7 @@ const renderFilmsList = (container, films) => {
 
     render(filmsContainerView.getElement(), showMoreButtonView.getElement(), InsertPlace.AFTER_END);
 
-    showMoreButtonView.getElement().addEventListener('click', (evt) => {
-      evt.preventDefault();
+    showMoreButtonView.setClickHandler(() => {
       films
         .slice(currentFilmCount, currentFilmCount + FilmCount.STEP)
         .forEach((film) => {
@@ -103,9 +102,7 @@ const renderFilmsList = (container, films) => {
   }
 };
 
-mainContentView.getElement().addEventListener('click', (evt) => {
-  evt.preventDefault();
-
+mainContentView.setClickHandler((evt) => {
   if (OPENING_POPUP_CLASS_NAMES.includes(evt.target.className)) {
 
     const card = evt.target.closest('.film-card');
@@ -133,9 +130,7 @@ mainContentView.getElement().addEventListener('click', (evt) => {
       document.body.classList.remove(NO_SCROLL_CLASS_NAME);
     };
 
-    const buttonClose = document.querySelector('.film-details__close-btn');
-    buttonClose.addEventListener('click', (evt) => {
-      evt.preventDefault();
+    filmDetailsView.setClickHandler(() => {
       removeFilmDetails();
     });
   }
