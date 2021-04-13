@@ -19,13 +19,13 @@ export default class MainContent extends AbstractView {
     return createMainContentTemplate();
   }
 
-  _clickHandler(evt) {
-    evt.preventDefault();
-    this._callback.click(evt);
-  }
-
   setClickHandler(callback) {
     this._callback.click = callback;
     this.getElement().addEventListener('click', this._clickHandler);
+  }
+
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click(evt);
   }
 }
