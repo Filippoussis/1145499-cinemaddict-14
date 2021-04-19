@@ -7,6 +7,9 @@ import {getRatingTitle} from './utils/rating';
 import {getFilterStats} from './utils/filter';
 
 // view
+import PageHeaderView from './view/page-header';
+import PageMainView from './view/page-main';
+import PageFooterView from './view/page-footer';
 import UserProfileView from './view/user-profile';
 import FilmsFilterView from './view/films-filter';
 import FilmsSortView from './view/films-sort';
@@ -47,18 +50,24 @@ const watchedFilmsCount = filterStats.watchedCount;
 
 const rank = getRatingTitle(watchedFilmsCount);
 
-const header = document.querySelector('.header');
-const main = document.querySelector('.main');
-const footer = document.querySelector('.footer');
+const body = document.querySelector('body');
 
-render(header, new UserProfileView(rank));
-render(main, new FilmsFilterView(filterStats));
-render(main, new FilmsSortView());
+const headerView = new PageHeaderView();
+const mainView = new PageMainView();
+const footerView = new PageFooterView();
+
+render(body, headerView);
+render(body, mainView);
+render(body, footerView);
+
+render(headerView, new UserProfileView(rank));
+render(mainView, new FilmsFilterView(filterStats));
+render(mainView, new FilmsSortView());
 
 const mainContentView = new MainContentView();
-render(main, mainContentView);
+render(mainView, mainContentView);
 
-render(footer, new FilmsTotalView(filmsTotalCount));
+render(footerView, new FilmsTotalView(filmsTotalCount));
 
 //film-card
 const renderFilmCard = (container, film) => {
@@ -114,7 +123,7 @@ mainContentView.setClickHandler((evt) => {
 
     const filmDetailsView = new FilmDetailsView(selectedFilm, filmComments);
 
-    render(footer, filmDetailsView, InsertPlace.AFTER_END);
+    render(footerView, filmDetailsView, InsertPlace.AFTER_END);
     document.body.classList.add(NO_SCROLL_CLASS_NAME);
 
     const buttonEscKeydownHandler = (evt) => {
