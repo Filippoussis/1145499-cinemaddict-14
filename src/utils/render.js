@@ -18,6 +18,9 @@ export const render = (container, child, place = InsertPlace.BEFORE_END) => {
     case InsertPlace.AFTER_END:
       container.after(child);
       break;
+    case InsertPlace.BEFORE_BEGIN:
+      container.before(child);
+      break;
     default:
       throw new Error(`Unknown render position: ${place}. Possible values: ${Object.values(InsertPlace).join(', ')}`);
   }
@@ -37,4 +40,22 @@ export const remove = (component) => {
 
   component.getElement().remove();
   component.removeElement();
+};
+
+export const replace = (newChild, oldChild) => {
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof Abstract) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+
+  parent.replaceChild(newChild, oldChild);
 };
