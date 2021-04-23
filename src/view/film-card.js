@@ -57,8 +57,8 @@ export default class FilmCard extends AbstractView {
 
     this._film = film;
     this._cardClickHandler = this._cardClickHandler.bind(this);
-    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
-    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
+    this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
@@ -67,26 +67,26 @@ export default class FilmCard extends AbstractView {
   }
 
   setCardClickHandler(callback) {
-    this._callback.cardClick = callback;
+    this._callback.clickCard = callback;
     this.getElement().addEventListener('click', this._cardClickHandler);
   }
 
   setWatchlistClickHandler(callback) {
-    this._callback.watchlistClick = callback;
+    this._callback.clickWatchlist = callback;
     this.getElement()
       .querySelector('.film-card__controls-item--add-to-watchlist')
-      .addEventListener('click', this._watchlistClickHandler);
+      .addEventListener('click', this._addToWatchlistClickHandler);
   }
 
   setWatchedClickHandler(callback) {
-    this._callback.watchedClick = callback;
+    this._callback.clickWatched = callback;
     this.getElement()
       .querySelector('.film-card__controls-item--mark-as-watched')
-      .addEventListener('click', this._watchedClickHandler);
+      .addEventListener('click', this._markAsWatchedClickHandler);
   }
 
   setFavoriteClickHandler(callback) {
-    this._callback.favoriteClick = callback;
+    this._callback.clickFavorite = callback;
     this.getElement()
       .querySelector('.film-card__controls-item--favorite')
       .addEventListener('click', this._favoriteClickHandler);
@@ -95,22 +95,22 @@ export default class FilmCard extends AbstractView {
   _cardClickHandler(evt) {
     evt.preventDefault();
     if (OPENING_POPUP_CLASS_NAMES.includes(evt.target.className)) {
-      this._callback.cardClick();
+      this._callback.clickCard();
     }
   }
 
-  _watchlistClickHandler(evt) {
+  _addToWatchlistClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchlistClick(evt);
+    this._callback.clickWatchlist();
   }
 
-  _watchedClickHandler(evt) {
+  _markAsWatchedClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchedClick(evt);
+    this._callback.clickWatched();
   }
 
   _favoriteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.favoriteClick(evt);
+    this._callback.clickFavorite();
   }
 }
