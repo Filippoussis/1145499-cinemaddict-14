@@ -3,14 +3,14 @@ import {InsertPlace} from '../const';
 
 // utils
 import {render, remove} from '../utils/render';
-import {updateItem} from '../utils/update';
+import {updateItemById} from '../utils/update';
 
 // view
 import AllFilmsView from '../view/all-films';
 import FilmsContainerView from '../view/films-container';
 import ShowMoreButtonView from '../view/show-more-button';
 
-//presenter
+// presenter
 import FilmCardPresenter from './film-card';
 import FilmDetailsPresenter from './film-details';
 
@@ -21,23 +21,22 @@ const FilmCount = {
 
 export default class AllFilmsPresenter {
   constructor(container) {
-    this._container = container;
+    this._containerView = container;
     this._renderedFilmCount = FilmCount.STEP;
 
     this._allFilmsView = new AllFilmsView();
     this._filmsContainerView = new FilmsContainerView();
     this._showMoreButtonView = new ShowMoreButtonView();
 
-    render(container, this._allFilmsView);
-    render(this._allFilmsView, this._filmsContainerView);
+    render(this._containerView, this._allFilmsView);
 
-    this._showMoreButtonClickHandler = this._showMoreButtonClickHandler.bind(this);
+    this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._showFilmDetails = this._showFilmDetails.bind(this);
     this._changeFilmCard = this._changeFilmCard.bind(this);
-    this._changeMod = this._changeMod.bind(this);
+    this._changeMode = this._changeMode.bind(this);
 
-    this._storeFilmPresenter = {};
-    this._storeFilmDetailsPresenter = {};
+    this._filmPresenter = {};
+    this._filmDetailsPresenter = {};
   }
 
   init(films, comments) {
@@ -47,15 +46,15 @@ export default class AllFilmsPresenter {
     this._renderAllFilms();
   }
 
-  _changeMod() {
+  _changeMode() {
     Object
-      .values(this._storeFilmDetailsPresenter)
+      .values(this._filmDetailsPresenter)
       .forEach((presenter) => presenter.resetView());
   }
 
   _changeFilmCard(updatedFilm) {
-    this._films = updateItem(this._films, updatedFilm);
-    this._storeFilmPresenter[updatedFilm.id].init(updatedFilm);
+    this._films = updateItemById(this._films, updatedFilm);
+    this._filmPresenter[updatedFilm.id].init(updatedFilm);
   }
 
   _showFilmDetails(film) {
@@ -67,17 +66,17 @@ export default class AllFilmsPresenter {
       this._filmsContainerView,
       this._showFilmDetails,
       this._changeFilmCard,
-      this._changeMod,
+      this._changeMode,
     );
     filmPresenter.init(film);
-    this._storeFilmPresenter[film.id] = filmPresenter;
+    this._filmPresenter[film.id] = filmPresenter;
   }
 
   _renderFilmDetails(film) {
     const filmComments = film.comments.map((commentId) => this._comments.find((item) => item.id === commentId));
     const filmDetailsPresenter = new FilmDetailsPresenter(this._changeFilmCard);
     filmDetailsPresenter.init(film, filmComments);
-    this._storeFilmDetailsPresenter[film.id] = filmDetailsPresenter;
+    this._filmDetailsPresenter[film.id] = filmDetailsPresenter;
   }
 
   _renderFilmsList(from, to) {
@@ -88,6 +87,7 @@ export default class AllFilmsPresenter {
 
   _renderAllFilms() {
     this._renderFilmsList(0, Math.min(this._films.length, this._renderedFilmCount));
+    render(this._allFilmsView, this._filmsContainerView);
 
     if (this._films.length > this._renderedFilmCount) {
       this._renderShowMoreButton();
@@ -96,10 +96,10 @@ export default class AllFilmsPresenter {
 
   _renderShowMoreButton() {
     render(this._filmsContainerView, this._showMoreButtonView, InsertPlace.AFTER_END);
-    this._showMoreButtonView.setClickHandler(this._showMoreButtonClickHandler);
+    this._showMoreButtonView.setClickHandler(this._handleShowMoreButtonClick);
   }
 
-  _showMoreButtonClickHandler() {
+  _handleShowMoreButtonClick() {
     this._renderFilmsList(this._renderedFilmCount, this._renderedFilmCount + FilmCount.STEP);
     this._renderedFilmCount += FilmCount.STEP;
 
