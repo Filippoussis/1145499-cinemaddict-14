@@ -5,18 +5,18 @@ import {render, replace, remove} from '../utils/render';
 import FilmCardView from '../view/film-card';
 
 export default class FilmCardPresenter {
-  constructor(container, openPopup, changeData, changeMod) {
-    this._filmContainer = container;
+  constructor(container, openPopup, changeData, changeMode) {
+    this._filmContainerView = container;
 
     this._filmCardView = null;
 
     this._openPopup = openPopup;
     this._changeData = changeData;
-    this._changeMod = changeMod;
+    this._changeMode = changeMode;
 
-    this._toggleWatchlist = this._toggleWatchlist.bind(this);
-    this._toggleWatched = this._toggleWatched.bind(this);
-    this._toggleFavorite = this._toggleFavorite.bind(this);
+    this._handleWatchlist = this._handleWatchlist.bind(this);
+    this._handleWatched = this._handleWatched.bind(this);
+    this._handleFavorite = this._handleFavorite.bind(this);
   }
 
   init(film) {
@@ -27,27 +27,27 @@ export default class FilmCardPresenter {
     this._filmCardView = new FilmCardView(this._film);
 
     this._filmCardView.setCardClickHandler(() => {
-      this._changeMod();
+      this._changeMode();
       this._openPopup(this._film);
     });
 
-    this._filmCardView.setWatchlistClickHandler(this._toggleWatchlist);
-    this._filmCardView.setWatchedClickHandler(this._toggleWatched);
-    this._filmCardView.setFavoriteClickHandler(this._toggleFavorite);
+    this._filmCardView.setWatchlistClickHandler(this._handleWatchlist);
+    this._filmCardView.setWatchedClickHandler(this._handleWatched);
+    this._filmCardView.setFavoriteClickHandler(this._handleFavorite);
 
     if (prevFilmCardView === null) {
-      render(this._filmContainer, this._filmCardView);
+      render(this._filmContainerView, this._filmCardView);
       return;
     }
 
-    if (this._filmContainer.getElement().contains(prevFilmCardView.getElement())) {
+    if (this._filmContainerView.getElement().contains(prevFilmCardView.getElement())) {
       replace(this._filmCardView, prevFilmCardView);
     }
 
     remove(prevFilmCardView);
   }
 
-  _toggleWatchlist() {
+  _handleWatchlist() {
     this._changeData(
       Object.assign(
         {},
@@ -59,7 +59,7 @@ export default class FilmCardPresenter {
     );
   }
 
-  _toggleWatched() {
+  _handleWatched() {
     this._changeData(
       Object.assign(
         {},
@@ -71,7 +71,7 @@ export default class FilmCardPresenter {
     );
   }
 
-  _toggleFavorite() {
+  _handleFavorite() {
     this._changeData(
       Object.assign(
         {},
