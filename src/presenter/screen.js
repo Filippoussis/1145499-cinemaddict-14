@@ -46,12 +46,11 @@ export default class ScreenPresenter {
     this._renderFilmsTotal(filmsTotalCount);
     this._renderMainContent();
 
-    if (filmsTotalCount !== 0) {
+    if (filmsTotalCount > 0) {
       this._renderFilmsSort();
       this._renderAllFilms();
     } else {
       this._renderNoFilms();
-      return;
     }
   }
 
