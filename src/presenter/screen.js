@@ -1,6 +1,3 @@
-// const
-import {InsertPlace} from '../const';
-
 // utils
 import {render} from '../utils/render';
 import {getRatingTitle} from '../utils/rating';
@@ -12,7 +9,6 @@ import PageMainView from '../view/page-main';
 import PageFooterView from '../view/page-footer';
 import UserProfileView from '../view/user-profile';
 import FilmsFilterView from '../view/films-filter';
-import FilmsSortView from '../view/films-sort';
 import MainContentView from '../view/main-content';
 import FilmsTotalView from '../view/films-total';
 import NoFilmsView from '../view/no-films';
@@ -47,7 +43,6 @@ export default class ScreenPresenter {
     this._renderMainContent();
 
     if (filmsTotalCount > 0) {
-      this._renderFilmsSort();
       this._renderAllFilms();
     } else {
       this._renderNoFilms();
@@ -64,10 +59,6 @@ export default class ScreenPresenter {
 
   _renderMainContent() {
     render(this._mainView, this._mainContentView);
-  }
-
-  _renderFilmsSort() {
-    render(this._mainContentView, new FilmsSortView(), InsertPlace.BEFORE_BEGIN);
   }
 
   _renderFilmsTotal(total) {

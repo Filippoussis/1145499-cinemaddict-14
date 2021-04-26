@@ -1,11 +1,12 @@
 // const
-import {InsertPlace} from '../const';
+import {InsertPlace, SortType} from '../const';
 
 // utils
 import {render, remove} from '../utils/render';
 import {updateItemById} from '../utils/update';
 
 // view
+import FilmsSortView from '../view/films-sort';
 import AllFilmsView from '../view/all-films';
 import FilmsContainerView from '../view/films-container';
 import ShowMoreButtonView from '../view/show-more-button';
@@ -24,6 +25,7 @@ export default class AllFilmsPresenter {
     this._containerView = container;
     this._renderedFilmCount = FilmCount.STEP;
 
+    this._filmsSortView = new FilmsSortView();
     this._allFilmsView = new AllFilmsView();
     this._filmsContainerView = new FilmsContainerView();
     this._showMoreButtonView = new ShowMoreButtonView();
@@ -34,16 +36,22 @@ export default class AllFilmsPresenter {
     this._showFilmDetails = this._showFilmDetails.bind(this);
     this._changeFilmCard = this._changeFilmCard.bind(this);
     this._changeMode = this._changeMode.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._filmPresenter = {};
     this._filmDetailsPresenter = {};
+
+    this._currentSortType = SortType.DEFAULT;
   }
 
   init(films, comments) {
     this._films = films;
     this._comments = comments;
 
-    this._renderAllFilms();
+    this._sourcedFilms = films.slice();
+
+    this._renderFilmsSort();
+    this._renderFilms();
   }
 
   _changeMode() {
@@ -54,7 +62,17 @@ export default class AllFilmsPresenter {
 
   _changeFilmCard(updatedFilm) {
     this._films = updateItemById(this._films, updatedFilm);
+    this._sourcedFilms = updateItemById(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
+  }
+
+  _clearFilmList() {
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenter = {};
+    this._renderedFilmCount = FilmCount.STEP;
+    remove(this._showMoreButtonView);
   }
 
   _showFilmDetails(film) {
@@ -79,19 +97,10 @@ export default class AllFilmsPresenter {
     this._filmDetailsPresenter[film.id] = filmDetailsPresenter;
   }
 
-  _renderFilmsList(from, to) {
+  _renderFilmList(from, to) {
     this._films
       .slice(from, to)
       .forEach((film) => this._renderFilmCard(film));
-  }
-
-  _renderAllFilms() {
-    this._renderFilmsList(0, Math.min(this._films.length, this._renderedFilmCount));
-    render(this._allFilmsView, this._filmsContainerView);
-
-    if (this._films.length > this._renderedFilmCount) {
-      this._renderShowMoreButton();
-    }
   }
 
   _renderShowMoreButton() {
@@ -99,8 +108,48 @@ export default class AllFilmsPresenter {
     this._showMoreButtonView.setClickHandler(this._handleShowMoreButtonClick);
   }
 
+  _renderFilmsSort() {
+    render(this._containerView, this._filmsSortView, InsertPlace.BEFORE_BEGIN);
+    this._filmsSortView.setSortTypeChangeHandler(this._handleSortTypeChange);
+  }
+
+  _renderFilms() {
+    this._renderFilmList(0, Math.min(this._films.length, this._renderedFilmCount));
+    render(this._allFilmsView, this._filmsContainerView);
+
+    if (this._films.length > this._renderedFilmCount) {
+      this._renderShowMoreButton();
+    }
+  }
+
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._films.sort((filmA, filmB) => filmA.release - filmB.release);
+        break;
+      case SortType.RATING:
+        this._films.sort((filmA, filmB) => filmA.rating - filmB.rating);
+        break;
+      default:
+        this._films = this._sourcedFilms.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+
+    this._clearFilmList();
+    this._renderFilms();
+  }
+
   _handleShowMoreButtonClick() {
-    this._renderFilmsList(this._renderedFilmCount, this._renderedFilmCount + FilmCount.STEP);
+    this._renderFilmList(this._renderedFilmCount, this._renderedFilmCount + FilmCount.STEP);
     this._renderedFilmCount += FilmCount.STEP;
 
     if (this._renderedFilmCount >= this._films.length) {

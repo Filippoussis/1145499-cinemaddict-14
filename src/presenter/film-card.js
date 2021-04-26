@@ -47,6 +47,10 @@ export default class FilmCardPresenter {
     remove(prevFilmCardView);
   }
 
+  destroy() {
+    remove(this._filmCardView);
+  }
+
   _handleWatchlist() {
     this._changeData(
       Object.assign(
