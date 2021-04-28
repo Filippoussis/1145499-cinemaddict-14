@@ -23,14 +23,13 @@ export default class FilmsSort extends AbstractView {
     return createFilmsSortTemplate();
   }
 
-  _removeSortButtonActive() {
-    this.getElement().querySelectorAll('.sort__button')
-      .forEach((item) => item.classList.remove('sort__button--active'));
-  }
-
   setSortTypeChangeHandler(callback) {
     this._callback.changeSortType = callback;
     this.getElement().addEventListener('click', this._sortTypeChangeHandler);
+  }
+
+  _removeSortButtonActive() {
+    this.getElement().querySelector('.sort__button.sort__button--active').classList.remove('sort__button--active');
   }
 
   _sortTypeChangeHandler(evt) {
