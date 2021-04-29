@@ -5,7 +5,7 @@ const getAttributeChecked = (isActive = false) => {
   return isActive ? 'checked' : '';
 };
 
-const renderGenreTemplate = (genre) => {
+const getGenreTemplate = (genre) => {
   return genre.map((item) => `<span class="film-details__genre">${item}</span>`).join('');
 };
 
@@ -51,7 +51,7 @@ const createFilmDetailsTemplate = (film, filmComments) => {
   const starsFormated = stars.join(', ');
   const releaseFormated = dayjs(release).format('D MMMM YYYY');
   const genre = genres.length > 1 ? 'Genres' : 'Genre';
-  const genreTemplate = renderGenreTemplate(genres);
+  const genreTemplate = getGenreTemplate(genres);
 
   const commentsCount = comments.length;
   const commentsList = commentsCount > 0 ? renderCommentsTemplate(filmComments) : '';
