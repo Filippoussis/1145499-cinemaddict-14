@@ -61,7 +61,7 @@ const createEmojiListTemplate = (emojis) => {
 };
 
 const createCommentEmojiTemplate = (emoji) => {
-  return emoji ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">` : '';
+  return emoji !== '' ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">` : emoji;
 };
 
 const createCommentTemplate = (comment) => {
@@ -204,19 +204,38 @@ export default class FilmDetails extends SmartView {
     this._setInnerHandlers();
   }
 
-  static parseFilmToState(film) {
-    return Object.assign(
-      {},
-      film,
-      {
-        localEmoji: null,
-        localComment: '',
-      },
-    );
-  }
-
   getTemplate() {
     return createFilmDetailsTemplate(this._state, this._comments);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.film-details__close-btn')
+      .addEventListener('click', this._closeButtonClickHandler);
+
+    this.getElement()
+      .querySelector('#watchlist')
+      .addEventListener('change', this._watchlistChangeHandler);
+
+    this.getElement()
+      .querySelector('#watched')
+      .addEventListener('change', this._watchedChangeHandler);
+
+    this.getElement()
+      .querySelector('#favorite')
+      .addEventListener('change', this._favoriteChangeHandler);
+
+    this.getElement()
+      .querySelector('.film-details__emoji-list')
+      .addEventListener('change', this._emojiChangeHandler);
+
+    this.getElement()
+      .querySelector('.film-details__comment-input')
+      .addEventListener('input', this._commentInputHandler);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
   }
 
   setCloseButtonClickHandler(callback) {
@@ -245,10 +264,6 @@ export default class FilmDetails extends SmartView {
     this.getElement()
       .querySelector('#favorite')
       .addEventListener('change', this._favoriteChangeHandler);
-  }
-
-  restoreHandlers() {
-    this._setInnerHandlers();
   }
 
   _closeButtonClickHandler(evt) {
@@ -294,29 +309,14 @@ export default class FilmDetails extends SmartView {
     }, true);
   }
 
-  _setInnerHandlers() {
-    this.getElement()
-      .querySelector('.film-details__close-btn')
-      .addEventListener('click', this._closeButtonClickHandler);
-
-    this.getElement()
-      .querySelector('#watchlist')
-      .addEventListener('change', this._watchlistChangeHandler);
-
-    this.getElement()
-      .querySelector('#watched')
-      .addEventListener('change', this._watchedChangeHandler);
-
-    this.getElement()
-      .querySelector('#favorite')
-      .addEventListener('change', this._favoriteChangeHandler);
-
-    this.getElement()
-      .querySelector('.film-details__emoji-list')
-      .addEventListener('change', this._emojiChangeHandler);
-
-    this.getElement()
-      .querySelector('.film-details__comment-input')
-      .addEventListener('input', this._commentInputHandler);
+  static parseFilmToState(film) {
+    return Object.assign(
+      {},
+      film,
+      {
+        localEmoji: '',
+        localComment: '',
+      },
+    );
   }
 }
