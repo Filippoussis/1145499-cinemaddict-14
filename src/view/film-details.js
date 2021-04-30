@@ -209,27 +209,28 @@ export default class FilmDetails extends SmartView {
   }
 
   _setInnerHandlers() {
-    this.getElement()
+    const viewComponent = this.getElement();
+    viewComponent
       .querySelector('.film-details__close-btn')
       .addEventListener('click', this._closeButtonClickHandler);
 
-    this.getElement()
+    viewComponent
       .querySelector('#watchlist')
       .addEventListener('change', this._watchlistChangeHandler);
 
-    this.getElement()
+    viewComponent
       .querySelector('#watched')
       .addEventListener('change', this._watchedChangeHandler);
 
-    this.getElement()
+    viewComponent
       .querySelector('#favorite')
       .addEventListener('change', this._favoriteChangeHandler);
 
-    this.getElement()
+    viewComponent
       .querySelector('.film-details__emoji-list')
       .addEventListener('change', this._emojiChangeHandler);
 
-    this.getElement()
+    viewComponent
       .querySelector('.film-details__comment-input')
       .addEventListener('input', this._commentInputHandler);
   }
