@@ -33,17 +33,18 @@ export default class FilmsSort extends AbstractView {
   }
 
   _sortTypeChangeHandler(evt) {
-    if (evt.target.tagName !== 'A') {
+    const target = evt.target;
+    if (target.tagName !== 'A') {
       return;
     }
 
     evt.preventDefault();
 
-    if (!evt.target.classList.contains('sort__button--active')) {
+    if (!target.classList.contains('sort__button--active')) {
       this._removeSortButtonActive();
-      evt.target.classList.add('sort__button--active');
+      target.classList.add('sort__button--active');
     }
 
-    this._callback.changeSortType(evt.target.dataset.sortType);
+    this._callback.changeSortType(target.dataset.sortType);
   }
 }
