@@ -13,7 +13,7 @@ import ShowMoreButtonView from '../view/show-more-button';
 
 // presenter
 import FilmCardPresenter from './film-card';
-import FilmDetailsPresenter from './film-details-new';
+import FilmDetailsPresenter from './film-details';
 
 const FilmCount = {
   STEP: 5,
