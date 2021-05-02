@@ -1,30 +1,16 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract';
 
-const createListFilmTermsTemplate = (terms) => {
-
-  const createGenreTemplate = (genres) => {
-    return genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
-  };
-
-  const template = Object.entries(terms).map(([term, value]) => {
-
-    let cell = value;
-
-    if (term === 'Genre' && cell.length > 1) {
-      cell = createGenreTemplate(cell);
-      term = 'Genres';
-    }
-
-    return (
-      `<tr class="film-details__row">
-        <td class="film-details__term">${term}</td>
-        <td class="film-details__cell">${cell}</td>
-      </tr>`);
-  }).join('');
-
-  return template;
+const createGenreTemplate = (genres) => {
+  return genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 };
+
+const createDetailsRowTemplate = (term, cell) => (
+  `<tr class="film-details__row">
+    <td class="film-details__term">${term}</td>
+    <td class="film-details__cell">${cell}</td>
+  </tr>`
+);
 
 const createFilmDetailsInfoTemplate = (film) => {
 
@@ -38,15 +24,8 @@ const createFilmDetailsInfoTemplate = (film) => {
   const starsFormated = stars.join(', ');
   const releaseFormated = dayjs(release).format('D MMMM YYYY');
 
-  const filmDetailsTerms = {
-    'Director': director,
-    'Writers': writersFormated,
-    'Actors': starsFormated,
-    'Release Date': releaseFormated,
-    'Runtime': time,
-    'Country': country,
-    'Genre': genres,
-  };
+  const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
+  const genreTemplate = createGenreTemplate(genres);
 
   return (
     `<div class="film-details__info-wrap">
@@ -69,7 +48,13 @@ const createFilmDetailsInfoTemplate = (film) => {
         </div>
 
         <table class="film-details__table">
-          ${createListFilmTermsTemplate(filmDetailsTerms)}
+          ${createDetailsRowTemplate('Director', director)}
+          ${createDetailsRowTemplate('Writers', writersFormated)}
+          ${createDetailsRowTemplate('Actors', starsFormated)}
+          ${createDetailsRowTemplate('Release Date', releaseFormated)}
+          ${createDetailsRowTemplate('Runtime', time)}
+          ${createDetailsRowTemplate('Country', country)}
+          ${createDetailsRowTemplate(genreTitle, genreTemplate)}
         </table>
 
         <p class="film-details__film-description">${description}</p>
