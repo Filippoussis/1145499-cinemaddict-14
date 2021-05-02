@@ -31,7 +31,7 @@ export default class FilmDetailsNew {
     render(this._filmDetailsFormView, this._filmDetailsTopContainerView);
     render(this._filmDetailsTopContainerView, this._filmDetailsCloseButtonView);
 
-    this._removeFilmDetails = this._removeFilmDetails.bind(this);
+    this._handleFilmDetails = this._handleFilmDetails.bind(this);
     this._buttonEscKeyDownHandler = this._buttonEscKeyDownHandler.bind(this);
     this._handleWatchlist = this._handleWatchlist.bind(this);
     this._handleWatched = this._handleWatched.bind(this);
@@ -45,10 +45,10 @@ export default class FilmDetailsNew {
     this._film = Object.assign({}, filmData);
     this._comments = commentsData;
 
-    const {isWatchlist, isWatched, isFavorite, comments, ...restProp} = this._film;
+    const {isWatchlist, isWatched, isFavorite, comments} = this._film;
     const commentsCount = comments.length;
 
-    this._filmDetailsInfoView = new FilmDetailsInfoView(restProp);
+    this._filmDetailsInfoView = new FilmDetailsInfoView(this._film);
     render(this._filmDetailsTopContainerView, this._filmDetailsInfoView);
 
     this._filmDetailsControlsView = new FilmDetailsControlsView(isWatchlist, isWatched, isFavorite);
@@ -71,7 +71,7 @@ export default class FilmDetailsNew {
     this._setBodyNoScroll();
     this._setDocumentKeyDownHandler();
 
-    this._filmDetailsCloseButtonView.setCloseButtonClickHandler(this._removeFilmDetails);
+    this._filmDetailsCloseButtonView.setCloseButtonClickHandler(this._handleFilmDetails);
 
     this._filmDetailsControlsView.setWatchlistChangeHandler(this._handleWatchlist);
     this._filmDetailsControlsView.setWatchedChangeHandler(this._handleWatched);
@@ -110,6 +110,10 @@ export default class FilmDetailsNew {
     if (evt.key === 'Escape') {
       this._removeFilmDetails();
     }
+  }
+
+  _handleFilmDetails() {
+    this._removeFilmDetails();
   }
 
   _handleWatchlist() {
