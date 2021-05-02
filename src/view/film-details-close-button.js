@@ -1,6 +1,6 @@
 import AbstractView from './abstract';
 
-const createFilmDetailsCloseTemplate = () => {
+const createFilmDetailsCloseButtonTemplate = () => {
   return (
     `<div class="film-details__close">
       <button class="film-details__close-btn" type="button">close</button>
@@ -8,7 +8,7 @@ const createFilmDetailsCloseTemplate = () => {
   );
 };
 
-export default class FilmDetailsClose extends AbstractView {
+export default class FilmDetailsCloseButton extends AbstractView {
   constructor() {
     super();
 
@@ -16,7 +16,7 @@ export default class FilmDetailsClose extends AbstractView {
   }
 
   getTemplate() {
-    return createFilmDetailsCloseTemplate();
+    return createFilmDetailsCloseButtonTemplate();
   }
 
   setCloseButtonClickHandler(callback) {

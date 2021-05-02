@@ -35,7 +35,7 @@ const createFilmDetailsCommentsListTemplate = (comments) => {
   );
 };
 
-export default class createFilmDetailsCommentsList extends AbstractView {
+export default class FilmDetailsCommentsList extends AbstractView {
   constructor(comments) {
     super();
 

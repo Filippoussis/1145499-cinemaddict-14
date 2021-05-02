@@ -39,7 +39,7 @@ const createFilmDetailsNewCommentTemplate = (state) => {
   );
 };
 
-export default class createFilmDetailsNewComment extends SmartView {
+export default class FilmDetailsNewComment extends SmartView {
   constructor() {
     super();
 

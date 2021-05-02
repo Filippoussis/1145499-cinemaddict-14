@@ -1,6 +1,6 @@
-import Abstract from './abstract';
+import AbstractView from './abstract';
 
-const createFilmDetailsCommentsTemplate = (commentsCount) => {
+const createFilmDetailsCommentsWrapTemplate = (commentsCount) => {
   return (
     `<section class="film-details__comments-wrap">
       <h3 class="film-details__comments-title">Comments<span class="film-details__comments-count">${commentsCount}</span></h3>
@@ -8,7 +8,7 @@ const createFilmDetailsCommentsTemplate = (commentsCount) => {
   );
 };
 
-export default class createFilmDetailsComments extends Abstract {
+export default class FilmDetailsCommentsWrap extends AbstractView {
   constructor(count) {
     super();
 
@@ -16,6 +16,6 @@ export default class createFilmDetailsComments extends Abstract {
   }
 
   getTemplate() {
-    return createFilmDetailsCommentsTemplate(this._count);
+    return createFilmDetailsCommentsWrapTemplate(this._count);
   }
 }

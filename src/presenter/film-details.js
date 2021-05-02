@@ -5,7 +5,7 @@ import {render, remove} from '../utils/render';
 import FilmDetailsSectionView from '../view/film-details-section';
 import FilmDetailsFormView from '../view/film-details-form';
 import FilmDetailsTopContainerView from '../view/film-details-top-container';
-import FilmDetailsCloseView from '../view/film-details-close';
+import FilmDetailsCloseButtonView from '../view/film-details-close-button';
 import FilmDetailsInfoView from '../view/film-details-info';
 import FilmDetailsControlsView from '../view/film-details-controls';
 import FilmDetailsBottomContainerView from '../view/film-details-bottom-container';
@@ -23,13 +23,13 @@ export default class FilmDetailsNew {
     this._filmDetailsSectionView = new FilmDetailsSectionView();
     this._filmDetailsFormView = new FilmDetailsFormView();
     this._filmDetailsTopContainerView = new FilmDetailsTopContainerView();
-    this._filmDetailsCloseView = new FilmDetailsCloseView();
+    this._filmDetailsCloseButtonView = new FilmDetailsCloseButtonView();
 
     render(document.body, this._filmDetailsSectionView);
 
     render(this._filmDetailsSectionView, this._filmDetailsFormView);
     render(this._filmDetailsFormView, this._filmDetailsTopContainerView);
-    render(this._filmDetailsTopContainerView, this._filmDetailsCloseView);
+    render(this._filmDetailsTopContainerView, this._filmDetailsCloseButtonView);
 
     this._removeFilmDetails = this._removeFilmDetails.bind(this);
     this._buttonEscKeyDownHandler = this._buttonEscKeyDownHandler.bind(this);
@@ -71,7 +71,7 @@ export default class FilmDetailsNew {
     this._setBodyNoScroll();
     this._setDocumentKeyDownHandler();
 
-    this._filmDetailsCloseView.setCloseButtonClickHandler(this._removeFilmDetails);
+    this._filmDetailsCloseButtonView.setCloseButtonClickHandler(this._removeFilmDetails);
 
     this._filmDetailsControlsView.setWatchlistChangeHandler(this._handleWatchlist);
     this._filmDetailsControlsView.setWatchedChangeHandler(this._handleWatched);
