@@ -7,20 +7,32 @@ const createCommentEmojiTemplate = (emoji) => {
   return `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">`;
 };
 
-const createEmojiListTemplate = (emojis) => {
-  return emojis.map((emoji) =>
-    `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value=${emoji}>
-    <label class="film-details__emoji-label" for="emoji-${emoji}">
-      <img src="./images/emoji/${emoji}.png" width="30" height="30" alt=${emoji}>
-    </label>`)
-    .join('');
+const createEmojiListTemplate = (emojis, localEmoji) => {
+
+  const getAttributeChecked = (isActive = false) => {
+    return isActive ? 'checked' : '';
+  };
+
+  const template = emojis.map((emoji) => {
+
+    const isEmojiActive = emoji === localEmoji;
+
+    return (
+      `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value=${emoji} ${getAttributeChecked(isEmojiActive)}>
+      <label class="film-details__emoji-label" for="emoji-${emoji}">
+        <img src="./images/emoji/${emoji}.png" width="30" height="30" alt=${emoji}>
+      </label>`
+    );
+  }).join('');
+
+  return template;
 };
 
 const createFilmDetailsNewCommentTemplate = (state) => {
 
   const {localEmoji, localComment} = state;
   const commentEmoji = localEmoji !== '' ? createCommentEmojiTemplate(localEmoji) : localEmoji;
-  const emojiList = createEmojiListTemplate(COMMENT_EMOJIS);
+  const emojiList = createEmojiListTemplate(COMMENT_EMOJIS, localEmoji);
 
   return (
     `<div class="film-details__new-comment">
@@ -48,7 +60,7 @@ export default class FilmDetailsNewComment extends SmartView {
       localComment: '',
     };
 
-    this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
+    this._emojiListChangeHandler = this._emojiListChangeHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
 
     this._setInnerHandlers();
@@ -58,23 +70,23 @@ export default class FilmDetailsNewComment extends SmartView {
     return createFilmDetailsNewCommentTemplate(this._state);
   }
 
-  _setInnerHandlers() {
-    const viewComponent = this.getElement();
-
-    viewComponent
-      .querySelector('.film-details__emoji-list')
-      .addEventListener('change', this._emojiChangeHandler);
-
-    viewComponent
-      .querySelector('.film-details__comment-input')
-      .addEventListener('input', this._commentInputHandler);
-  }
-
   restoreHandlers() {
     this._setInnerHandlers();
   }
 
-  _emojiChangeHandler(evt) {
+  _setInnerHandlers() {
+    const node = this.getElement();
+
+    node
+      .querySelector('.film-details__emoji-list')
+      .addEventListener('change', this._emojiListChangeHandler);
+
+    node
+      .querySelector('.film-details__comment-input')
+      .addEventListener('input', this._commentInputHandler);
+  }
+
+  _emojiListChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
       localEmoji: evt.target.value,
