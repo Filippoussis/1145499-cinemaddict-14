@@ -1,3 +1,5 @@
+import {getCommentData} from './comment-data';
+
 import {
   TITLES,
   DESCRIPTION,
@@ -14,8 +16,7 @@ import {
   AgeRange,
   StarsRange,
   WritersRange,
-  ListCommentIdRange,
-  CommentIdRange
+  ListCommentRange
 } from './const-data';
 
 import {
@@ -27,6 +28,9 @@ import {
 } from '../utils/random';
 
 const MINUTES_IN_HOUR = 60;
+
+export const comments = [];
+const commentId = {id: 0};
 
 // получение описания к фильму из неповторяющихся предложений
 const getRandomDescription = (descriptionString) => {
@@ -49,9 +53,23 @@ const getRandomTime = (minMinutes, maxMinutes) => {
   return `${Math.trunc(totalMinutes/MINUTES_IN_HOUR)}h ${totalMinutes%MINUTES_IN_HOUR}m`;
 };
 
-const getListIdComments = () => {
-  const randomLengthListCommentId = getRandomInteger(ListCommentIdRange.MIN, ListCommentIdRange.MAX);
-  return new Array(randomLengthListCommentId).fill(null).map(() => getRandomInteger(CommentIdRange.MIN, CommentIdRange.MAX));
+// каждый фильм имеет от 0 до 5 комментариев с уникальными идентификаторами во всем списке фильмов
+// в предыдущей реализации комментарии с одинаковыми идентификаторами могли появлятся в разных фильмах
+// что могло привести к неконсистентности при добавлении/удалении комментариев
+export const getListIdComments = (commentId, comments) => {
+  const listIdComments = [];
+  const randomFilmCommentsCount = getRandomInteger(ListCommentRange.MIN, ListCommentRange.MAX);
+
+  const listComments = new Array(randomFilmCommentsCount).fill(null).map(() => {
+    const id = ++commentId.id;
+    listIdComments.push(id);
+
+    return getCommentData(id);
+  });
+
+  comments.push(...listComments);
+
+  return listIdComments;
 };
 
 export const getFilmData = (id) => {
@@ -76,6 +94,6 @@ export const getFilmData = (id) => {
     isWatchlist: Boolean(getRandomInteger()),
     isWatched: Boolean(getRandomInteger()),
     isFavorite: Boolean(getRandomInteger()),
-    comments: getListIdComments(),
+    comments: getListIdComments(commentId, comments),
   };
 };
