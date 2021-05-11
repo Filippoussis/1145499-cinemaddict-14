@@ -21,6 +21,9 @@ export const render = (container, child, place = InsertPlace.BEFORE_END) => {
     case InsertPlace.BEFORE_BEGIN:
       container.before(child);
       break;
+    case InsertPlace.PREP_END:
+      container.prepend(child);
+      break;
     default:
       throw new Error(`Unknown render position: ${place}. Possible values: ${Object.values(InsertPlace).join(', ')}`);
   }
@@ -34,6 +37,10 @@ export const createElement = (template) => {
 };
 
 export const remove = (component) => {
+  if (component === null) {
+    return;
+  }
+
   if (!(component instanceof Abstract)) {
     throw new Error('Can remove only components');
   }
