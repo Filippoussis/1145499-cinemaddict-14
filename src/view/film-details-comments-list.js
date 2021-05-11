@@ -3,11 +3,11 @@ import AbstractView from './abstract';
 
 const createCommentTemplate = (comment) => {
 
-  const {emoji, text, author, date} = comment;
+  const {id, emoji, text, author, date} = comment;
   const commentDateFormated = dayjs(date).format('YYYY/MM/DD H:m');
 
   return (
-    `<li class="film-details__comment">
+    `<li class="film-details__comment" data-id=${id}>
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
       </span>
@@ -40,9 +40,28 @@ export default class FilmDetailsCommentsList extends AbstractView {
     super();
 
     this._comments = comments;
+    this._commentDeleteClickHandler = this._commentDeleteClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmDetailsCommentsListTemplate(this._comments);
+  }
+
+  setCommentDeleteClickHandler(callback) {
+    this._callback.clickCommentDelete = callback;
+    this.getElement().addEventListener('click', this._commentDeleteClickHandler);
+  }
+
+  _commentDeleteClickHandler(evt) {
+    evt.preventDefault();
+
+    const target = evt.target;
+
+    if (target.tagName !== 'BUTTON') {
+      return;
+    }
+
+    const deletedCommentId = Number(target.closest('li').dataset.id);
+    this._callback.clickCommentDelete(deletedCommentId);
   }
 }
