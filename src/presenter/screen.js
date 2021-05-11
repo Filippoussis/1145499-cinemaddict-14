@@ -1,76 +1,122 @@
+// const
+import {InsertPlace} from '../const';
+
 // utils
 import {render} from '../utils/render';
-import {getRatingTitle} from '../utils/rating';
-import {getFilterStats} from '../utils/filter';
 
 // view
 import PageHeaderView from '../view/page-header';
+import MainNavigationView from '../view/main-navigation';
+import FilmsStatsView from '../view/films-stats';
 import PageMainView from '../view/page-main';
-import PageFooterView from '../view/page-footer';
-import UserProfileView from '../view/user-profile';
-import FilmsFilterView from '../view/films-filter';
 import MainContentView from '../view/main-content';
-import FilmsTotalView from '../view/films-total';
+import PageFooterView from '../view/page-footer';
 import NoFilmsView from '../view/no-films';
+
+// presenter
+import UserProfilePresenter from './user-profile';
+import FilmsFilterPresenter from './films-filter';
+import FilmsSortPresenter from './films-sort';
 import AllFilmsPresenter from './all-films';
+import FilmsTotalPresenter from './films-total';
 
-export default class ScreenPresenter {
-  constructor(container) {
-    this._container = container;
+export default class Screen {
+  constructor(mainContainer, filmsModel, commentsModel, filterModel, sortModel) {
+    this._mainContainer = mainContainer;
+    this._filmsModel = filmsModel;
+    this._commentsModel = commentsModel;
+    this._filterModel = filterModel;
+    this._sortModel = sortModel;
 
-    this._headerView = new PageHeaderView();
-    this._mainView = new PageMainView();
-    this._footerView = new PageFooterView();
+    this._pageHeaderView = new PageHeaderView();
+    this._pageMainView = new PageMainView();
+    this._mainNavigationView = new MainNavigationView();
     this._mainContentView = new MainContentView();
-
-    render(this._container, this._headerView);
-    render(this._container, this._mainView);
-    render(this._container, this._footerView);
+    this._pageFooterView = new PageFooterView();
   }
 
-  init(films, comments) {
-    this._films = films.slice();
-    this._comments = comments.slice();
+  init() {
+    this._renderPageHeader();
+    this._renderPageMain();
+    this._renderPageFooter();
+  }
 
-    const filmsTotalCount = this._films.length;
-    const filterStats = getFilterStats(this._films);
-    const watchedFilmsCount = filterStats.watchedCount;
-    const userRank = getRatingTitle(watchedFilmsCount);
+  _getFilms() {
+    return this._filmsModel.getFilms();
+  }
 
-    this._renderUserProfile(userRank);
-    this._renderFilmsFilter(filterStats);
-    this._renderFilmsTotal(filmsTotalCount);
+  _renderPageHeader() {
+    this._renderUserProfile();
+    render(this._mainContainer, this._pageHeaderView, InsertPlace.PREP_END);
+  }
+
+  _renderPageMain() {
+    this._renderMainNavigation();
     this._renderMainContent();
 
-    if (filmsTotalCount > 0) {
+    if (this._getFilms().length > 0) {
+      this._renderFilmsSort();
       this._renderAllFilms();
     } else {
       this._renderNoFilms();
     }
+
+    render(this._mainContainer, this._pageMainView);
   }
 
-  _renderUserProfile(rank) {
-    render(this._headerView, new UserProfileView(rank));
+  _renderPageFooter() {
+    this._renderFilmsTotal();
+    render(this._mainContainer, this._pageFooterView);
   }
 
-  _renderFilmsFilter(stats) {
-    render(this._mainView, new FilmsFilterView(stats));
+  _renderUserProfile() {
+    const userProfilePresenter = new UserProfilePresenter(this._pageHeaderView, this._filmsModel);
+    userProfilePresenter.init();
+  }
+
+  _renderMainNavigation() {
+    this._renderFilmsFilter();
+    this._renderFilmsStats();
+    render(this._pageMainView, this._mainNavigationView, InsertPlace.PREP_END);
+  }
+
+  _renderFilmsFilter() {
+    const filmsFilterPresenter = new FilmsFilterPresenter(this._mainNavigationView, this._filterModel, this._filmsModel);
+    filmsFilterPresenter.init();
+  }
+
+  _renderFilmsStats() {
+    const filmsStatsView = new FilmsStatsView();
+    render(this._mainNavigationView, filmsStatsView);
+  }
+
+  _renderFilmsSort() {
+    const filmsSortPresenter = new FilmsSortPresenter(this._mainNavigationView, this._sortModel, this._filterModel);
+    filmsSortPresenter.init();
   }
 
   _renderMainContent() {
-    render(this._mainView, this._mainContentView);
-  }
-
-  _renderFilmsTotal(total) {
-    render(this._footerView, new FilmsTotalView(total));
-  }
-
-  _renderNoFilms() {
-    render(this._mainContentView, new NoFilmsView());
+    render(this._pageMainView, this._mainContentView);
   }
 
   _renderAllFilms() {
-    const allFilms = new AllFilmsPresenter(this._mainContentView);
-    allFilms.init(this._films, this._comments);
+    const allFilms = new AllFilmsPresenter(
+      this._mainContentView,
+      this._filmsModel,
+      this._commentsModel,
+      this._filterModel,
+      this._sortModel,
+    );
+    allFilms.init();
+  }
+
+  _renderFilmsTotal() {
+    const filmsTotalPresenter = new FilmsTotalPresenter(this._pageFooterView, this._filmsModel);
+    filmsTotalPresenter.init();
+  }
+
+  _renderNoFilms() {
+    const noFilmsView = new NoFilmsView();
+    render(this._mainContentView, noFilmsView);
   }
 }
