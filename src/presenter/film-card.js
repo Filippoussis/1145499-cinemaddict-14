@@ -1,18 +1,22 @@
+// const
+import {UserAction, UpdateType, FilterType} from '../const.js';
+
 // utils
 import {render, replace, remove} from '../utils/render';
 
 // view
 import FilmCardView from '../view/film-card';
 
-export default class FilmCardPresenter {
-  constructor(container, openPopup, changeData, changeMode) {
-    this._filmContainerView = container;
+export default class FilmCard {
+  constructor(filmCardContainer, openPopup, changeData, changeMode, filterModel) {
+    this._filmCardContainerView = filmCardContainer;
 
     this._filmCardView = null;
 
     this._openPopup = openPopup;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._filterModel = filterModel;
 
     this._handleWatchlist = this._handleWatchlist.bind(this);
     this._handleWatched = this._handleWatched.bind(this);
@@ -36,11 +40,11 @@ export default class FilmCardPresenter {
     this._filmCardView.setFavoriteClickHandler(this._handleFavorite);
 
     if (prevFilmCardView === null) {
-      render(this._filmContainerView, this._filmCardView);
+      render(this._filmCardContainerView, this._filmCardView);
       return;
     }
 
-    if (this._filmContainerView.getElement().contains(prevFilmCardView.getElement())) {
+    if (this._filmCardContainerView.getElement().contains(prevFilmCardView.getElement())) {
       replace(this._filmCardView, prevFilmCardView);
     }
 
@@ -52,7 +56,12 @@ export default class FilmCardPresenter {
   }
 
   _handleWatchlist() {
+    const selectedFilter = this._filterModel.getFilter();
+    const isPathUpdate = selectedFilter !== FilterType.WATCHLIST;
+
     this._changeData(
+      UserAction.UPDATE_FILM,
+      isPathUpdate ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -64,7 +73,12 @@ export default class FilmCardPresenter {
   }
 
   _handleWatched() {
+    const selectedFilter = this._filterModel.getFilter();
+    const isPathUpdate = selectedFilter !== FilterType.WATCHED;
+
     this._changeData(
+      UserAction.UPDATE_FILM,
+      isPathUpdate ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -76,7 +90,12 @@ export default class FilmCardPresenter {
   }
 
   _handleFavorite() {
+    const selectedFilter = this._filterModel.getFilter();
+    const isPathUpdate = selectedFilter !== FilterType.FAVORITES;
+
     this._changeData(
+      UserAction.UPDATE_FILM,
+      isPathUpdate ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
