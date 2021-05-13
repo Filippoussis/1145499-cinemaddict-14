@@ -7,7 +7,7 @@ import SortModel from './model/sort';
 // presenter
 import ScreenPresenter from './presenter/screen';
 
-//mock
+// mock
 import {FILM_COUNT} from './mock/const-data';
 import {getFilmData, comments} from './mock/film-data';
 
@@ -16,10 +16,10 @@ const body = document.querySelector('body');
 const films = new Array(FILM_COUNT).fill(null).map((_, idx) => getFilmData(idx + 1));
 
 const filmsModel = new FilmsModel();
-filmsModel.setFilms(films);
+filmsModel.setItems(films);
 
 const commentsModel = new CommentsModel();
-commentsModel.setComments(comments);
+commentsModel.setItems(comments);
 
 const filterModel = new FilterModel();
 const sortModel = new SortModel();
