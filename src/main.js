@@ -1,15 +1,28 @@
+// model
+import FilmsModel from './model/films';
+import CommentsModel from './model/comments';
+import FilterModel from './model/filter';
+import SortModel from './model/sort';
+
 // presenter
 import ScreenPresenter from './presenter/screen';
 
-//mock
-import {Count as DataCount} from './mock/const-data';
-import {getFilmData} from './mock/film-data';
-import {getCommentData} from './mock/comment-data';
-
-const films = new Array(DataCount.FILM).fill(null).map((_, idx) => getFilmData(idx + 1));
-const comments = new Array(DataCount.COMMENT).fill(null).map((_, idx) => getCommentData(idx + 1));
+// mock
+import {FILM_COUNT} from './mock/const-data';
+import {getFilmData, comments} from './mock/film-data';
 
 const body = document.querySelector('body');
 
-const screenPresenter = new ScreenPresenter(body);
-screenPresenter.init(films, comments);
+const films = new Array(FILM_COUNT).fill(null).map((_, idx) => getFilmData(idx + 1));
+
+const filmsModel = new FilmsModel();
+filmsModel.setItems(films);
+
+const commentsModel = new CommentsModel();
+commentsModel.setItems(comments);
+
+const filterModel = new FilterModel();
+const sortModel = new SortModel();
+
+const screenPresenter = new ScreenPresenter(body, filmsModel, commentsModel, filterModel, sortModel);
+screenPresenter.init();

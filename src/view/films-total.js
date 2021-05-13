@@ -9,12 +9,12 @@ const createFilmsTotalTemplate = (count) => {
 };
 
 export default class FilmsTotal extends AbstractView {
-  constructor(value) {
+  constructor(count) {
     super();
-    this._state = value;
+    this._count = count;
   }
 
   getTemplate() {
-    return createFilmsTotalTemplate(this._state);
+    return createFilmsTotalTemplate(this._count);
   }
 }

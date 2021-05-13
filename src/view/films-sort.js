@@ -2,49 +2,48 @@ import AbstractView from './abstract';
 
 import {SortType} from '../const';
 
-const createFilmsSortTemplate = () => {
+const createSortItemTemplate = (title, type, currentType) => {
+
+  const classMod = currentType === type ? 'sort__button--active' : '';
+
+  return `<li><a href="#" class="sort__button ${classMod}" data-sort-type="${type}">${title}</a></li>`;
+};
+
+const createFilmsSortTemplate = (currentType) => {
   return (
     `<ul class="sort">
-      <li><a href="#" class="sort__button sort__button--active" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
-      <li><a href="#" class="sort__button" data-sort-type="${SortType.DATE}">Sort by date</a></li>
-      <li><a href="#" class="sort__button" data-sort-type="${SortType.RATING}">Sort by rating</a></li>
+      ${createSortItemTemplate('Sort by default', SortType.DEFAULT, currentType)}
+      ${createSortItemTemplate('Sort by date', SortType.DATE, currentType)}
+      ${createSortItemTemplate('Sort by rating', SortType.RATING, currentType)}
     </ul>`
   );
 };
 
 export default class FilmsSort extends AbstractView {
-  constructor() {
+  constructor(currentType) {
     super();
 
-    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+    this._currentType = currentType;
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmsSortTemplate();
+    return createFilmsSortTemplate(this._currentType);
   }
 
-  setSortTypeChangeHandler(callback) {
-    this._callback.changeSortType = callback;
-    this.getElement().addEventListener('click', this._sortTypeChangeHandler);
+  setTypeChangeHandler(callback) {
+    this._callback.changeType = callback;
+    this.getElement().addEventListener('click', this._typeChangeHandler);
   }
 
-  _removeSortButtonActive() {
-    this.getElement().querySelector('.sort__button.sort__button--active').classList.remove('sort__button--active');
-  }
+  _typeChangeHandler(evt) {
+    evt.preventDefault();
 
-  _sortTypeChangeHandler(evt) {
     const target = evt.target;
     if (target.tagName !== 'A') {
       return;
     }
 
-    evt.preventDefault();
-
-    if (!target.classList.contains('sort__button--active')) {
-      this._removeSortButtonActive();
-      target.classList.add('sort__button--active');
-    }
-
-    this._callback.changeSortType(target.dataset.sortType);
+    this._callback.changeType(target.dataset.sortType);
   }
 }

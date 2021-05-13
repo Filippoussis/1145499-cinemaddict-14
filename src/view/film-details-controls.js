@@ -1,4 +1,4 @@
-import SmartView from './smart';
+import AbstractView from './abstract';
 
 const createControlTemplate = (name, title, isChecked = false) => {
 
@@ -20,8 +20,8 @@ const createFilmDetailsControlsTemplate = ({isWatchlist, isWatched, isFavorite})
   );
 };
 
-export default class FilmDetailsControls extends SmartView {
-  constructor(isWatchlist, isWatched, isFavorite) {
+export default class FilmDetailsControls extends AbstractView {
+  constructor({isWatchlist, isWatched, isFavorite}) {
     super();
 
     this._state = {
@@ -33,16 +33,10 @@ export default class FilmDetailsControls extends SmartView {
     this._watchlistChangeHandler = this._watchlistChangeHandler.bind(this);
     this._watchedChangeHandler = this._watchedChangeHandler.bind(this);
     this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
-
-    this._setInnerHandlers();
   }
 
   getTemplate() {
     return createFilmDetailsControlsTemplate(this._state);
-  }
-
-  restoreHandlers() {
-    this._setInnerHandlers();
   }
 
   setWatchlistChangeHandler(callback) {
@@ -66,43 +60,18 @@ export default class FilmDetailsControls extends SmartView {
       .addEventListener('change', this._favoriteChangeHandler);
   }
 
-  _setInnerHandlers() {
-    const node = this.getElement();
-
-    node
-      .querySelector('#watchlist')
-      .addEventListener('change', this._watchlistChangeHandler);
-
-    node
-      .querySelector('#watched')
-      .addEventListener('change', this._watchedChangeHandler);
-
-    node
-      .querySelector('#favorite')
-      .addEventListener('change', this._favoriteChangeHandler);
-  }
-
   _watchlistChangeHandler(evt) {
     evt.preventDefault();
     this._callback.changeWatchlist();
-    this.updateData({
-      isWatchlist: !this._state.isWatchlist,
-    }, true);
   }
 
   _watchedChangeHandler(evt) {
     evt.preventDefault();
     this._callback.changeWatched();
-    this.updateData({
-      isWatched: !this._state.isWatched,
-    }, true);
   }
 
   _favoriteChangeHandler(evt) {
     evt.preventDefault();
     this._callback.changeFavorite();
-    this.updateData({
-      isFavorite: !this._state.isFavorite,
-    }, true);
   }
 }

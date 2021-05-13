@@ -7,80 +7,138 @@ import FilmDetailsFormView from '../view/film-details-form';
 import FilmDetailsTopContainerView from '../view/film-details-top-container';
 import FilmDetailsCloseButtonView from '../view/film-details-close-button';
 import FilmDetailsInfoView from '../view/film-details-info';
-import FilmDetailsControlsView from '../view/film-details-controls';
 import FilmDetailsBottomContainerView from '../view/film-details-bottom-container';
-import FilmDetailsCommentsView from '../view/film-details-comments';
-import FilmDetailsCommentsListView from '../view/film-details-comments-list';
+import FilmDetailsCommentsWrapView from '../view/film-details-comments-wrap';
 import FilmDetailsNewCommentView from '../view/film-details-new-comment';
+
+// presenter
+import FilmDetailsControlsPresenter from './film-details-controls';
+import FilmDetailsCommentsTitlePresenter from './film-details-comments-title';
+import FilmDetailsCommentsListPresenter from './film-details-comments-list';
 
 const NO_SCROLL_CLASS_NAME = 'hide-overflow';
 
-export default class FilmDetailsNew {
-  constructor(changeData) {
+export default class FilmDetails {
+  constructor(filmsModel, commentsModel, filterModel, changeData) {
 
+    this._filmsModel = filmsModel;
+    this._commentsModel = commentsModel;
+    this._filterModel = filterModel;
     this._changeData = changeData;
 
-    this._filmDetailsSectionView = new FilmDetailsSectionView();
-    this._filmDetailsFormView = new FilmDetailsFormView();
-    this._filmDetailsTopContainerView = new FilmDetailsTopContainerView();
-    this._filmDetailsCloseButtonView = new FilmDetailsCloseButtonView();
-
-    render(document.body, this._filmDetailsSectionView);
-
-    render(this._filmDetailsSectionView, this._filmDetailsFormView);
-    render(this._filmDetailsFormView, this._filmDetailsTopContainerView);
-    render(this._filmDetailsTopContainerView, this._filmDetailsCloseButtonView);
-
-    this._handleFilmDetails = this._handleFilmDetails.bind(this);
+    this._removePopup = this._removePopup.bind(this);
     this._buttonEscKeyDownHandler = this._buttonEscKeyDownHandler.bind(this);
-    this._handleWatchlist = this._handleWatchlist.bind(this);
-    this._handleWatched = this._handleWatched.bind(this);
-    this._handleFavorite = this._handleFavorite.bind(this);
 
     this._isActive = true;
   }
 
-  init(filmData, commentsData) {
+  init(film) {
+    this._film = film;
 
-    this._film = Object.assign({}, filmData);
-    this._comments = commentsData;
-
-    const {isWatchlist, isWatched, isFavorite, comments} = this._film;
-    const commentsCount = comments.length;
-
-    this._filmDetailsInfoView = new FilmDetailsInfoView(this._film);
-    render(this._filmDetailsTopContainerView, this._filmDetailsInfoView);
-
-    this._filmDetailsControlsView = new FilmDetailsControlsView(isWatchlist, isWatched, isFavorite);
-    render(this._filmDetailsTopContainerView, this._filmDetailsControlsView);
-
-    this._filmDetailsBottomContainerView = new FilmDetailsBottomContainerView();
-    render(this._filmDetailsFormView, this._filmDetailsBottomContainerView);
-
-    this._filmDetailsCommentsView = new FilmDetailsCommentsView(commentsCount);
-    render(this._filmDetailsBottomContainerView, this._filmDetailsCommentsView);
-
-    if (commentsCount > 0) {
-      this._filmDetailsCommentsListView = new FilmDetailsCommentsListView(this._comments);
-      render(this._filmDetailsCommentsView, this._filmDetailsCommentsListView);
-    }
-
-    this._filmDetailsNewCommentView = new FilmDetailsNewCommentView();
-    render(this._filmDetailsCommentsView, this._filmDetailsNewCommentView);
-
+    this._renderPopup();
     this._setBodyNoScroll();
     this._setDocumentKeyDownHandler();
+  }
 
-    this._filmDetailsCloseButtonView.setCloseButtonClickHandler(this._handleFilmDetails);
+  _renderSection() {
+    this._sectionView = new FilmDetailsSectionView();
+    render(document.body, this._sectionView);
+  }
 
-    this._filmDetailsControlsView.setWatchlistChangeHandler(this._handleWatchlist);
-    this._filmDetailsControlsView.setWatchedChangeHandler(this._handleWatched);
-    this._filmDetailsControlsView.setFavoriteChangeHandler(this._handleFavorite);
+  _renderForm() {
+    this._formView = new FilmDetailsFormView();
+    render(this._sectionView, this._formView);
+  }
+
+  _renderTopContainer() {
+    this._topContainerView = new FilmDetailsTopContainerView();
+    render(this._formView, this._topContainerView);
+  }
+
+  _renderCloseButton() {
+    const closeButtonView = new FilmDetailsCloseButtonView();
+    closeButtonView.setCloseButtonClickHandler(this._removePopup);
+    render(this._topContainerView, closeButtonView);
+  }
+
+  _renderInfo() {
+    this._infoView = new FilmDetailsInfoView(this._film);
+    render(this._topContainerView, this._infoView);
+  }
+
+  _renderControls() {
+    const controlsPresenter = new FilmDetailsControlsPresenter(
+      this._topContainerView,
+      this._filmsModel,
+      this._filterModel,
+      this._changeData,
+    );
+    controlsPresenter.init(this._film);
+  }
+
+  _renderBottomContainer() {
+    this._bottomContainerView = new FilmDetailsBottomContainerView();
+    render(this._formView, this._bottomContainerView);
+  }
+
+  _renderCommentsWrap() {
+    this._commentsWrapView = new FilmDetailsCommentsWrapView();
+    render(this._bottomContainerView, this._commentsWrapView);
+  }
+
+  _renderCommentsTitle() {
+    const commentsTitlePresenter = new FilmDetailsCommentsTitlePresenter(
+      this._commentsWrapView,
+      this._filmsModel,
+    );
+    commentsTitlePresenter.init(this._film);
+  }
+
+  _renderCommentsList() {
+    const commentsListPresenter = new FilmDetailsCommentsListPresenter(
+      this._commentsWrapView,
+      this._filmsModel,
+      this._commentsModel,
+      this._changeData,
+    );
+    commentsListPresenter.init(this._film);
+  }
+
+  _renderNewComment() {
+    this._newCommentView = new FilmDetailsNewCommentView();
+    render(this._commentsWrapView, this._newCommentView);
+  }
+
+  _renderPopup() {
+    const {comments} = this._film;
+    const commentsCount = comments.length;
+
+    this._renderSection();
+    this._renderForm();
+    this._renderTopContainer();
+    this._renderCloseButton();
+    this._renderInfo();
+    this._renderControls();
+    this._renderBottomContainer();
+    this._renderCommentsWrap();
+    this._renderCommentsTitle();
+
+    if (commentsCount > 0) {
+      this._renderCommentsList();
+    }
+
+    this._renderNewComment();
+  }
+
+  _removePopup() {
+    remove(this._sectionView);
+    this._removeBodyNoScroll();
+    this._removeDocumentKeyDownHandler();
   }
 
   resetView() {
     if (this._isActive) {
-      this._removeFilmDetails();
+      this._removePopup();
     }
   }
 
@@ -90,12 +148,6 @@ export default class FilmDetailsNew {
 
   _removeBodyNoScroll() {
     document.body.classList.remove(NO_SCROLL_CLASS_NAME);
-  }
-
-  _removeFilmDetails() {
-    remove(this._filmDetailsSectionView);
-    this._removeBodyNoScroll();
-    this._removeDocumentKeyDownHandler();
   }
 
   _setDocumentKeyDownHandler() {
@@ -108,47 +160,7 @@ export default class FilmDetailsNew {
 
   _buttonEscKeyDownHandler(evt) {
     if (evt.key === 'Escape') {
-      this._removeFilmDetails();
+      this._removePopup();
     }
-  }
-
-  _handleFilmDetails() {
-    this._removeFilmDetails();
-  }
-
-  _handleWatchlist() {
-    const newItem = Object.assign(
-      {},
-      this._film,
-      {
-        isWatchlist: !this._film.isWatchlist,
-      },
-    );
-    this._changeData(newItem);
-    this._film = newItem;
-  }
-
-  _handleWatched() {
-    const newItem = Object.assign(
-      {},
-      this._film,
-      {
-        isWatched: !this._film.isWatched,
-      },
-    );
-    this._changeData(newItem);
-    this._film = newItem;
-  }
-
-  _handleFavorite() {
-    const newItem = Object.assign(
-      {},
-      this._film,
-      {
-        isFavorite: !this._film.isFavorite,
-      },
-    );
-    this._changeData(newItem);
-    this._film = newItem;
   }
 }

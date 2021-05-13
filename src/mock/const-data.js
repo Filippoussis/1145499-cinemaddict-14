@@ -1,7 +1,4 @@
-export const Count = {
-  FILM: 13,
-  COMMENT: 22,
-};
+export const FILM_COUNT = 13;
 
 export const TITLES = [
   'Blade Runner 2049',
@@ -157,12 +154,7 @@ export const Comment = {
   ],
 };
 
-export const ListCommentIdRange = {
+export const ListCommentRange = {
   MIN: 0,
   MAX: 5,
-};
-
-export const CommentIdRange = {
-  MIN: 1,
-  MAX: Count.COMMENT,
 };
