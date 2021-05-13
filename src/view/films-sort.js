@@ -2,49 +2,41 @@ import AbstractView from './abstract';
 
 import {SortType} from '../const';
 
-const createFilmsSortTemplate = (currentSortType) => {
+const createSortItemTemplate = (title, type, currentType) => {
+
+  const classMod = currentType === type ? 'sort__button--active' : '';
+
+  return `<li><a href="#" class="sort__button ${classMod}" data-sort-type="${type}">${title}</a></li>`;
+};
+
+const createFilmsSortTemplate = (currentType) => {
   return (
     `<ul class="sort">
-      <li>
-        <a href="#"
-          class="sort__button ${currentSortType === SortType.DEFAULT ? 'sort__button--active' : ''}"
-          data-sort-type="${SortType.DEFAULT}">Sort by default
-        </a>
-      </li>
-      <li>
-        <a href="#"
-          class="sort__button ${currentSortType === SortType.DATE ? 'sort__button--active' : ''}"
-          data-sort-type="${SortType.DATE}">Sort by date
-        </a>
-      </li>
-      <li>
-        <a href="#"
-          class="sort__button ${currentSortType === SortType.RATING ? 'sort__button--active' : ''}"
-          data-sort-type="${SortType.RATING}">Sort by rating
-        </a>
-      </li>
+      ${createSortItemTemplate('Sort by default', SortType.DEFAULT, currentType)}
+      ${createSortItemTemplate('Sort by date', SortType.DATE, currentType)}
+      ${createSortItemTemplate('Sort by rating', SortType.RATING, currentType)}
     </ul>`
   );
 };
 
 export default class FilmsSort extends AbstractView {
-  constructor(currentSortType) {
+  constructor(currentType) {
     super();
 
-    this._currentSortType = currentSortType;
-    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+    this._currentType = currentType;
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmsSortTemplate(this._currentSortType);
+    return createFilmsSortTemplate(this._currentType);
   }
 
-  setSortTypeChangeHandler(callback) {
-    this._callback.changeSortType = callback;
-    this.getElement().addEventListener('click', this._sortTypeChangeHandler);
+  setTypeChangeHandler(callback) {
+    this._callback.changeType = callback;
+    this.getElement().addEventListener('click', this._typeChangeHandler);
   }
 
-  _sortTypeChangeHandler(evt) {
+  _typeChangeHandler(evt) {
     evt.preventDefault();
 
     const target = evt.target;
@@ -52,6 +44,6 @@ export default class FilmsSort extends AbstractView {
       return;
     }
 
-    this._callback.changeSortType(target.dataset.sortType);
+    this._callback.changeType(target.dataset.sortType);
   }
 }

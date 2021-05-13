@@ -13,10 +13,10 @@ const createUserProfileTemplate = (rank) => {
 export default class UserProfile extends AbstractView {
   constructor(rank) {
     super();
-    this._state = rank;
+    this._rank = rank;
   }
 
   getTemplate() {
-    return createUserProfileTemplate(this._state);
+    return createUserProfileTemplate(this._rank);
   }
 }

@@ -1,51 +1,51 @@
 import AbstractView from './abstract';
 import {FilterType} from '../const';
 
-const createFilmsFilterTemplate = ({watchlistCount, watchedCount, favoriteCount}, currentFilterType) => {
+const createFilterItemTemplate = (title, link, type,  currentType, count) => {
+
+  const classMod = currentType === type ? 'main-navigation__item--active' : '';
+  const elementCount = type !== FilterType.ALL ? `<span class="main-navigation__item-count">${count}</span>` : '';
+
+  return (
+    `<a href="#${link}"
+        class="main-navigation__item ${classMod}"
+        data-filter-type="${type}">${title}
+        ${elementCount}
+    </a>`
+  );
+};
+
+const createFilmsFilterTemplate = ({watchlistCount, watchedCount, favoriteCount}, currentType) => {
   return (
     `<div class="main-navigation__items">
-      <a href="#all"
-        class="main-navigation__item ${currentFilterType === FilterType.ALL ? 'main-navigation__item--active' : ''}"
-        data-filter-type="${FilterType.ALL}">All movies</a>
-      <a href="#watchlist"
-        class="main-navigation__item ${currentFilterType === FilterType.WATCHLIST ? 'main-navigation__item--active' : ''}"
-        data-filter-type="${FilterType.WATCHLIST}">Watchlist
-        <span class="main-navigation__item-count">${watchlistCount}</span>
-      </a>
-      <a href="#history"
-        class="main-navigation__item ${currentFilterType === FilterType.WATCHED ? 'main-navigation__item--active' : ''}"
-        data-filter-type="${FilterType.WATCHED}">History
-        <span class="main-navigation__item-count">${watchedCount}</span>
-      </a>
-      <a href="#favorites"
-        class="main-navigation__item ${currentFilterType === FilterType.FAVORITES ? 'main-navigation__item--active' : ''}"
-        data-filter-type="${FilterType.FAVORITES}">Favorites
-        <span class="main-navigation__item-count">${favoriteCount}</span>
-      </a>
+      ${createFilterItemTemplate('All movies', 'all', FilterType.ALL, currentType)}
+      ${createFilterItemTemplate('Watchlist', 'watchlist', FilterType.WATCHLIST, currentType, watchlistCount)}
+      ${createFilterItemTemplate('History', 'history', FilterType.WATCHED, currentType, watchedCount)}
+      ${createFilterItemTemplate('Favorites', 'favorites', FilterType.FAVORITES, currentType, favoriteCount)}
     </div>`
   );
 };
 
 export default class FilmsFilter extends AbstractView {
-  constructor(filtersStats, currentFilterType) {
+  constructor(stats, currentType) {
     super();
 
-    this._filtersStats = filtersStats;
-    this._currentFilter = currentFilterType;
+    this._stats = stats;
+    this._currentType = currentType;
 
-    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmsFilterTemplate(this._filtersStats, this._currentFilter);
+    return createFilmsFilterTemplate(this._stats, this._currentType);
   }
 
-  setFilterTypeChangeHandler(callback) {
-    this._callback.changeFilterType = callback;
-    this.getElement().addEventListener('click', this._filterTypeChangeHandler);
+  setTypeChangeHandler(callback) {
+    this._callback.changeType = callback;
+    this.getElement().addEventListener('click', this._typeChangeHandler);
   }
 
-  _filterTypeChangeHandler(evt) {
+  _typeChangeHandler(evt) {
     evt.preventDefault();
 
     const target = evt.target;
@@ -53,6 +53,6 @@ export default class FilmsFilter extends AbstractView {
       return;
     }
 
-    this._callback.changeFilterType(target.dataset.filterType);
+    this._callback.changeType(target.dataset.filterType);
   }
 }
