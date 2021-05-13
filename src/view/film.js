@@ -21,7 +21,7 @@ const createControlTemplate = (id, text, isActive = false) => {
   );
 };
 
-const createFilmCardTemplate = (film) => {
+const createFilmTemplate = (film) => {
 
   const {id, title, rating, release, time, genres, poster, description, isWatchlist, isWatched, isFavorite, comments} = film;
 
@@ -51,11 +51,11 @@ const createFilmCardTemplate = (film) => {
   );
 };
 
-export default class FilmCard extends AbstractView {
+export default class Film extends AbstractView {
   constructor(film) {
     super();
 
-    this._film = film;
+    this._card = film;
     this._cardClickHandler = this._cardClickHandler.bind(this);
     this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
     this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
@@ -63,7 +63,7 @@ export default class FilmCard extends AbstractView {
   }
 
   getTemplate() {
-    return createFilmCardTemplate(this._film);
+    return createFilmTemplate(this._card);
   }
 
   setCardClickHandler(callback) {
