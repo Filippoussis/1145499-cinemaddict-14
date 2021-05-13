@@ -4,19 +4,19 @@ import {SortType} from '../const';
 export default class Sort extends Observer {
   constructor() {
     super();
-    this._activeSort = SortType.DEFAULT;
+    this._active = SortType.DEFAULT;
   }
 
-  setSort(updateType, selectedSort) {
-    this._activeSort = selectedSort;
-    this._notify(updateType, selectedSort);
+  setType(updateType, selectedType) {
+    this._active = selectedType;
+    this._notify(updateType, selectedType);
   }
 
-  getSort() {
-    return this._activeSort;
+  getType() {
+    return this._active;
   }
 
-  resetSort() {
-    this._activeSort = SortType.DEFAULT;
+  resetType() {
+    this._active = SortType.DEFAULT;
   }
 }
