@@ -6,30 +6,31 @@ import {getRatingTitle} from '../utils/rating';
 import UserProfileView from '../view/user-profile';
 
 export default class UserProfile {
-  constructor(userProfileContainer, filmsModel) {
-    this._userProfileContainer = userProfileContainer;
+  constructor(container, filmsModel) {
+    this._containerView = container;
+
     this._filmsModel = filmsModel;
 
-    this._userProfileView = null;
+    this._sectionView = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filmsModel.subscribe(this._handleModelEvent);
   }
 
   init() {
-    const userRank = this._getUserRank();
+    const userRank = this._getRank();
 
-    const prevUserProfileView = this._userProfileView;
-    this._userProfileView = new UserProfileView(userRank);
+    const prevSectionView = this._sectionView;
+    this._sectionView = new UserProfileView(userRank);
 
-    if (prevUserProfileView === null) {
-      render(this._userProfileContainer, this._userProfileView);
+    if (prevSectionView === null) {
+      render(this._containerView, this._sectionView);
       return;
     }
 
-    replace(this._userProfileView, prevUserProfileView);
-    remove(prevUserProfileView);
+    replace(this._sectionView, prevSectionView);
+    remove(prevSectionView);
   }
 
   _handleModelEvent() {
@@ -37,16 +38,14 @@ export default class UserProfile {
   }
 
   _getFilms() {
-    return this._filmsModel.getFilms();
+    return this._filmsModel.getItems();
   }
 
   _getWatchedFilmsCount() {
-    const films = this._getFilms();
-    return films.filter((film) => film.isWatched).length;
+    return this._getFilms().filter((film) => film.isWatched).length;
   }
 
-  _getUserRank() {
-    const watchedFilmsCount = this._getWatchedFilmsCount();
-    return getRatingTitle(watchedFilmsCount);
+  _getRank() {
+    return getRatingTitle(this._getWatchedFilmsCount());
   }
 }

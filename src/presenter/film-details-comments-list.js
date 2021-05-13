@@ -8,41 +8,41 @@ import {render, replace, remove} from '../utils/render';
 import FilmDetailsCommentsListView from '../view/film-details-comments-list';
 
 export default class FilmDetailsCommentsList {
-  constructor(filmDetailsCommentsListContainer, filmsModel, commentsModel, changeData) {
-    this._filmDetailsCommentsListContainerView = filmDetailsCommentsListContainer;
+  constructor(container, filmsModel, commentsModel, changeData) {
+    this._containerView = container;
 
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._changeData = changeData;
 
-    this._filmDetailsCommentsListView = null;
+    this._sectionView = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleCommentDeleteClick = this._handleCommentDeleteClick.bind(this);
 
-    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filmsModel.subscribe(this._handleModelEvent);
   }
 
-  init(filmData) {
-    this._film = filmData;
+  init(film) {
+    this._film = film;
     const filmComments = this._film.comments.map((commentId) => this._getComments().find((item) => item.id === commentId));
 
-    const prevFilmDetailsCommentsListView = this._filmDetailsCommentsListView;
+    const prevSectionView = this._sectionView;
 
-    this._filmDetailsCommentsListView = new FilmDetailsCommentsListView(filmComments);
-    this._filmDetailsCommentsListView.setCommentDeleteClickHandler(this._handleCommentDeleteClick);
+    this._sectionView = new FilmDetailsCommentsListView(filmComments);
+    this._sectionView.setCommentDeleteClickHandler(this._handleCommentDeleteClick);
 
-    if (prevFilmDetailsCommentsListView === null) {
-      render(this._filmDetailsCommentsListContainerView, this._filmDetailsCommentsListView);
+    if (prevSectionView === null) {
+      render(this._containerView, this._sectionView);
       return;
     }
 
-    replace(this._filmDetailsCommentsListView, prevFilmDetailsCommentsListView);
-    remove(prevFilmDetailsCommentsListView);
+    replace(this._sectionView, prevSectionView);
+    remove(prevSectionView);
   }
 
   _getComments() {
-    return this._commentsModel.getComments();
+    return this._commentsModel.getItems();
   }
 
   _handleModelEvent(_, data) {
@@ -52,7 +52,7 @@ export default class FilmDetailsCommentsList {
   _handleCommentDeleteClick(deletedCommentId) {
     const index = this._film.comments.findIndex((commentId) => commentId === deletedCommentId);
 
-    this._commentsModel.deleteComment('DELETE_COMMENT', deletedCommentId);
+    this._commentsModel.deleteItem('DELETE_COMMENT', deletedCommentId);
 
     this._changeData(
       UserAction.UPDATE_FILM,

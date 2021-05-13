@@ -19,120 +19,126 @@ import FilmDetailsCommentsListPresenter from './film-details-comments-list';
 const NO_SCROLL_CLASS_NAME = 'hide-overflow';
 
 export default class FilmDetails {
-  constructor(changeData, filterModel, commentsModel, filmsModel) {
+  constructor(filmsModel, commentsModel, filterModel, changeData) {
 
-    this._changeData = changeData;
-    this._filterModel = filterModel;
-    this._commentsModel = commentsModel;
     this._filmsModel = filmsModel;
+    this._commentsModel = commentsModel;
+    this._filterModel = filterModel;
+    this._changeData = changeData;
 
-    this._removeFilmDetails = this._removeFilmDetails.bind(this);
+    this._removePopup = this._removePopup.bind(this);
     this._buttonEscKeyDownHandler = this._buttonEscKeyDownHandler.bind(this);
 
     this._isActive = true;
   }
 
-  init(filmData) {
-    this._film = filmData;
+  init(film) {
+    this._film = film;
 
-    this._renderFilmDetails();
+    this._renderPopup();
     this._setBodyNoScroll();
     this._setDocumentKeyDownHandler();
   }
 
-  _renderFilmDetailsSection() {
-    this._filmDetailsSectionView = new FilmDetailsSectionView();
-    render(document.body, this._filmDetailsSectionView);
+  _renderSection() {
+    this._sectionView = new FilmDetailsSectionView();
+    render(document.body, this._sectionView);
   }
 
-  _renderFilmDetailsForm() {
-    this._filmDetailsFormView = new FilmDetailsFormView();
-    render(this._filmDetailsSectionView, this._filmDetailsFormView);
+  _renderForm() {
+    this._formView = new FilmDetailsFormView();
+    render(this._sectionView, this._formView);
   }
 
-  _renderFilmDetailsTopContainer() {
-    this._filmDetailsTopContainerView = new FilmDetailsTopContainerView();
-    render(this._filmDetailsFormView, this._filmDetailsTopContainerView);
+  _renderTopContainer() {
+    this._topContainerView = new FilmDetailsTopContainerView();
+    render(this._formView, this._topContainerView);
   }
 
-  _renderFilmDetailsCloseButton() {
-    const filmDetailsCloseButtonView = new FilmDetailsCloseButtonView();
-    filmDetailsCloseButtonView.setCloseButtonClickHandler(this._removeFilmDetails);
-    render(this._filmDetailsTopContainerView, filmDetailsCloseButtonView);
+  _renderCloseButton() {
+    const closeButtonView = new FilmDetailsCloseButtonView();
+    closeButtonView.setCloseButtonClickHandler(this._removePopup);
+    render(this._topContainerView, closeButtonView);
   }
 
-  _renderFilmDetailsInfo() {
-    this._filmDetailsInfoView = new FilmDetailsInfoView(this._film);
-    render(this._filmDetailsTopContainerView, this._filmDetailsInfoView);
+  _renderInfo() {
+    this._infoView = new FilmDetailsInfoView(this._film);
+    render(this._topContainerView, this._infoView);
   }
 
-  _renderFilmDetailsControls() {
-    const filmDetailsControlsPresenter = new FilmDetailsControlsPresenter(
-      this._filmDetailsTopContainerView,
-      this._changeData,
+  _renderControls() {
+    const controlsPresenter = new FilmDetailsControlsPresenter(
+      this._topContainerView,
+      this._filmsModel,
       this._filterModel,
+      this._changeData,
+    );
+    controlsPresenter.init(this._film);
+  }
+
+  _renderBottomContainer() {
+    this._bottomContainerView = new FilmDetailsBottomContainerView();
+    render(this._formView, this._bottomContainerView);
+  }
+
+  _renderCommentsWrap() {
+    this._commentsWrapView = new FilmDetailsCommentsWrapView();
+    render(this._bottomContainerView, this._commentsWrapView);
+  }
+
+  _renderCommentsTitle() {
+    const commentsTitlePresenter = new FilmDetailsCommentsTitlePresenter(
+      this._commentsWrapView,
       this._filmsModel,
     );
-    filmDetailsControlsPresenter.init(this._film);
+    commentsTitlePresenter.init(this._film);
   }
 
-  _renderFilmDetailsBottomContainer() {
-    this._filmDetailsBottomContainerView = new FilmDetailsBottomContainerView();
-    render(this._filmDetailsFormView, this._filmDetailsBottomContainerView);
-  }
-
-  _renderFilmDetailsCommentsWrap() {
-    this._filmDetailsCommentsWrapView = new FilmDetailsCommentsWrapView();
-    render(this._filmDetailsBottomContainerView, this._filmDetailsCommentsWrapView);
-  }
-
-  _renderFilmDetailsCommentsTitle() {
-    const filmDetailsCommentsTitlePresenter = new FilmDetailsCommentsTitlePresenter(
-      this._filmDetailsCommentsWrapView,
-      this._filmsModel,
-    );
-    filmDetailsCommentsTitlePresenter.init(this._film);
-  }
-
-  _renderFilmDetailsCommentsList() {
-    const filmDetailsCommentsListPresenter = new FilmDetailsCommentsListPresenter(
-      this._filmDetailsCommentsWrapView,
+  _renderCommentsList() {
+    const commentsListPresenter = new FilmDetailsCommentsListPresenter(
+      this._commentsWrapView,
       this._filmsModel,
       this._commentsModel,
       this._changeData,
     );
-    filmDetailsCommentsListPresenter.init(this._film);
+    commentsListPresenter.init(this._film);
   }
 
-  _renderFilmDetailsNewComment() {
-    this._filmDetailsNewCommentView = new FilmDetailsNewCommentView();
-    render(this._filmDetailsCommentsWrapView, this._filmDetailsNewCommentView);
+  _renderNewComment() {
+    this._newCommentView = new FilmDetailsNewCommentView();
+    render(this._commentsWrapView, this._newCommentView);
   }
 
-  _renderFilmDetails() {
+  _renderPopup() {
     const {comments} = this._film;
     const commentsCount = comments.length;
 
-    this._renderFilmDetailsSection();
-    this._renderFilmDetailsForm();
-    this._renderFilmDetailsTopContainer();
-    this._renderFilmDetailsCloseButton();
-    this._renderFilmDetailsInfo();
-    this._renderFilmDetailsControls();
-    this._renderFilmDetailsBottomContainer();
-    this._renderFilmDetailsCommentsWrap();
-    this._renderFilmDetailsCommentsTitle();
+    this._renderSection();
+    this._renderForm();
+    this._renderTopContainer();
+    this._renderCloseButton();
+    this._renderInfo();
+    this._renderControls();
+    this._renderBottomContainer();
+    this._renderCommentsWrap();
+    this._renderCommentsTitle();
 
     if (commentsCount > 0) {
-      this._renderFilmDetailsCommentsList();
+      this._renderCommentsList();
     }
 
-    this._renderFilmDetailsNewComment();
+    this._renderNewComment();
+  }
+
+  _removePopup() {
+    remove(this._sectionView);
+    this._removeBodyNoScroll();
+    this._removeDocumentKeyDownHandler();
   }
 
   resetView() {
     if (this._isActive) {
-      this._removeFilmDetails();
+      this._removePopup();
     }
   }
 
@@ -154,13 +160,7 @@ export default class FilmDetails {
 
   _buttonEscKeyDownHandler(evt) {
     if (evt.key === 'Escape') {
-      this._removeFilmDetails();
+      this._removePopup();
     }
-  }
-
-  _removeFilmDetails() {
-    remove(this._filmDetailsSectionView);
-    this._removeBodyNoScroll();
-    this._removeDocumentKeyDownHandler();
   }
 }

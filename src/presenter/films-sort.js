@@ -1,52 +1,38 @@
 import FilmsSortView from '../view/films-sort';
-import {InsertPlace, UpdateType} from '../const';
-import {render, replace, remove} from '../utils/render';
+import {InsertPlace, UpdateType, UserAction} from '../const';
+import {render, remove} from '../utils/render';
 
 export default class FilmsSort {
-  constructor(filmsSortContainer, sortModel, filterModel) {
-    this._filmsSortContainer = filmsSortContainer;
+  constructor(container, sortModel, changeData) {
+    this._containerView = container;
+
     this._sortModel = sortModel;
-    this._filterModel = filterModel;
+    this._changeData = changeData;
 
-    this._filmsSortView = null;
-
-    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    this._handleSortModelEvent = this._handleSortModelEvent.bind(this);
-    this._handleFilterModelEvent = this._handleFilterModelEvent.bind(this);
-
-    this._filterModel.addObserver(this._handleFilterModelEvent);
-    this._sortModel.addObserver(this._handleSortModelEvent);
+    this._handleTypeChange = this._handleTypeChange.bind(this);
   }
 
   init() {
-    const prevFilmsSortView = this._filmsSortView;
+    this._sectionView = new FilmsSortView(this._sortModel.getType());
+    this._sectionView.setTypeChangeHandler(this._handleTypeChange);
+    render(this._containerView, this._sectionView, InsertPlace.BEFORE_BEGIN);
+  }
 
-    this._filmsSortView = new FilmsSortView(this._sortModel.getSort());
-    this._filmsSortView.setSortTypeChangeHandler(this._handleSortTypeChange);
+  destroy() {
+    if (this._sectionView !== null) {
+      remove(this._sectionView);
+    }
+  }
 
-    if (prevFilmsSortView === null) {
-      render(this._filmsSortContainer, this._filmsSortView, InsertPlace.AFTER_END);
+  _handleTypeChange(sortType) {
+    if (this._sortModel.getType() === sortType) {
       return;
     }
 
-    replace(this._filmsSortView, prevFilmsSortView);
-    remove(prevFilmsSortView);
-  }
-
-  _handleSortModelEvent() {
-    this.init();
-  }
-
-  _handleFilterModelEvent() {
-    this._sortModel.resetSort();
-    this._handleSortModelEvent();
-  }
-
-  _handleSortTypeChange(sortType) {
-    if (this._sortModel.getSort() === sortType) {
-      return;
-    }
-
-    this._sortModel.setSort(UpdateType.MAJOR, sortType);
+    this._changeData(
+      UserAction.SORT_FILMS,
+      UpdateType.MAJOR,
+      sortType,
+    );
   }
 }

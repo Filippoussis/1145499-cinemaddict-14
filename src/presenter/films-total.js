@@ -5,26 +5,24 @@ import {render} from '../utils/render';
 import FilmsTotalView from '../view/films-total';
 
 export default class FilmsTotal {
-  constructor(filmsTotalContainer, filmsModel) {
-    this._filmsTotalContainer = filmsTotalContainer;
+  constructor(container, filmsModel) {
+    this._containerView = container;
     this._filmsModel = filmsModel;
   }
 
   init() {
-    this._renderFilmsTotal();
+    this._renderSection();
   }
 
-  _getFilms() {
-    return this._filmsModel.getFilms();
+  _getItems() {
+    return this._filmsModel.getItems();
   }
 
-  _getFilmsTotal() {
-    const films = this._getFilms();
-    return films.length;
+  _getItemsCount() {
+    return this._getItems().length;
   }
 
-  _renderFilmsTotal() {
-    const filmsTotal = this._getFilmsTotal();
-    render(this._filmsTotalContainer, new FilmsTotalView(filmsTotal));
+  _renderSection() {
+    render(this._containerView, new FilmsTotalView(this._getItemsCount()));
   }
 }

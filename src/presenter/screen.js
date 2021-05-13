@@ -1,5 +1,5 @@
 // const
-import {InsertPlace} from '../const';
+import {InsertPlace, UserAction} from '../const';
 
 // utils
 import {render} from '../utils/render';
@@ -11,12 +11,10 @@ import FilmsStatsView from '../view/films-stats';
 import PageMainView from '../view/page-main';
 import MainContentView from '../view/main-content';
 import PageFooterView from '../view/page-footer';
-import NoFilmsView from '../view/no-films';
 
 // presenter
 import UserProfilePresenter from './user-profile';
 import FilmsFilterPresenter from './films-filter';
-import FilmsSortPresenter from './films-sort';
 import AllFilmsPresenter from './all-films';
 import FilmsTotalPresenter from './films-total';
 
@@ -33,6 +31,8 @@ export default class Screen {
     this._mainNavigationView = new MainNavigationView();
     this._mainContentView = new MainContentView();
     this._pageFooterView = new PageFooterView();
+
+    this._handleViewAction = this._handleViewAction.bind(this);
   }
 
   init() {
@@ -42,7 +42,7 @@ export default class Screen {
   }
 
   _getFilms() {
-    return this._filmsModel.getFilms();
+    return this._filmsModel.getItems();
   }
 
   _renderPageHeader() {
@@ -53,13 +53,7 @@ export default class Screen {
   _renderPageMain() {
     this._renderMainNavigation();
     this._renderMainContent();
-
-    if (this._getFilms().length > 0) {
-      this._renderFilmsSort();
-      this._renderAllFilms();
-    } else {
-      this._renderNoFilms();
-    }
+    this._renderAllFilms();
 
     render(this._mainContainer, this._pageMainView);
   }
@@ -81,18 +75,18 @@ export default class Screen {
   }
 
   _renderFilmsFilter() {
-    const filmsFilterPresenter = new FilmsFilterPresenter(this._mainNavigationView, this._filterModel, this._filmsModel);
+    const filmsFilterPresenter = new FilmsFilterPresenter(
+      this._mainNavigationView,
+      this._filterModel,
+      this._filmsModel,
+      this._handleViewAction,
+    );
     filmsFilterPresenter.init();
   }
 
   _renderFilmsStats() {
     const filmsStatsView = new FilmsStatsView();
     render(this._mainNavigationView, filmsStatsView);
-  }
-
-  _renderFilmsSort() {
-    const filmsSortPresenter = new FilmsSortPresenter(this._mainNavigationView, this._sortModel, this._filterModel);
-    filmsSortPresenter.init();
   }
 
   _renderMainContent() {
@@ -106,6 +100,7 @@ export default class Screen {
       this._commentsModel,
       this._filterModel,
       this._sortModel,
+      this._handleViewAction,
     );
     allFilms.init();
   }
@@ -115,8 +110,18 @@ export default class Screen {
     filmsTotalPresenter.init();
   }
 
-  _renderNoFilms() {
-    const noFilmsView = new NoFilmsView();
-    render(this._mainContentView, noFilmsView);
+  _handleViewAction(actionType, updateType, update) {
+    switch (actionType) {
+      case UserAction.UPDATE_FILM:
+        this._filmsModel.updateItem(updateType, update);
+        break;
+      case UserAction.SORT_FILMS:
+        this._sortModel.setType(updateType, update);
+        break;
+      case UserAction.FILTER_FILMS:
+        this._sortModel.resetType();
+        this._filterModel.setType(updateType, update);
+        break;
+    }
   }
 }

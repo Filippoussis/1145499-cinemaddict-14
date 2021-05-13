@@ -7,31 +7,32 @@ import {render, replace, remove} from '../utils/render';
 // view
 import FilmDetailsCommentsTitleView from '../view//film-details-comments-title';
 
-export default class FilmCommentsTitle {
-  constructor(filmDetailsCommentsTitleContainer, filmsModel) {
-    this._filmDetailsCommentsTitleContainerView = filmDetailsCommentsTitleContainer;
+export default class FilmDetailsCommentsTitle {
+  constructor(container, filmsModel) {
+    this._containerView = container;
+
     this._filmsModel = filmsModel;
 
-    this._filmDetailsCommentsTitleView = null;
+    this._headerView = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
-    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filmsModel.subscribe(this._handleModelEvent);
   }
 
-  init(filmData) {
-    const film = filmData;
+  init(data) {
+    const film = data;
     const filmCommentsCount = film.comments.length;
 
-    const prevFilmDetailsCommentsTitleView = this._filmDetailsCommentsTitleView;
-    this._filmDetailsCommentsTitleView = new FilmDetailsCommentsTitleView(filmCommentsCount);
+    const prevHeaderView = this._headerView;
+    this._headerView = new FilmDetailsCommentsTitleView(filmCommentsCount);
 
-    if (prevFilmDetailsCommentsTitleView === null) {
-      render(this._filmDetailsCommentsTitleContainerView, this._filmDetailsCommentsTitleView, InsertPlace.PREP_END);
+    if (prevHeaderView === null) {
+      render(this._containerView, this._headerView, InsertPlace.PREP_END);
       return;
     }
 
-    replace(this._filmDetailsCommentsTitleView, prevFilmDetailsCommentsTitleView);
-    remove(prevFilmDetailsCommentsTitleView);
+    replace(this._headerView, prevHeaderView);
+    remove(prevHeaderView);
   }
 
   _handleModelEvent(_, data) {
