@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {getFormattedTime} from '../utils/time';
 import AbstractView from './abstract';
 
 const createGenreTemplate = (genres) => {
@@ -20,9 +21,10 @@ const createFilmDetailsInfoTemplate = (film) => {
     genres,
   } = film;
 
-  const writersFormated = writers.join(', ');
-  const starsFormated = stars.join(', ');
-  const releaseFormated = dayjs(release).format('D MMMM YYYY');
+  const formattedWriters = writers.join(', ');
+  const formattedStars = stars.join(', ');
+  const formattedRelease = dayjs(release).format('D MMMM YYYY');
+  const formattedTime = getFormattedTime(time);
 
   const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
   const genreTemplate = createGenreTemplate(genres);
@@ -49,10 +51,10 @@ const createFilmDetailsInfoTemplate = (film) => {
 
         <table class="film-details__table">
           ${createDetailsRowTemplate('Director', director)}
-          ${createDetailsRowTemplate('Writers', writersFormated)}
-          ${createDetailsRowTemplate('Actors', starsFormated)}
-          ${createDetailsRowTemplate('Release Date', releaseFormated)}
-          ${createDetailsRowTemplate('Runtime', time)}
+          ${createDetailsRowTemplate('Writers', formattedWriters)}
+          ${createDetailsRowTemplate('Actors', formattedStars)}
+          ${createDetailsRowTemplate('Release Date', formattedRelease)}
+          ${createDetailsRowTemplate('Runtime', formattedTime)}
           ${createDetailsRowTemplate('Country', country)}
           ${createDetailsRowTemplate(genreTitle, genreTemplate)}
         </table>
