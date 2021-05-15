@@ -10,11 +10,10 @@ import FilmDetailsControlsView from '../view/film-details-controls';
 
 
 export default class FilmDetailsControls {
-  constructor(container, filmsModel, filterModel, changeData) {
+  constructor(container, filmsModel, changeData) {
     this._containerView = container;
 
     this._filmsModel = filmsModel;
-    this._filterModel = filterModel;
     this._changeData = changeData;
 
     this._sectionView = null;
@@ -53,35 +52,26 @@ export default class FilmDetailsControls {
   }
 
   _handleWatchlist() {
-    const selectedFilter = this._filterModel.getType();
-    const isPathUpdate = selectedFilter !== FilterType.WATCHLIST;
-
     this._changeData(
-      UserAction.UPDATE_FILM,
-      isPathUpdate ? UpdateType.PATCH : UpdateType.MINOR,
-      updateFilmProperty(this._film, 'isWatchlist'),
+      UserAction.UPDATE_WATHLIST,
+      UpdateType.PATCH,
+      updateFilmProperty(this._film, FilterType.WATCHLIST),
     );
   }
 
   _handleWatched() {
-    const selectedFilter = this._filterModel.getType();
-    const isPathUpdate = selectedFilter !== FilterType.WATCHED;
-
     this._changeData(
-      UserAction.UPDATE_FILM,
-      isPathUpdate ? UpdateType.PATCH : UpdateType.MINOR,
-      updateFilmProperty(this._film, 'isWatched'),
+      UserAction.UPDATE_WATCHED,
+      UpdateType.PATCH,
+      updateFilmProperty(this._film, FilterType.WATCHED),
     );
   }
 
   _handleFavorite() {
-    const selectedFilter = this._filterModel.getType();
-    const isPathUpdate = selectedFilter !== FilterType.FAVORITES;
-
     this._changeData(
-      UserAction.UPDATE_FILM,
-      isPathUpdate ? UpdateType.PATCH : UpdateType.MINOR,
-      updateFilmProperty(this._film, 'isFavorite'),
+      UserAction.UPDATE_FAVORITE,
+      UpdateType.PATCH,
+      updateFilmProperty(this._film, FilterType.FAVORITE),
     );
   }
 }

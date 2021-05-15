@@ -1,8 +1,8 @@
 // const
-import {InsertPlace, UserAction} from '../const';
+import {InsertPlace, UserAction, UpdateType} from '../const';
 
 // utils
-import {render} from '../utils/render';
+import {render, remove} from '../utils/render';
 
 // view
 import PageHeaderView from '../view/page-header';
@@ -11,6 +11,7 @@ import FilmsStatsView from '../view/films-stats';
 import PageMainView from '../view/page-main';
 import MainContentView from '../view/main-content';
 import PageFooterView from '../view/page-footer';
+import FilmsTitleLoadingView from '../view/films-title-loading';
 
 // presenter
 import UserProfilePresenter from './user-profile';
@@ -19,59 +20,70 @@ import AllFilmsPresenter from './all-films';
 import FilmsTotalPresenter from './films-total';
 
 export default class Screen {
-  constructor(mainContainer, filmsModel, commentsModel, filterModel, sortModel) {
+  constructor(mainContainer, filmsModel, commentsModel, filterModel, sortModel, api) {
     this._mainContainer = mainContainer;
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._filterModel = filterModel;
     this._sortModel = sortModel;
-
-    this._pageHeaderView = new PageHeaderView();
-    this._pageMainView = new PageMainView();
-    this._mainNavigationView = new MainNavigationView();
-    this._mainContentView = new MainContentView();
-    this._pageFooterView = new PageFooterView();
+    this._api = api;
 
     this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
+    this._filmsModel.subscribe(this._handleModelEvent);
+
+    this._isFilmsLoading = true;
   }
 
   init() {
     this._renderPageHeader();
     this._renderPageMain();
     this._renderPageFooter();
-  }
 
-  _getFilms() {
-    return this._filmsModel.getItems();
+    if (this._isFilmsLoading) {
+      this._renderLoading();
+      return;
+    }
   }
 
   _renderPageHeader() {
-    this._renderUserProfile();
+    this._pageHeaderView = new PageHeaderView();
     render(this._mainContainer, this._pageHeaderView, InsertPlace.PREP_END);
   }
 
   _renderPageMain() {
+    this._pageMainView = new PageMainView();
+
     this._renderMainNavigation();
     this._renderMainContent();
-    this._renderAllFilms();
 
     render(this._mainContainer, this._pageMainView);
   }
 
+  _renderMainNavigation() {
+    this._mainNavigationView = new MainNavigationView();
+    render(this._pageMainView, this._mainNavigationView, InsertPlace.PREP_END);
+  }
+
+  _renderMainContent() {
+    this._mainContentView = new MainContentView();
+    render(this._pageMainView, this._mainContentView);
+  }
+
   _renderPageFooter() {
-    this._renderFilmsTotal();
+    this._pageFooterView = new PageFooterView();
     render(this._mainContainer, this._pageFooterView);
+  }
+
+  _renderLoading() {
+    this._filmsTitleLoadingView = new FilmsTitleLoadingView();
+    render(this._mainContentView, this._filmsTitleLoadingView, InsertPlace.PREP_END);
   }
 
   _renderUserProfile() {
     const userProfilePresenter = new UserProfilePresenter(this._pageHeaderView, this._filmsModel);
     userProfilePresenter.init();
-  }
-
-  _renderMainNavigation() {
-    this._renderFilmsFilter();
-    this._renderFilmsStats();
-    render(this._pageMainView, this._mainNavigationView, InsertPlace.PREP_END);
   }
 
   _renderFilmsFilter() {
@@ -89,10 +101,6 @@ export default class Screen {
     render(this._mainNavigationView, filmsStatsView);
   }
 
-  _renderMainContent() {
-    render(this._pageMainView, this._mainContentView);
-  }
-
   _renderAllFilms() {
     const allFilms = new AllFilmsPresenter(
       this._mainContentView,
@@ -100,7 +108,7 @@ export default class Screen {
       this._commentsModel,
       this._filterModel,
       this._sortModel,
-      this._handleViewAction,
+      this._api,
     );
     allFilms.init();
   }
@@ -112,15 +120,26 @@ export default class Screen {
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
-      case UserAction.UPDATE_FILM:
-        this._filmsModel.updateItem(updateType, update);
-        break;
-      case UserAction.SORT_FILMS:
-        this._sortModel.setType(updateType, update);
-        break;
-      case UserAction.FILTER_FILMS:
+      case UserAction.UPDATE_FILTER:
         this._sortModel.resetType();
         this._filterModel.setType(updateType, update);
+        break;
+    }
+  }
+
+  _handleModelEvent(updateType) {
+    switch (updateType) {
+      case UpdateType.INIT:
+
+        this._isFilmsLoading = false;
+        remove(this._filmsTitleLoadingView);
+
+        this._renderUserProfile();
+        this._renderFilmsFilter();
+        this._renderFilmsStats();
+        this._renderAllFilms();
+        this._renderFilmsTotal();
+
         break;
     }
   }
