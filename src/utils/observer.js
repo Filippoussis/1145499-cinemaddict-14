@@ -11,7 +11,7 @@ export default class Observer {
     this._listeners = this._listeners.filter((existedListener) => existedListener !== listener);
   }
 
-  _notify(event, payload) {
-    this._listeners.forEach((listener) => listener(event, payload));
+  _notify(eventType, payload) {
+    this._listeners.forEach((listener) => listener(eventType, payload));
   }
 }
