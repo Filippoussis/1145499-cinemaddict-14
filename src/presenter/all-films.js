@@ -99,10 +99,9 @@ export default class AllFilms {
       case UserAction.UPDATE_WATHLIST:
       case UserAction.UPDATE_WATCHED:
       case UserAction.UPDATE_FAVORITE:
-        const isMinorUpgrade = this._filterModel.getType() === actionTypetoFilterType[actionType];
         this._api.updateFilm(update).then((response) => {
           this._filmsModel.updateItem(
-            isMinorUpgrade ? UpdateType.MINOR : updateType,
+            this._filterModel.getType() === actionTypetoFilterType[actionType] ? UpdateType.MINOR : updateType,
             response,
           );
         });
