@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {getFormattedTime} from '../utils/time';
 import AbstractView from './abstract';
 
 const DESCRIPTION_MAX_LENGTH = 140;
@@ -21,11 +22,12 @@ const createControlTemplate = (id, text, isActive = false) => {
   );
 };
 
-const createFilmTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
 
   const {id, title, rating, release, time, genres, poster, description, isWatchlist, isWatched, isFavorite, comments} = film;
 
   const previewRelease = dayjs(release).format('YYYY');
+  const previewTime = getFormattedTime(time);
   const previewGenre = genres.join(' ');
   const previewDescription = description.length > DESCRIPTION_MAX_LENGTH ? description.slice(0, DESCRIPTION_MAX_LENGTH - 1) + '\u2026' : description;
   const commentsCount = comments.length;
@@ -36,7 +38,7 @@ const createFilmTemplate = (film) => {
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${previewRelease}</span>
-        <span class="film-card__duration">${time}</span>
+        <span class="film-card__duration">${previewTime}</span>
         <span class="film-card__genre">${previewGenre}</span>
       </p>
       <img src=${poster} alt=${title} class="film-card__poster">
@@ -51,24 +53,24 @@ const createFilmTemplate = (film) => {
   );
 };
 
-export default class Film extends AbstractView {
+export default class FilmCard extends AbstractView {
   constructor(film) {
     super();
 
-    this._card = film;
-    this._cardClickHandler = this._cardClickHandler.bind(this);
+    this._item = film;
+    this._clickHandler = this._clickHandler.bind(this);
     this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
     this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmTemplate(this._card);
+    return createFilmCardTemplate(this._item);
   }
 
-  setCardClickHandler(callback) {
-    this._callback.clickCard = callback;
-    this.getElement().addEventListener('click', this._cardClickHandler);
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().addEventListener('click', this._clickHandler);
   }
 
   setWatchlistClickHandler(callback) {
@@ -92,10 +94,10 @@ export default class Film extends AbstractView {
       .addEventListener('click', this._favoriteClickHandler);
   }
 
-  _cardClickHandler(evt) {
+  _clickHandler(evt) {
     evt.preventDefault();
     if (OPENING_POPUP_CLASS_NAMES.includes(evt.target.className)) {
-      this._callback.clickCard();
+      this._callback.click();
     }
   }
 
