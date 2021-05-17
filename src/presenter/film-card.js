@@ -9,18 +9,17 @@ import {updateFilmProperty} from '../utils/update';
 import FilmCardView from '../view/film-card';
 
 export default class FilmCard {
-  constructor(container, openPopup, changeMode, changeData) {
+  constructor(container, changeMode, changeData) {
     this._containerView = container;
 
-    this._sectionView = null;
-
-    this._openPopup = openPopup;
     this._changeMode = changeMode;
     this._changeData = changeData;
 
     this._handleWatchlist = this._handleWatchlist.bind(this);
     this._handleWatched = this._handleWatched.bind(this);
     this._handleFavorite = this._handleFavorite.bind(this);
+
+    this._sectionView = null;
   }
 
   init(film) {
@@ -31,8 +30,7 @@ export default class FilmCard {
     this._sectionView = new FilmCardView(this._film);
 
     this._sectionView.setClickHandler(() => {
-      this._changeMode();
-      this._openPopup(this._film);
+      this._changeMode(this._film);
     });
 
     this._sectionView.setWatchlistClickHandler(this._handleWatchlist);
