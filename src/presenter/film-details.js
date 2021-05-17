@@ -21,11 +21,10 @@ import FilmDetailsCommentsPresenter from './film-details-comments';
 const NO_SCROLL_CLASS_NAME = 'hide-overflow';
 
 export default class FilmDetails {
-  constructor(filmsModel, commentsModel, filterModel, changeData, api) {
+  constructor(filmsModel, commentsModel, changeData, api) {
 
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
-    this._filterModel = filterModel;
     this._changeData = changeData;
     this._api = api;
 
@@ -84,7 +83,6 @@ export default class FilmDetails {
     const controlsPresenter = new FilmDetailsControlsPresenter(
       this._topContainerView,
       this._filmsModel,
-      this._filterModel,
       this._changeData,
     );
     controlsPresenter.init(this._film);
