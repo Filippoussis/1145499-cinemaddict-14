@@ -32,36 +32,37 @@ export default class Films extends Observer {
   }
 
   static adaptToClient(item) {
+    const info = item.film_info;
+    const user = item.user_details;
+
     const adaptedItem = Object.assign(
       {},
-      item,
       {
-        title: item.film_info.title,
-        origin: item.film_info.alternative_title,
-        description: item.film_info.description,
-        poster: item.film_info.poster,
-        rating: item.film_info.total_rating,
-        release: item.film_info.release.date !== null
-          ? new Date(item.film_info.release.date)
-          : item.film_info.release.date,
-        country: item.film_info.release.release_country,
-        genres: item.film_info.genre,
-        time: item.film_info.runtime,
-        director: item.film_info.director,
-        stars: item.film_info.actors,
-        writers: item.film_info.writers,
-        age: item.film_info.age_rating,
-        isWatchlist: item.user_details.watchlist,
-        isWatched: item.user_details.already_watched,
-        isFavorite: item.user_details.favorite,
-        watchingDate: item.user_details.watching_date !== null
-          ? new Date(item.user_details.watching_date)
-          : item.user_details.watching_date,
+        id: item.id,
+        comments: item.comments,
+        title: info.title,
+        origin: info.alternative_title,
+        description: info.description,
+        poster: info.poster,
+        rating: info.total_rating,
+        release: info.release.date !== null
+          ? new Date(info.release.date)
+          : info.release.date,
+        country: info.release.release_country,
+        genres: info.genre,
+        time: info.runtime,
+        director: info.director,
+        stars: info.actors,
+        writers: info.writers,
+        age: info.age_rating,
+        isWatchlist: user.watchlist,
+        isWatched: user.already_watched,
+        isFavorite: user.favorite,
+        watchingDate: user.watching_date !== null
+          ? new Date(user.watching_date)
+          : user.watching_date,
       },
     );
-
-    delete adaptedItem.film_info;
-    delete adaptedItem.user_details;
 
     return adaptedItem;
   }
@@ -69,8 +70,9 @@ export default class Films extends Observer {
   static adaptToServer(item) {
     const adaptedItem = Object.assign(
       {},
-      item,
       {
+        'id': item.id,
+        'comments': item.comments,
         'film_info': {
           'title': item.title,
           'alternative_title': item.origin,
@@ -96,24 +98,6 @@ export default class Films extends Observer {
         },
       },
     );
-
-    delete adaptedItem.title;
-    delete adaptedItem.origin;
-    delete adaptedItem.description;
-    delete adaptedItem.poster;
-    delete adaptedItem.rating;
-    delete adaptedItem.release;
-    delete adaptedItem.country;
-    delete adaptedItem.genres;
-    delete adaptedItem.time;
-    delete adaptedItem.director;
-    delete adaptedItem.stars;
-    delete adaptedItem.age;
-    delete adaptedItem.writers;
-    delete adaptedItem.isWatchlist;
-    delete adaptedItem.isWatched;
-    delete adaptedItem.isFavorite;
-    delete adaptedItem.watchingDate;
 
     return adaptedItem;
   }
