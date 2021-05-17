@@ -42,7 +42,6 @@ export default class AllFilms {
     this._showMoreButtonView = null;
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
-    this._showFilmDetails = this._showFilmDetails.bind(this);
     this._changeMode = this._changeMode.bind(this);
 
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -52,8 +51,8 @@ export default class AllFilms {
     this._filterModel.subscribe(this._handleModelEvent);
     this._sortModel.subscribe(this._handleModelEvent);
 
-    this._filmPresenter = {};
-    this._filmDetailsPresenter = {};
+    this._filmPresenterMap = new Map();
+    this._filmDetailsPresenterMap = new Map();
   }
 
   init() {
@@ -81,7 +80,7 @@ export default class AllFilms {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._filmPresenter[data.id].init(data);
+        this._filmPresenterMap.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
         this._clearFilmsBoard();
@@ -113,21 +112,19 @@ export default class AllFilms {
     }
   }
 
-  _changeMode() {
-    Object
-      .values(this._filmDetailsPresenter)
-      .forEach((presenter) => presenter.resetView());
+  _changeMode(film) {
+    this._filmDetailsPresenterMap.forEach((presenter) => presenter.resetView());
+    this._showFilmDetails(film);
   }
 
   _renderFilmCard(film) {
     const filmPresenter = new FilmCardPresenter(
       this._filmsListContainerView,
-      this._showFilmDetails,
       this._changeMode,
       this._handleViewAction,
     );
     filmPresenter.init(film);
-    this._filmPresenter[film.id] = filmPresenter;
+    this._filmPresenterMap.set(film.id, filmPresenter);
   }
 
   _renderFilmsList(films) {
@@ -143,7 +140,7 @@ export default class AllFilms {
     );
 
     filmDetailsPresenter.init(film);
-    this._filmDetailsPresenter[film.id] = filmDetailsPresenter;
+    this._filmDetailsPresenterMap.set(film.id, filmDetailsPresenter);
   }
 
   _showFilmDetails(film) {
@@ -208,11 +205,9 @@ export default class AllFilms {
   }
 
   _clearFilmsBoard({resetRenderedFilmCount = false} = {}) {
-    Object
-      .values(this._filmPresenter)
-      .forEach((presenter) => presenter.destroy());
 
-    this._filmPresenter = {};
+    this._filmPresenterMap.forEach((presenter) => presenter.destroy());
+    this._filmPresenterMap.clear();
 
     remove(this._filmsMainTitleView);
     remove(this._showMoreButtonView);
