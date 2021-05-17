@@ -1,3 +1,6 @@
+// const
+import {UpdateType} from '../const';
+
 // utils
 import {render, remove} from '../utils/render';
 
@@ -13,18 +16,17 @@ import FilmDetailsNewCommentView from '../view/film-details-new-comment';
 
 // presenter
 import FilmDetailsControlsPresenter from './film-details-controls';
-import FilmDetailsCommentsTitlePresenter from './film-details-comments-title';
-import FilmDetailsCommentsListPresenter from './film-details-comments-list';
+import FilmDetailsCommentsPresenter from './film-details-comments';
 
 const NO_SCROLL_CLASS_NAME = 'hide-overflow';
 
 export default class FilmDetails {
-  constructor(filmsModel, commentsModel, filterModel, changeData) {
+  constructor(filmsModel, commentsModel, changeData, api) {
 
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
-    this._filterModel = filterModel;
     this._changeData = changeData;
+    this._api = api;
 
     this._removePopup = this._removePopup.bind(this);
     this._buttonEscKeyDownHandler = this._buttonEscKeyDownHandler.bind(this);
@@ -38,6 +40,17 @@ export default class FilmDetails {
     this._renderPopup();
     this._setBodyNoScroll();
     this._setDocumentKeyDownHandler();
+    this._getComments(this._film.id);
+  }
+
+  _getComments(id) {
+    this._api.getComments(id)
+      .then((comments) => {
+        this._commentsModel.setItems(UpdateType.INIT, comments);
+      })
+      .catch(() => {
+        this._commentsModel.setItems(UpdateType.INIT, []);
+      });
   }
 
   _renderSection() {
@@ -70,7 +83,6 @@ export default class FilmDetails {
     const controlsPresenter = new FilmDetailsControlsPresenter(
       this._topContainerView,
       this._filmsModel,
-      this._filterModel,
       this._changeData,
     );
     controlsPresenter.init(this._film);
@@ -86,22 +98,13 @@ export default class FilmDetails {
     render(this._bottomContainerView, this._commentsWrapView);
   }
 
-  _renderCommentsTitle() {
-    const commentsTitlePresenter = new FilmDetailsCommentsTitlePresenter(
-      this._commentsWrapView,
-      this._filmsModel,
-    );
-    commentsTitlePresenter.init(this._film);
-  }
-
   _renderCommentsList() {
-    const commentsListPresenter = new FilmDetailsCommentsListPresenter(
+    const commentsListPresenter = new FilmDetailsCommentsPresenter(
       this._commentsWrapView,
-      this._filmsModel,
       this._commentsModel,
       this._changeData,
     );
-    commentsListPresenter.init(this._film);
+    commentsListPresenter.init();
   }
 
   _renderNewComment() {
@@ -110,9 +113,6 @@ export default class FilmDetails {
   }
 
   _renderPopup() {
-    const {comments} = this._film;
-    const commentsCount = comments.length;
-
     this._renderSection();
     this._renderForm();
     this._renderTopContainer();
@@ -121,12 +121,7 @@ export default class FilmDetails {
     this._renderControls();
     this._renderBottomContainer();
     this._renderCommentsWrap();
-    this._renderCommentsTitle();
-
-    if (commentsCount > 0) {
-      this._renderCommentsList();
-    }
-
+    this._renderCommentsList();
     this._renderNewComment();
   }
 

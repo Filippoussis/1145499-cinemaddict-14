@@ -1,5 +1,5 @@
 // const
-import {InsertPlace, SortType, UpdateType, FilterType} from '../const';
+import {InsertPlace, SortType, UpdateType, FilterType, UserAction} from '../const';
 
 // utils
 import {render, remove} from '../utils/render';
@@ -12,7 +12,7 @@ import ShowMoreButtonView from '../view/show-more-button';
 
 // presenter
 import FilmsSortPresenter from './films-sort';
-import FilmPresenter from './film';
+import FilmCardPresenter from './film-card';
 import FilmDetailsPresenter from './film-details';
 
 const FilmCount = {
@@ -20,15 +20,21 @@ const FilmCount = {
   EXTRA: 2,
 };
 
+const actionTypetoFilterType = {
+  [UserAction.UPDATE_WATHLIST]: FilterType.WATCHLIST,
+  [UserAction.UPDATE_WATCHED]: FilterType.WATCHED,
+  [UserAction.UPDATE_FAVORITE]: FilterType.FAVORITE,
+};
+
 export default class AllFilms {
-  constructor(container, filmsModel, commentsModel, filterModel, sortModel, changeData) {
+  constructor(container, filmsModel, commentsModel, filterModel, sortModel, api) {
     this._containerView = container;
 
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._filterModel = filterModel;
     this._sortModel = sortModel;
-    this._changeData = changeData;
+    this._api = api;
 
     this._renderedFilmCount = FilmCount.STEP;
 
@@ -36,17 +42,17 @@ export default class AllFilms {
     this._showMoreButtonView = null;
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
-    this._showFilmDetails = this._showFilmDetails.bind(this);
     this._changeMode = this._changeMode.bind(this);
 
+    this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._filmsModel.subscribe(this._handleModelEvent);
     this._filterModel.subscribe(this._handleModelEvent);
     this._sortModel.subscribe(this._handleModelEvent);
 
-    this._filmPresenter = {};
-    this._filmDetailsPresenter = {};
+    this._filmPresenterMap = new Map();
+    this._filmDetailsPresenterMap = new Map();
   }
 
   init() {
@@ -71,14 +77,10 @@ export default class AllFilms {
     return filtredFilms;
   }
 
-  _getComments() {
-    return this._commentsModel.getItems();
-  }
-
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._filmPresenter[data.id].init(data);
+        this._filmPresenterMap.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
         this._clearFilmsBoard();
@@ -91,38 +93,54 @@ export default class AllFilms {
     }
   }
 
-  _changeMode() {
-    Object
-      .values(this._filmDetailsPresenter)
-      .forEach((presenter) => presenter.resetView());
+  _handleViewAction(actionType, updateType, update) {
+    switch (actionType) {
+      case UserAction.UPDATE_WATHLIST:
+      case UserAction.UPDATE_WATCHED:
+      case UserAction.UPDATE_FAVORITE:
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.updateItem(
+            this._filterModel.getType() === actionTypetoFilterType[actionType] ? UpdateType.MINOR : updateType,
+            response,
+          );
+        });
+        break;
+
+      case UserAction.UPDATE_SORT:
+        this._sortModel.setType(updateType, update);
+        break;
+    }
   }
 
-  _renderFilm(film) {
-    const filmPresenter = new FilmPresenter(
+  _changeMode(film) {
+    this._filmDetailsPresenterMap.forEach((presenter) => presenter.resetView());
+    this._showFilmDetails(film);
+  }
+
+  _renderFilmCard(film) {
+    const filmPresenter = new FilmCardPresenter(
       this._filmsListContainerView,
-      this._filterModel,
-      this._showFilmDetails,
       this._changeMode,
-      this._changeData,
+      this._handleViewAction,
     );
     filmPresenter.init(film);
-    this._filmPresenter[film.id] = filmPresenter;
+    this._filmPresenterMap.set(film.id, filmPresenter);
   }
 
   _renderFilmsList(films) {
-    films.forEach((film) => this._renderFilm(film));
+    films.forEach((film) => this._renderFilmCard(film));
   }
 
   _renderFilmDetails(film) {
     const filmDetailsPresenter = new FilmDetailsPresenter(
       this._filmsModel,
       this._commentsModel,
-      this._filterModel,
-      this._changeData,
+      this._handleViewAction,
+      this._api,
     );
 
     filmDetailsPresenter.init(film);
-    this._filmDetailsPresenter[film.id] = filmDetailsPresenter;
+    this._filmDetailsPresenterMap.set(film.id, filmDetailsPresenter);
   }
 
   _showFilmDetails(film) {
@@ -140,11 +158,12 @@ export default class AllFilms {
   }
 
   _handleShowMoreButtonClick() {
-    const filmCount = this._getFilms().length;
+    const films = this._getFilms();
+    const filmCount = films.length;
     const newRenderedFilmCount = Math.min(filmCount, this._renderedFilmCount + FilmCount.STEP);
-    const films = this._getFilms().slice(this._renderedFilmCount, newRenderedFilmCount);
+    const nextFilms = films.slice(this._renderedFilmCount, newRenderedFilmCount);
 
-    this._renderFilmsList(films);
+    this._renderFilmsList(nextFilms);
     this._renderedFilmCount = newRenderedFilmCount;
 
     if (this._renderedFilmCount >= filmCount) {
@@ -156,7 +175,7 @@ export default class AllFilms {
     this._filmsSortPresenter = new FilmsSortPresenter(
       this._containerView,
       this._sortModel,
-      this._changeData,
+      this._handleViewAction,
     );
   }
 
@@ -167,7 +186,7 @@ export default class AllFilms {
 
   _renderFilmsMainTitle(count) {
     this._filmsMainTitleView = new FilmsMainTitleView(count);
-    render(this._filmsListAllView, this._filmsMainTitleView);
+    render(this._filmsListAllView, this._filmsMainTitleView, InsertPlace.PREP_END);
   }
 
   _renderFilms(films, count) {
@@ -186,15 +205,13 @@ export default class AllFilms {
   }
 
   _clearFilmsBoard({resetRenderedFilmCount = false} = {}) {
-    Object
-      .values(this._filmPresenter)
-      .forEach((presenter) => presenter.destroy());
 
-    this._filmPresenter = {};
+    this._filmPresenterMap.forEach((presenter) => presenter.destroy());
+    this._filmPresenterMap.clear();
 
+    remove(this._filmsMainTitleView);
     remove(this._showMoreButtonView);
     remove(this._filmsListContainerView);
-    remove(this._filmsMainTitleView);
 
     this._filmsSortPresenter.destroy();
 

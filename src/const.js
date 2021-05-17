@@ -13,20 +13,23 @@ export const SortType = {
 
 export const UserAction = {
   UPDATE_FILM: 'UPDATE_FILM',
-  SORT_FILMS: 'SORT_FILMS',
-  FILTER_FILMS: 'FILTER_FILMS',
-  DELETE_COMMENT: 'DELETE_COMMENT',
+  UPDATE_SORT: 'UPDATE_SORT',
+  UPDATE_FILTER: 'UPDATE_FILTER',
+  UPDATE_WATHLIST: 'UPDATE_WATHLIST',
+  UPDATE_WATCHED: 'UPDATE_WATCHED',
+  UPDATE_FAVORITE: 'UPDATE_FAVORITE',
 };
 
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export const FilterType = {
   ALL: 'all',
   WATCHLIST: 'isWatchlist',
   WATCHED: 'isWatched',
-  FAVORITES: 'isFavorite',
+  FAVORITE: 'isFavorite',
 };

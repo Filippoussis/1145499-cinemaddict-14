@@ -6,8 +6,9 @@ export default class Comments extends Observer {
     this._items = [];
   }
 
-  setItems(items) {
+  setItems(updateType, items) {
     this._items = items.slice();
+    this._notify(updateType);
   }
 
   getItems() {

@@ -4,13 +4,13 @@ import {FilterType} from '../const';
 const createFilterItemTemplate = (title, link, type,  currentType, count) => {
 
   const classMod = currentType === type ? 'main-navigation__item--active' : '';
-  const elementCount = type !== FilterType.ALL ? `<span class="main-navigation__item-count">${count}</span>` : '';
+  const itemCount = type !== FilterType.ALL ? `<span class="main-navigation__item-count">${count}</span>` : '';
 
   return (
     `<a href="#${link}"
         class="main-navigation__item ${classMod}"
         data-filter-type="${type}">${title}
-        ${elementCount}
+        ${itemCount}
     </a>`
   );
 };
@@ -21,7 +21,7 @@ const createFilmsFilterTemplate = ({watchlistCount, watchedCount, favoriteCount}
       ${createFilterItemTemplate('All movies', 'all', FilterType.ALL, currentType)}
       ${createFilterItemTemplate('Watchlist', 'watchlist', FilterType.WATCHLIST, currentType, watchlistCount)}
       ${createFilterItemTemplate('History', 'history', FilterType.WATCHED, currentType, watchedCount)}
-      ${createFilterItemTemplate('Favorites', 'favorites', FilterType.FAVORITES, currentType, favoriteCount)}
+      ${createFilterItemTemplate('Favorites', 'favorites', FilterType.FAVORITE, currentType, favoriteCount)}
     </div>`
   );
 };

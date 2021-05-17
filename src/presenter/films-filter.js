@@ -49,7 +49,7 @@ export default class FilmsFilter {
     }
 
     this._changeData(
-      UserAction.FILTER_FILMS,
+      UserAction.UPDATE_FILTER,
       UpdateType.MAJOR,
       filterType,
     );

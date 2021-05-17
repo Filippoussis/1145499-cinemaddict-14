@@ -1,30 +1,25 @@
 // const
-import {UserAction, UpdateType, FilterType} from '../const';
+import {UserAction, UpdateType, FilterType} from '../const.js';
 
 // utils
 import {render, replace, remove} from '../utils/render';
 import {updateFilmProperty} from '../utils/update';
 
 // view
-import FilmDetailsControlsView from '../view/film-details-controls';
+import FilmCardView from '../view/film-card';
 
-
-export default class FilmDetailsControls {
-  constructor(container, filmsModel, changeData) {
+export default class FilmCard {
+  constructor(container, changeMode, changeData) {
     this._containerView = container;
 
-    this._filmsModel = filmsModel;
+    this._changeMode = changeMode;
     this._changeData = changeData;
-
-    this._sectionView = null;
-
-    this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._handleWatchlist = this._handleWatchlist.bind(this);
     this._handleWatched = this._handleWatched.bind(this);
     this._handleFavorite = this._handleFavorite.bind(this);
 
-    this._filmsModel.subscribe(this._handleModelEvent);
+    this._sectionView = null;
   }
 
   init(film) {
@@ -32,11 +27,15 @@ export default class FilmDetailsControls {
 
     const prevSectionView = this._sectionView;
 
-    this._sectionView = new FilmDetailsControlsView(this._film);
+    this._sectionView = new FilmCardView(this._film);
 
-    this._sectionView.setWatchlistChangeHandler(this._handleWatchlist);
-    this._sectionView.setWatchedChangeHandler(this._handleWatched);
-    this._sectionView.setFavoriteChangeHandler(this._handleFavorite);
+    this._sectionView.setClickHandler(() => {
+      this._changeMode(this._film);
+    });
+
+    this._sectionView.setWatchlistClickHandler(this._handleWatchlist);
+    this._sectionView.setWatchedClickHandler(this._handleWatched);
+    this._sectionView.setFavoriteClickHandler(this._handleFavorite);
 
     if (prevSectionView === null) {
       render(this._containerView, this._sectionView);
@@ -47,8 +46,8 @@ export default class FilmDetailsControls {
     remove(prevSectionView);
   }
 
-  _handleModelEvent(_, data) {
-    this.init(data);
+  destroy() {
+    remove(this._sectionView);
   }
 
   _handleWatchlist() {

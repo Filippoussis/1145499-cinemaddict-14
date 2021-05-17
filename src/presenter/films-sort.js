@@ -30,7 +30,7 @@ export default class FilmsSort {
     }
 
     this._changeData(
-      UserAction.SORT_FILMS,
+      UserAction.UPDATE_SORT,
       UpdateType.MAJOR,
       sortType,
     );
