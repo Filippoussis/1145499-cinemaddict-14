@@ -50,6 +50,14 @@ export default class FilmCard {
     remove(this._sectionView);
   }
 
+  lockControls() {
+    this._sectionView.setDisabled();
+  }
+
+  unlockControls() {
+    this._sectionView.unsetDisabled();
+  }
+
   _handleWatchlist() {
     this._changeData(
       UserAction.UPDATE_WATHLIST,
