@@ -15,20 +15,11 @@ export default class Comments extends Observer {
     return this._items;
   }
 
-  addItem(updateType, update) {
-    this._items = [
-      update,
-      ...this._items,
-    ];
-
-    this._notify(updateType, update);
-  }
-
   deleteItem(updateType, deletedId) {
     const index = this._items.findIndex((item) => item.id === deletedId);
 
     if (index === -1) {
-      throw new Error('Can\'t delete unexisting task');
+      throw new Error('Can\'t delete unexisting item');
     }
 
     this._items = [
