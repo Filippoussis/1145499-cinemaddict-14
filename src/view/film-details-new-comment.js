@@ -30,9 +30,9 @@ const createEmojiListTemplate = (emojis, localEmoji) => {
 
 const createFilmDetailsNewCommentTemplate = (state) => {
 
-  const {localEmoji, localComment} = state;
-  const commentEmoji = localEmoji !== '' ? createCommentEmojiTemplate(localEmoji) : localEmoji;
-  const emojiList = createEmojiListTemplate(COMMENT_EMOJIS, localEmoji);
+  const {emotion, comment} = state;
+  const commentEmoji = emotion !== '' ? createCommentEmojiTemplate(emotion) : emotion;
+  const emojiList = createEmojiListTemplate(COMMENT_EMOJIS, emotion);
 
   return (
     `<div class="film-details__new-comment">
@@ -41,7 +41,7 @@ const createFilmDetailsNewCommentTemplate = (state) => {
       </div>
 
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(localComment)}</textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(comment)}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
@@ -56,12 +56,14 @@ export default class FilmDetailsNewComment extends SmartView {
     super();
 
     this._state = {
-      localEmoji: '',
-      localComment: '',
+      emotion: '',
+      comment: '',
     };
 
     this._emojiListChangeHandler = this._emojiListChangeHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
+
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -89,14 +91,31 @@ export default class FilmDetailsNewComment extends SmartView {
   _emojiListChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      localEmoji: evt.target.value,
+      emotion: evt.target.value,
     });
   }
 
   _commentInputHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      localComment: evt.target.value,
+      comment: evt.target.value,
     }, true);
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.submitForm = callback;
+    document.addEventListener('keydown', this._formSubmitHandler);
+  }
+
+  _formSubmitHandler(evt) {
+    if (evt.key === 'Enter' && (evt.ctrlKey || evt.metaKey)) {
+      evt.preventDefault();
+      this._callback.submitForm(this._state);
+
+      this.updateData({
+        emotion: '',
+        comment: '',
+      });
+    }
   }
 }
