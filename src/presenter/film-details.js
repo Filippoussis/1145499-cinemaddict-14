@@ -20,15 +20,18 @@ import FilmDetailsCommentsPresenter from './film-details-comments';
 const NO_SCROLL_CLASS_NAME = 'hide-overflow';
 
 export default class FilmDetails {
-  constructor(filmsModel, commentsModel, changeData, api) {
+  constructor(filmsModel, commentsModel, changeData, unlockControls, api) {
 
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._changeData = changeData;
+    this._unlockControls = unlockControls;
     this._api = api;
 
-    this._removePopup = this._removePopup.bind(this);
     this._buttonEscKeyDownHandler = this._buttonEscKeyDownHandler.bind(this);
+
+    this._closePopup = this._closePopup.bind(this);
+
     this._handleViewAction = this._handleViewAction.bind(this);
 
     this._isActive = true;
@@ -111,7 +114,7 @@ export default class FilmDetails {
 
   _renderCloseButton() {
     const closeButtonView = new FilmDetailsCloseButtonView();
-    closeButtonView.setCloseButtonClickHandler(this._removePopup);
+    closeButtonView.setCloseButtonClickHandler(this._closePopup);
     render(this._topContainerView, closeButtonView);
   }
 
@@ -160,15 +163,16 @@ export default class FilmDetails {
     this._renderCommentsList();
   }
 
-  _removePopup() {
+  _closePopup() {
     remove(this._sectionView);
+    this._unlockControls();
     this._removeBodyNoScroll();
     this._removeDocumentKeyDownHandler();
   }
 
   resetView() {
     if (this._isActive) {
-      this._removePopup();
+      this._closePopup();
     }
   }
 
@@ -190,7 +194,7 @@ export default class FilmDetails {
 
   _buttonEscKeyDownHandler(evt) {
     if (evt.key === 'Escape') {
-      this._removePopup();
+      this._closePopup();
     }
   }
 }
