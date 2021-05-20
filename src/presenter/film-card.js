@@ -20,6 +20,8 @@ export default class FilmCard {
     this._handleFavorite = this._handleFavorite.bind(this);
 
     this._sectionView = null;
+
+    this._isDisabled = false;
   }
 
   init(film) {
@@ -32,6 +34,8 @@ export default class FilmCard {
     this._sectionView.setClickHandler(() => {
       this._changeMode(this._film);
     });
+
+    this._disableConrols(this._isDisabled);
 
     this._sectionView.setWatchlistClickHandler(this._handleWatchlist);
     this._sectionView.setWatchedClickHandler(this._handleWatched);
@@ -50,12 +54,18 @@ export default class FilmCard {
     remove(this._sectionView);
   }
 
-  lockControls() {
-    this._sectionView.setDisabled();
+  setStatusDisable() {
+    this._isDisabled = true;
+    this._disableConrols();
   }
 
-  unlockControls() {
-    this._sectionView.unsetDisabled();
+  unsetStatusDisable() {
+    this._isDisabled = false;
+    this._disableConrols();
+  }
+
+  _disableConrols() {
+    this._sectionView.disableConrols(this._isDisabled);
   }
 
   _handleWatchlist() {

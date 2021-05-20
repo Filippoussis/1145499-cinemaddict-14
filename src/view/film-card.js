@@ -68,16 +68,10 @@ export default class FilmCard extends AbstractView {
     return createFilmCardTemplate(this._item);
   }
 
-  setDisabled() {
+  disableConrols(isDisabled) {
     this.getElement()
       .querySelectorAll('.film-card__controls-item')
-      .forEach((item) => item.disabled = true);
-  }
-
-  unsetDisabled() {
-    this.getElement()
-      .querySelectorAll('.film-card__controls-item')
-      .forEach((item) => item.disabled = false);
+      .forEach((item) => item.disabled = isDisabled);
   }
 
   setClickHandler(callback) {

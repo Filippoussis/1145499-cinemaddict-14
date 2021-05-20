@@ -146,12 +146,12 @@ export default class AllFilms {
   }
 
   _showFilmDetails(film) {
-    this._filmPresenterMap.forEach((presenter) => presenter.lockControls());
+    this._filmPresenterMap.forEach((presenter) => presenter.setStatusDisable());
     this._renderFilmDetails(film);
   }
 
   _closeFilmDetails() {
-    this._filmPresenterMap.forEach((presenter) => presenter.unlockControls());
+    this._filmPresenterMap.forEach((presenter) => presenter.unsetStatusDisable());
   }
 
   _renderShowMoreButton() {
