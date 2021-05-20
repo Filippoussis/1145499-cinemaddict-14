@@ -18,7 +18,7 @@ export default class FilmDetailsComments {
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleButtonDeleteClick = this._handleButtonDeleteClick.bind(this);
-    this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleFormKeyDown = this._handleFormKeyDown.bind(this);
 
     this._commentsModel.subscribe(this._handleModelEvent);
 
@@ -32,8 +32,8 @@ export default class FilmDetailsComments {
     this._renderNewComment();
   }
 
-  setActionOnError() {
-    this._listView.actionOnError();
+  handleActionOnError() {
+    this._listView.errorHandler();
   }
 
   _getComments() {
@@ -81,11 +81,11 @@ export default class FilmDetailsComments {
 
   _renderNewComment() {
     const newCommentView = new FilmDetailsNewCommentView();
-    newCommentView.setFormSubmitHandler(this._handleFormSubmit);
+    newCommentView.setFormKeyDownHandler(this._handleFormKeyDown);
     render(this._containerView, newCommentView);
   }
 
-  _handleFormSubmit(localComment) {
+  _handleFormKeyDown(localComment) {
     this._isLoading = true;
 
     const requestBody = {

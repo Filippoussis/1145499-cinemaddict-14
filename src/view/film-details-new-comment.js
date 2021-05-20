@@ -63,13 +63,18 @@ export default class FilmDetailsNewComment extends SmartView {
     this._emojiListChangeHandler = this._emojiListChangeHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
 
-    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formKeyDownHandler = this._formKeyDownHandler.bind(this);
 
     this._setInnerHandlers();
   }
 
   getTemplate() {
     return createFilmDetailsNewCommentTemplate(this._state);
+  }
+
+  setFormKeyDownHandler(callback) {
+    this._callback.keyDownForm = callback;
+    document.addEventListener('keydown', this._formKeyDownHandler);
   }
 
   restoreHandlers() {
@@ -102,15 +107,10 @@ export default class FilmDetailsNewComment extends SmartView {
     }, true);
   }
 
-  setFormSubmitHandler(callback) {
-    this._callback.submitForm = callback;
-    document.addEventListener('keydown', this._formSubmitHandler);
-  }
-
-  _formSubmitHandler(evt) {
+  _formKeyDownHandler(evt) {
     if (evt.key === 'Enter' && (evt.ctrlKey || evt.metaKey)) {
       evt.preventDefault();
-      this._callback.submitForm(this._state);
+      this._callback.keyDownForm(this._state);
 
       this.updateData({
         emotion: '',
