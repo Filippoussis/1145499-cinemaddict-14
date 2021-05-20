@@ -41,28 +41,43 @@ export default class FilmDetailsCommentsList extends AbstractView {
     super();
 
     this._comments = comments;
-    this._commentDeleteClickHandler = this._commentDeleteClickHandler.bind(this);
+
+    this._buttonDeleteClickHandler = this._buttonDeleteClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmDetailsCommentsListTemplate(this._comments);
   }
 
-  setCommentDeleteClickHandler(callback) {
-    this._callback.clickCommentDelete = callback;
-    this.getElement().addEventListener('click', this._commentDeleteClickHandler);
+  showErrorEffect() {
+    this.shake();
+    this._unlockButton();
   }
 
-  _commentDeleteClickHandler(evt) {
+  setButtonDeleteClickHandler(callback) {
+    this._callback.clickCommentDelete = callback;
+    this.getElement().addEventListener('click', this._buttonDeleteClickHandler);
+  }
+
+  _unlockButton() {
+    this._target.disabled = false;
+    this._target.textContent = 'Delete';
+    this._target = null;
+  }
+
+  _buttonDeleteClickHandler(evt) {
     evt.preventDefault();
 
-    const target = evt.target;
+    this._target = evt.target;
 
-    if (target.tagName !== 'BUTTON') {
+    if (this._target.tagName !== 'BUTTON') {
       return;
     }
 
-    const deletedCommentId = Number(target.closest('li').dataset.id);
+    this._target.disabled = true;
+    this._target.textContent = 'Deleting...';
+
+    const deletedCommentId = this._target.closest('li').dataset.id;
     this._callback.clickCommentDelete(deletedCommentId);
   }
 }

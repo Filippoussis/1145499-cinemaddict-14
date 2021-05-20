@@ -43,6 +43,7 @@ export default class AllFilms {
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._changeMode = this._changeMode.bind(this);
+    this._closeFilmDetails = this._closeFilmDetails.bind(this);
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -136,6 +137,7 @@ export default class AllFilms {
       this._filmsModel,
       this._commentsModel,
       this._handleViewAction,
+      this._closeFilmDetails,
       this._api,
     );
 
@@ -144,7 +146,12 @@ export default class AllFilms {
   }
 
   _showFilmDetails(film) {
+    this._filmPresenterMap.forEach((presenter) => presenter.setStatusDisable());
     this._renderFilmDetails(film);
+  }
+
+  _closeFilmDetails() {
+    this._filmPresenterMap.forEach((presenter) => presenter.unsetStatusDisable());
   }
 
   _renderShowMoreButton() {
@@ -218,6 +225,10 @@ export default class AllFilms {
     this._renderedFilmCount = resetRenderedFilmCount
       ? FilmCount.STEP
       : Math.min(this._getFilms().length, this._renderedFilmCount);
+
+    if (this._renderedFilmCount === 0) {
+      this._filmDetailsPresenterMap.forEach((presenter) => presenter.resetView());
+    }
   }
 
   _renderFilmsBoard() {

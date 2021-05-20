@@ -18,6 +18,8 @@ export const UserAction = {
   UPDATE_WATHLIST: 'UPDATE_WATHLIST',
   UPDATE_WATCHED: 'UPDATE_WATCHED',
   UPDATE_FAVORITE: 'UPDATE_FAVORITE',
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
 };
 
 export const UpdateType = {
@@ -32,4 +34,9 @@ export const FilterType = {
   WATCHLIST: 'isWatchlist',
   WATCHED: 'isWatched',
   FAVORITE: 'isFavorite',
+};
+
+export const KeyName = {
+  ESC: 'Escape',
+  ENTER: 'Enter',
 };

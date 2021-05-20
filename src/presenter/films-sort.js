@@ -31,7 +31,7 @@ export default class FilmsSort {
 
     this._changeData(
       UserAction.UPDATE_SORT,
-      UpdateType.MAJOR,
+      UpdateType.MINOR,
       sortType,
     );
   }

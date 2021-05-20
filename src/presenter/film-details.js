@@ -1,5 +1,5 @@
 // const
-import {UpdateType} from '../const';
+import {UpdateType, UserAction, KeyName} from '../const';
 
 // utils
 import {render, remove} from '../utils/render';
@@ -12,7 +12,6 @@ import FilmDetailsCloseButtonView from '../view/film-details-close-button';
 import FilmDetailsInfoView from '../view/film-details-info';
 import FilmDetailsBottomContainerView from '../view/film-details-bottom-container';
 import FilmDetailsCommentsWrapView from '../view/film-details-comments-wrap';
-import FilmDetailsNewCommentView from '../view/film-details-new-comment';
 
 // presenter
 import FilmDetailsControlsPresenter from './film-details-controls';
@@ -21,15 +20,19 @@ import FilmDetailsCommentsPresenter from './film-details-comments';
 const NO_SCROLL_CLASS_NAME = 'hide-overflow';
 
 export default class FilmDetails {
-  constructor(filmsModel, commentsModel, changeData, api) {
+  constructor(filmsModel, commentsModel, changeData, unlockControls, api) {
 
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._changeData = changeData;
+    this._unlockControls = unlockControls;
     this._api = api;
 
-    this._removePopup = this._removePopup.bind(this);
     this._buttonEscKeyDownHandler = this._buttonEscKeyDownHandler.bind(this);
+
+    this._closePopup = this._closePopup.bind(this);
+
+    this._handleViewAction = this._handleViewAction.bind(this);
 
     this._isActive = true;
   }
@@ -37,13 +40,14 @@ export default class FilmDetails {
   init(film) {
     this._film = film;
 
+    this._getCommentsData(this._film.id);
+
     this._renderPopup();
     this._setBodyNoScroll();
     this._setDocumentKeyDownHandler();
-    this._getComments(this._film.id);
   }
 
-  _getComments(id) {
+  _getCommentsData(id) {
     this._api.getComments(id)
       .then((comments) => {
         this._commentsModel.setItems(UpdateType.INIT, comments);
@@ -51,6 +55,46 @@ export default class FilmDetails {
       .catch(() => {
         this._commentsModel.setItems(UpdateType.INIT, []);
       });
+  }
+
+  _handleViewAction(actionType, updateType, update) {
+    switch (actionType) {
+      case UserAction.ADD_COMMENT:
+        this._api.addComment(update.filmId, update.localComment)
+          .then((response) => {
+            const {movie, comments} = response;
+
+            this._commentsModel.setItems(
+              updateType,
+              comments,
+            );
+
+            this._filmsModel.updateItem(
+              updateType,
+              movie,
+            );
+          })
+          .catch(() => this._formView.shake());
+        break;
+
+      case UserAction.DELETE_COMMENT:
+        this._api.deleteComment(update.deletedCommentId)
+          .then(() => {
+            this._commentsModel.deleteItem(
+              updateType,
+              update.deletedCommentId,
+            );
+
+            this._api.updateFilm(update.film).then((response) => {
+              this._filmsModel.updateItem(
+                updateType,
+                response,
+              );
+            });
+          })
+          .catch(() => this._commentsListPresenter.setErrorEffect());
+        break;
+    }
   }
 
   _renderSection() {
@@ -70,7 +114,7 @@ export default class FilmDetails {
 
   _renderCloseButton() {
     const closeButtonView = new FilmDetailsCloseButtonView();
-    closeButtonView.setCloseButtonClickHandler(this._removePopup);
+    closeButtonView.setCloseButtonClickHandler(this._closePopup);
     render(this._topContainerView, closeButtonView);
   }
 
@@ -99,17 +143,12 @@ export default class FilmDetails {
   }
 
   _renderCommentsList() {
-    const commentsListPresenter = new FilmDetailsCommentsPresenter(
+    this._commentsListPresenter = new FilmDetailsCommentsPresenter(
       this._commentsWrapView,
       this._commentsModel,
-      this._changeData,
+      this._handleViewAction,
     );
-    commentsListPresenter.init();
-  }
-
-  _renderNewComment() {
-    this._newCommentView = new FilmDetailsNewCommentView();
-    render(this._commentsWrapView, this._newCommentView);
+    this._commentsListPresenter.init(this._film);
   }
 
   _renderPopup() {
@@ -122,18 +161,18 @@ export default class FilmDetails {
     this._renderBottomContainer();
     this._renderCommentsWrap();
     this._renderCommentsList();
-    this._renderNewComment();
   }
 
-  _removePopup() {
+  _closePopup() {
     remove(this._sectionView);
+    this._unlockControls();
     this._removeBodyNoScroll();
     this._removeDocumentKeyDownHandler();
   }
 
   resetView() {
     if (this._isActive) {
-      this._removePopup();
+      this._closePopup();
     }
   }
 
@@ -154,8 +193,8 @@ export default class FilmDetails {
   }
 
   _buttonEscKeyDownHandler(evt) {
-    if (evt.key === 'Escape') {
-      this._removePopup();
+    if (evt.key === KeyName.ESC) {
+      this._closePopup();
     }
   }
 }
