@@ -60,8 +60,9 @@ export default class FilmDetailsCommentsList extends AbstractView {
   }
 
   _unlockButton() {
-    this._target.removeAttribute('disabled');
+    this._target.disabled = false;
     this._target.textContent = 'Delete';
+    this._target = null;
   }
 
   _buttonDeleteClickHandler(evt) {
@@ -73,7 +74,7 @@ export default class FilmDetailsCommentsList extends AbstractView {
       return;
     }
 
-    this._target.setAttribute('disabled', 'disabled');
+    this._target.disabled = true;
     this._target.textContent = 'Deleting...';
 
     const deletedCommentId = this._target.closest('li').dataset.id;
