@@ -1,6 +1,8 @@
 import he from 'he';
 import SmartView from './smart';
 
+import {KeyName} from '../const';
+
 const COMMENT_EMOJIS = ['smile', 'sleeping', 'puke', 'angry'];
 
 const createCommentEmojiTemplate = (emoji) => {
@@ -108,7 +110,7 @@ export default class FilmDetailsNewComment extends SmartView {
   }
 
   _formKeyDownHandler(evt) {
-    if (evt.key === 'Enter' && (evt.ctrlKey || evt.metaKey)) {
+    if (evt.key === KeyName.ENTER && (evt.ctrlKey || evt.metaKey)) {
       evt.preventDefault();
       this._callback.keyDownForm(this._state);
 

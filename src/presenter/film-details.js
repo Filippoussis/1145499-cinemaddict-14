@@ -1,5 +1,5 @@
 // const
-import {UpdateType, UserAction} from '../const';
+import {UpdateType, UserAction, KeyName} from '../const';
 
 // utils
 import {render, remove} from '../utils/render';
@@ -193,7 +193,7 @@ export default class FilmDetails {
   }
 
   _buttonEscKeyDownHandler(evt) {
-    if (evt.key === 'Escape') {
+    if (evt.key === KeyName.ESC) {
       this._closePopup();
     }
   }

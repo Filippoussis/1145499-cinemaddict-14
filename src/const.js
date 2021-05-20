@@ -35,3 +35,8 @@ export const FilterType = {
   WATCHED: 'isWatched',
   FAVORITE: 'isFavorite',
 };
+
+export const KeyName = {
+  ESC: 'Escape',
+  ENTER: 'Enter',
+};
