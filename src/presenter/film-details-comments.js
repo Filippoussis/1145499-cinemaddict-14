@@ -32,8 +32,8 @@ export default class FilmDetailsComments {
     this._renderNewComment();
   }
 
-  handleActionOnError() {
-    this._listView.errorHandler();
+  setErrorEffect() {
+    this._listView.showErrorEffect();
   }
 
   _getComments() {

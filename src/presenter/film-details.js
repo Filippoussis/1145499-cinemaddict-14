@@ -92,7 +92,7 @@ export default class FilmDetails {
               );
             });
           })
-          .catch(() => this._commentsListPresenter.handleActionOnError());
+          .catch(() => this._commentsListPresenter.setErrorEffect());
         break;
     }
   }

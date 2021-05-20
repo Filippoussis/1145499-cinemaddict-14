@@ -49,9 +49,9 @@ export default class FilmDetailsCommentsList extends AbstractView {
     return createFilmDetailsCommentsListTemplate(this._comments);
   }
 
-  _unlockButton() {
-    this._target.removeAttribute('disabled');
-    this._target.textContent = 'Delete';
+  showErrorEffect() {
+    this.shake();
+    this._unlockButton();
   }
 
   setButtonDeleteClickHandler(callback) {
@@ -59,9 +59,9 @@ export default class FilmDetailsCommentsList extends AbstractView {
     this.getElement().addEventListener('click', this._buttonDeleteClickHandler);
   }
 
-  errorHandler() {
-    this.shake();
-    this._unlockButton();
+  _unlockButton() {
+    this._target.removeAttribute('disabled');
+    this._target.textContent = 'Delete';
   }
 
   _buttonDeleteClickHandler(evt) {
