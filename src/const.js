@@ -40,3 +40,17 @@ export const KeyName = {
   ESC: 'Escape',
   ENTER: 'Enter',
 };
+
+export const MenuItem = {
+  ALL: 'ALL',
+  WATCHLIST: 'WATCHLIST',
+  HISTORY: 'HISTORY',
+  FAVORITE: 'FAVORITE',
+  STATISTICS: 'STATISTICS',
+};
+
+export const UserControl = {
+  WATCHLIST: 'isWatchlist',
+  WATCHED: 'isWatched',
+  FAVORITE: 'isFavorite',
+};

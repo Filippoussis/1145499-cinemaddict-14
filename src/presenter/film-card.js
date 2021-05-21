@@ -1,9 +1,9 @@
 // const
-import {UserAction, UpdateType, FilterType} from '../const.js';
+import {UserAction, UserControl, UpdateType} from '../const.js';
 
 // utils
 import {render, replace, remove} from '../utils/render';
-import {updateFilmProperty} from '../utils/update';
+import {updateUserDetails} from '../utils/update';
 
 // view
 import FilmCardView from '../view/film-card';
@@ -72,7 +72,7 @@ export default class FilmCard {
     this._changeData(
       UserAction.UPDATE_WATHLIST,
       UpdateType.PATCH,
-      updateFilmProperty(this._film, FilterType.WATCHLIST),
+      updateUserDetails(this._film, UserControl.WATCHLIST),
     );
   }
 
@@ -80,7 +80,7 @@ export default class FilmCard {
     this._changeData(
       UserAction.UPDATE_WATCHED,
       UpdateType.PATCH,
-      updateFilmProperty(this._film, FilterType.WATCHED),
+      updateUserDetails(this._film, UserControl.WATCHED),
     );
   }
 
@@ -88,7 +88,7 @@ export default class FilmCard {
     this._changeData(
       UserAction.UPDATE_FAVORITE,
       UpdateType.PATCH,
-      updateFilmProperty(this._film, FilterType.FAVORITE),
+      updateUserDetails(this._film, UserControl.FAVORITE),
     );
   }
 }
