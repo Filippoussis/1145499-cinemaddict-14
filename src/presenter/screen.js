@@ -12,6 +12,7 @@ import PageMainView from '../view/page-main';
 import MainContentView from '../view/main-content';
 import PageFooterView from '../view/page-footer';
 import FilmsTitleLoadingView from '../view/films-title-loading';
+// import UserStatisticView from '../view/user-statistic';
 
 // presenter
 import UserProfilePresenter from './user-profile';

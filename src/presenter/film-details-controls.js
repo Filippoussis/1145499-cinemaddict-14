@@ -1,5 +1,5 @@
 // const
-import {UserAction, UserControl, UpdateType} from '../const';
+import {UserAction, UserDetails, UpdateType} from '../const';
 
 // utils
 import {render, replace, remove} from '../utils/render';
@@ -55,7 +55,7 @@ export default class FilmDetailsControls {
     this._changeData(
       UserAction.UPDATE_WATHLIST,
       UpdateType.PATCH,
-      updateUserDetails(this._film, UserControl.WATCHLIST),
+      updateUserDetails(this._film, UserDetails.WATCHLIST),
     );
   }
 
@@ -63,7 +63,7 @@ export default class FilmDetailsControls {
     this._changeData(
       UserAction.UPDATE_WATCHED,
       UpdateType.PATCH,
-      updateUserDetails(this._film, UserControl.WATCHED),
+      updateUserDetails(this._film, UserDetails.WATCHED),
     );
   }
 
@@ -71,7 +71,7 @@ export default class FilmDetailsControls {
     this._changeData(
       UserAction.UPDATE_FAVORITE,
       UpdateType.PATCH,
-      updateUserDetails(this._film, UserControl.FAVORITE),
+      updateUserDetails(this._film, UserDetails.FAVORITE),
     );
   }
 }

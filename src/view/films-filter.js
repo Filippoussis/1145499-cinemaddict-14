@@ -20,8 +20,8 @@ const createFilmsFilterTemplate = ({watchlistCount, watchedCount, favoriteCount}
     `<div class="main-navigation__items">
       ${createFilterItemTemplate('All movies', 'all', FilterType.ALL, currentType)}
       ${createFilterItemTemplate('Watchlist', 'watchlist', FilterType.WATCHLIST, currentType, watchlistCount)}
-      ${createFilterItemTemplate('History', 'history', FilterType.WATCHED, currentType, watchedCount)}
-      ${createFilterItemTemplate('Favorites', 'favorites', FilterType.FAVORITE, currentType, favoriteCount)}
+      ${createFilterItemTemplate('History', 'history', FilterType.HISTORY, currentType, watchedCount)}
+      ${createFilterItemTemplate('Favorites', 'favorites', FilterType.FAVORITES, currentType, favoriteCount)}
     </div>`
   );
 };
@@ -52,6 +52,8 @@ export default class FilmsFilter extends AbstractView {
     if (target.tagName !== 'A') {
       return;
     }
+
+    console.log(target.href.match(/[^/]+$/)[0]);
 
     this._callback.changeType(target.dataset.filterType);
   }

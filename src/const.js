@@ -30,10 +30,10 @@ export const UpdateType = {
 };
 
 export const FilterType = {
-  ALL: 'all',
-  WATCHLIST: 'isWatchlist',
-  WATCHED: 'isWatched',
-  FAVORITE: 'isFavorite',
+  ALL: 'ALL',
+  WATCHLIST: 'WATCHLIST',
+  HISTORY: 'HISTORY',
+  FAVORITES: 'FAVORITES',
 };
 
 export const KeyName = {
@@ -41,16 +41,8 @@ export const KeyName = {
   ENTER: 'Enter',
 };
 
-export const MenuItem = {
-  ALL: 'ALL',
-  WATCHLIST: 'WATCHLIST',
-  HISTORY: 'HISTORY',
-  FAVORITE: 'FAVORITE',
-  STATISTICS: 'STATISTICS',
-};
-
-export const UserControl = {
-  WATCHLIST: 'isWatchlist',
-  WATCHED: 'isWatched',
-  FAVORITE: 'isFavorite',
+export const UserDetails = {
+  WATCHLIST: 'watchlist',
+  WATCHED: 'watched',
+  FAVORITE: 'favorite',
 };

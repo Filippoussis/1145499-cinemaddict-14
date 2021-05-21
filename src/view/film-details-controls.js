@@ -10,25 +10,21 @@ const createControlTemplate = (name, title, isChecked = false) => {
   );
 };
 
-const createFilmDetailsControlsTemplate = ({isWatchlist, isWatched, isFavorite}) => {
+const createFilmDetailsControlsTemplate = ({watchlist, watched, favorite}) => {
   return (
     `<section class="film-details__controls">
-      ${createControlTemplate('watchlist', 'Add to watchlist', isWatchlist)}
-      ${createControlTemplate('watched', 'Already watched', isWatched)}
-      ${createControlTemplate('favorite', 'Add to favorites', isFavorite)}
+      ${createControlTemplate('watchlist', 'Add to watchlist', watchlist)}
+      ${createControlTemplate('watched', 'Already watched', watched)}
+      ${createControlTemplate('favorite', 'Add to favorites', favorite)}
     </section>`
   );
 };
 
 export default class FilmDetailsControls extends AbstractView {
-  constructor({isWatchlist, isWatched, isFavorite}) {
+  constructor({watchlist, watched, favorite}) {
     super();
 
-    this._state = {
-      isWatchlist,
-      isWatched,
-      isFavorite,
-    };
+    this._userDetails = {watchlist, watched, favorite};
 
     this._watchlistChangeHandler = this._watchlistChangeHandler.bind(this);
     this._watchedChangeHandler = this._watchedChangeHandler.bind(this);
@@ -36,7 +32,7 @@ export default class FilmDetailsControls extends AbstractView {
   }
 
   getTemplate() {
-    return createFilmDetailsControlsTemplate(this._state);
+    return createFilmDetailsControlsTemplate(this._userDetails);
   }
 
   setWatchlistChangeHandler(callback) {

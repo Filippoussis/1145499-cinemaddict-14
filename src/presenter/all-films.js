@@ -1,5 +1,5 @@
 // const
-import {InsertPlace, SortType, UpdateType, FilterType, UserAction} from '../const';
+import {InsertPlace, SortType, UpdateType, FilterType, UserAction, UserDetails} from '../const';
 
 // utils
 import {render, remove} from '../utils/render';
@@ -20,10 +20,16 @@ const FilmCount = {
   EXTRA: 2,
 };
 
-const actionTypetoFilterType = {
+const actionTypeToFilterType = {
   [UserAction.UPDATE_WATHLIST]: FilterType.WATCHLIST,
-  [UserAction.UPDATE_WATCHED]: FilterType.WATCHED,
-  [UserAction.UPDATE_FAVORITE]: FilterType.FAVORITE,
+  [UserAction.UPDATE_WATCHED]: FilterType.HISTORY,
+  [UserAction.UPDATE_FAVORITE]: FilterType.FAVORITES,
+};
+
+const filterTypeToUserDetails = {
+  [FilterType.WATCHLIST]: UserDetails.WATCHLIST,
+  [FilterType.HISTORY]: UserDetails.WATCHED,
+  [FilterType.FAVORITES]: UserDetails.FAVORITE,
 };
 
 export default class AllFilms {
@@ -65,7 +71,7 @@ export default class AllFilms {
   _getFilms() {
     const films = this._filmsModel.getItems();
     const filterType = this._filterModel.getType();
-    const filtredFilms = filterType !== FilterType.ALL ? films.filter((film) => film[filterType]) : films;
+    const filtredFilms = filterType !== FilterType.ALL ? films.filter((film) => film[filterTypeToUserDetails[filterType]]) : films;
     const currentSortType = this._sortModel.getType();
 
     switch (currentSortType) {
@@ -101,7 +107,7 @@ export default class AllFilms {
       case UserAction.UPDATE_FAVORITE:
         this._api.updateFilm(update).then((response) => {
           this._filmsModel.updateItem(
-            this._filterModel.getType() === actionTypetoFilterType[actionType] ? UpdateType.MINOR : updateType,
+            this._filterModel.getType() === actionTypeToFilterType[actionType] ? UpdateType.MINOR : updateType,
             response,
           );
         });
