@@ -42,7 +42,7 @@ export default class UserProfile {
   }
 
   _getWatchedFilmsCount() {
-    return this._getFilms().filter((film) => film.isWatched).length;
+    return this._getFilms().reduce((count, film) => film.isWatched ? count + 1 : count, 0);
   }
 
   _getRank() {
