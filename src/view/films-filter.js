@@ -1,27 +1,21 @@
 import AbstractView from './abstract';
 import {FilterType} from '../const';
 
-const createFilterItemTemplate = (title, link, type,  currentType, count) => {
+const createFilterItemTemplate = (title, type,  currentType, count) => {
 
   const classMod = currentType === type ? 'main-navigation__item--active' : '';
   const itemCount = type !== FilterType.ALL ? `<span class="main-navigation__item-count">${count}</span>` : '';
 
-  return (
-    `<a href="#${link}"
-        class="main-navigation__item ${classMod}"
-        data-filter-type="${type}">${title}
-        ${itemCount}
-    </a>`
-  );
+  return `<a href="#${type}" class="main-navigation__item ${classMod}">${title} ${itemCount}</a>`;
 };
 
 const createFilmsFilterTemplate = ({watchlistCount, watchedCount, favoriteCount}, currentType) => {
   return (
     `<div class="main-navigation__items">
-      ${createFilterItemTemplate('All movies', 'all', FilterType.ALL, currentType)}
-      ${createFilterItemTemplate('Watchlist', 'watchlist', FilterType.WATCHLIST, currentType, watchlistCount)}
-      ${createFilterItemTemplate('History', 'history', FilterType.HISTORY, currentType, watchedCount)}
-      ${createFilterItemTemplate('Favorites', 'favorites', FilterType.FAVORITES, currentType, favoriteCount)}
+      ${createFilterItemTemplate('All movies', FilterType.ALL, currentType)}
+      ${createFilterItemTemplate('Watchlist', FilterType.WATCHLIST, currentType, watchlistCount)}
+      ${createFilterItemTemplate('History', FilterType.HISTORY, currentType, watchedCount)}
+      ${createFilterItemTemplate('Favorites', FilterType.FAVORITES, currentType, favoriteCount)}
     </div>`
   );
 };
@@ -53,8 +47,6 @@ export default class FilmsFilter extends AbstractView {
       return;
     }
 
-    console.log(target.href.match(/[^/]+$/)[0]);
-
-    this._callback.changeType(target.dataset.filterType);
+    this._callback.changeType(target.href.match(/[^/#]+$/)[0]);
   }
 }
