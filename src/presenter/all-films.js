@@ -27,9 +27,9 @@ const actionTypeToFilterType = {
 };
 
 const filterTypeToUserDetails = {
-  [FilterType.WATCHLIST]: UserDetails.WATCHLIST,
-  [FilterType.HISTORY]: UserDetails.WATCHED,
-  [FilterType.FAVORITES]: UserDetails.FAVORITE,
+  [FilterType.WATCHLIST]: UserDetails.watchlist,
+  [FilterType.HISTORY]: UserDetails.watched,
+  [FilterType.FAVORITES]: UserDetails.favorite,
 };
 
 export default class AllFilms {

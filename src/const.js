@@ -42,7 +42,7 @@ export const KeyName = {
 };
 
 export const UserDetails = {
-  WATCHLIST: 'watchlist',
-  WATCHED: 'watched',
-  FAVORITE: 'favorite',
+  watchlist: 'watchlist',
+  watched: 'watched',
+  favorite: 'favorite',
 };

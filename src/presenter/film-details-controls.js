@@ -55,7 +55,7 @@ export default class FilmDetailsControls {
     this._changeData(
       UserAction.UPDATE_WATHLIST,
       UpdateType.PATCH,
-      updateUserDetails(this._film, UserDetails.WATCHLIST),
+      updateUserDetails(this._film, UserDetails.watchlist),
     );
   }
 
@@ -63,7 +63,7 @@ export default class FilmDetailsControls {
     this._changeData(
       UserAction.UPDATE_WATCHED,
       UpdateType.PATCH,
-      updateUserDetails(this._film, UserDetails.WATCHED),
+      updateUserDetails(this._film, UserDetails.watched),
     );
   }
 
@@ -71,7 +71,7 @@ export default class FilmDetailsControls {
     this._changeData(
       UserAction.UPDATE_FAVORITE,
       UpdateType.PATCH,
-      updateUserDetails(this._film, UserDetails.FAVORITE),
+      updateUserDetails(this._film, UserDetails.favorite),
     );
   }
 }
