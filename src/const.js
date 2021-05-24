@@ -38,8 +38,8 @@ export const FilterType = {
   FAVORITES: 'FAVORITES',
 };
 
-export const KeyName = {
-  ESC: 'Escape',
+export const KeyboardName = {
+  ESCAPE: 'Escape',
   ENTER: 'Enter',
 };
 
