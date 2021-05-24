@@ -81,7 +81,7 @@ export default class FilmDetailsComments {
 
   _renderNewComment() {
     const newCommentView = new FilmDetailsNewCommentView();
-    newCommentView.setFormKeyDownHandler(this._handleFormKeyDown);
+    newCommentView.setFormPressKeyDownHandler(this._handleFormKeyDown);
     render(this._containerView, newCommentView);
   }
 

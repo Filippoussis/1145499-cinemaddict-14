@@ -1,7 +1,9 @@
+// libs
 import he from 'he';
 import SmartView from './smart';
 
-import {KeyName} from '../const';
+// utils
+import {isControlEnterEvent} from '../utils/keyboard-event';
 
 const COMMENT_EMOJIS = ['smile', 'sleeping', 'puke', 'angry'];
 
@@ -65,7 +67,7 @@ export default class FilmDetailsNewComment extends SmartView {
     this._emojiListChangeHandler = this._emojiListChangeHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
 
-    this._formKeyDownHandler = this._formKeyDownHandler.bind(this);
+    this._formPressKeyDownHandler = this._formPressKeyDownHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -74,9 +76,9 @@ export default class FilmDetailsNewComment extends SmartView {
     return createFilmDetailsNewCommentTemplate(this._state);
   }
 
-  setFormKeyDownHandler(callback) {
-    this._callback.keyDownForm = callback;
-    document.addEventListener('keydown', this._formKeyDownHandler);
+  setFormPressKeyDownHandler(callback) {
+    this._callback.pressKeyDownForm = callback;
+    document.addEventListener('keydown', this._formPressKeyDownHandler);
   }
 
   restoreHandlers() {
@@ -109,10 +111,10 @@ export default class FilmDetailsNewComment extends SmartView {
     }, true);
   }
 
-  _formKeyDownHandler(evt) {
-    if (evt.key === KeyName.ENTER && (evt.ctrlKey || evt.metaKey)) {
+  _formPressKeyDownHandler(evt) {
+    if (isControlEnterEvent(evt)) {
       evt.preventDefault();
-      this._callback.keyDownForm(this._state);
+      this._callback.pressKeyDownForm(this._state);
 
       this.updateData({
         emotion: '',
