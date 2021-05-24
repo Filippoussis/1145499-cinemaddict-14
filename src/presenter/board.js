@@ -89,8 +89,6 @@ export default class Board {
       case UpdateType.INIT:
         this._isLoading = false;
         remove(this._loadingTitleView);
-        remove(this._listSectionView);
-        remove(this._mainSectionView);
         this._renderFilmsBoard();
         break;
 
@@ -154,7 +152,7 @@ export default class Board {
 
   _renderLoadingTitle() {
     this._loadingTitleView = new FilmsLoadingTitleView();
-    render(this._listSectionView, this._loadingTitleView, InsertPlace.PREP_END);
+    render(this._containerView, this._loadingTitleView, InsertPlace.PREP_END);
   }
 
   _renderMainTitle(count) {
@@ -266,8 +264,6 @@ export default class Board {
 
   _renderFilmsBoard() {
     if (this._isLoading) {
-      this._renderMainSection();
-      this._renderListSection();
       this._renderLoadingTitle();
       return;
     }
