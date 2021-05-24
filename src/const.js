@@ -20,6 +20,7 @@ export const UserAction = {
   UPDATE_FAVORITE: 'UPDATE_FAVORITE',
   ADD_COMMENT: 'ADD_COMMENT',
   DELETE_COMMENT: 'DELETE_COMMENT',
+  GO_TO_STATISTIC: 'GO_TO_STATISTIC',
 };
 
 export const UpdateType = {
@@ -27,6 +28,7 @@ export const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
+  CLEAR: 'CLEAR',
 };
 
 export const FilterType = {
@@ -45,4 +47,12 @@ export const UserDetails = {
   watchlist: 'watchlist',
   watched: 'watched',
   favorite: 'favorite',
+};
+
+export const StatsFilter = {
+  ALL_TIME: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };
