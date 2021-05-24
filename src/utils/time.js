@@ -8,3 +8,13 @@ export const getFormattedTime = (time) => {
 
   return `${humanisedHours} ${humanisedMinutes}`;
 };
+
+export const getOnlyNumeralTime = (time) => {
+  const hours = Math.trunc(time/MINUTES_PER_HOUR);
+  const minutes = time - hours*MINUTES_PER_HOUR;
+
+  return {
+    hours,
+    minutes,
+  };
+};
