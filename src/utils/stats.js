@@ -1,13 +1,12 @@
 export const getStats = (films) => {
   return films.reduce((stats, {time, genres}) => {
-    genres.forEach((element) => {
-      const isKeyInObject = element in stats.genres;
+    genres.forEach((item) => {
 
-      if (!isKeyInObject) {
-        stats.genres[element] = 0;
+      if (!(stats.genres[item] !== undefined)) {
+        stats.genres[item] = 0;
       }
 
-      stats.genres[element] += 1;
+      stats.genres[item] += 1;
     });
 
     stats.watchedCount += 1;
