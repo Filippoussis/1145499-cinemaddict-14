@@ -22,7 +22,7 @@ dayjs.extend(isToday);
 const renderStatisticChart = (statisticCtx, stats) => {
 
   const genres = Object.keys(stats.genres);
-  const genresCount = Object.values(stats.genres);
+  const numberOfGenres = Object.values(stats.genres);
 
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
@@ -30,7 +30,7 @@ const renderStatisticChart = (statisticCtx, stats) => {
     data: {
       labels: genres,
       datasets: [{
-        data: genresCount,
+        data: numberOfGenres,
         backgroundColor: '#ffe800',
         hoverBackgroundColor: '#ffe800',
         anchor: 'start',
