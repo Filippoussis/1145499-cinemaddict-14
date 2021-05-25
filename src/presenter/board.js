@@ -1,5 +1,5 @@
 // const
-import {InsertPlace, SortType, UpdateType, FilterType, UserAction, UserDetails} from '../const';
+import {InsertPlace, SortType, UpdateType, FilterType, UserAction, UserDetail} from '../const';
 
 // utils
 import {render, remove} from '../utils/render';
@@ -28,10 +28,10 @@ const actionTypeToFilterType = {
   [UserAction.UPDATE_FAVORITE]: FilterType.FAVORITES,
 };
 
-const filterTypeToUserDetails = {
-  [FilterType.WATCHLIST]: UserDetails.watchlist,
-  [FilterType.HISTORY]: UserDetails.watched,
-  [FilterType.FAVORITES]: UserDetails.favorite,
+const filterTypeToUserDetail = {
+  [FilterType.WATCHLIST]: UserDetail.WATCHLIST,
+  [FilterType.HISTORY]: UserDetail.WATCHED,
+  [FilterType.FAVORITES]: UserDetail.FAVORITE,
 };
 
 export default class Board {
@@ -70,7 +70,7 @@ export default class Board {
   _getFilms() {
     const films = this._filmsModel.getItems();
     const filterType = this._filterModel.getType();
-    const filtredFilms = filterType !== FilterType.ALL ? films.filter((film) => film[filterTypeToUserDetails[filterType]]) : films;
+    const filtredFilms = filterType !== FilterType.ALL ? films.filter((film) => film[filterTypeToUserDetail[filterType]]) : films;
     const currentSortType = this._sortModel.getType();
 
     switch (currentSortType) {

@@ -43,10 +43,10 @@ export const KeyboardName = {
   ENTER: 'Enter',
 };
 
-export const UserDetails = {
-  watchlist: 'watchlist',
-  watched: 'watched',
-  favorite: 'favorite',
+export const UserDetail = {
+  WATCHLIST: 'watchlist',
+  WATCHED: 'watched',
+  FAVORITE: 'favorite',
 };
 
 export const StatsFilter = {
