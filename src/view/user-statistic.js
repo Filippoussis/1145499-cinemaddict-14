@@ -25,7 +25,6 @@ const renderStatisticChart = (statisticCtx, stats) => {
   const numberOfGenres = Object.values(stats.genres);
 
   return new Chart(statisticCtx, {
-    plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
       labels: genres,
