@@ -1,8 +1,8 @@
 // libs
-import Chart from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 import dayjs from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
+import Chart from 'chart.js';
+import 'chartjs-plugin-datalabels';
 
 // const
 import {StatsFilter} from '../const';
