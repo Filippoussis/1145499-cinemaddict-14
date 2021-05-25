@@ -21,8 +21,9 @@ dayjs.extend(isToday);
 
 const renderStatisticChart = (statisticCtx, stats) => {
 
-  const genres = Object.keys(stats.genres);
-  const genresData = Object.values(stats.genres);
+  const sortedGenres = Object.fromEntries(Object.entries(stats.genres).sort((a, b) => b[1] - a[1]));
+  const genres = Object.keys(sortedGenres);
+  const genresData = Object.values(sortedGenres);
 
   return new Chart(statisticCtx, {
     type: 'horizontalBar',
