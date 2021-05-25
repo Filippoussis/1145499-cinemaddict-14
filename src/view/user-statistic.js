@@ -22,14 +22,14 @@ dayjs.extend(isToday);
 const renderStatisticChart = (statisticCtx, stats) => {
 
   const genres = Object.keys(stats.genres);
-  const numberOfGenres = Object.values(stats.genres);
+  const genresData = Object.values(stats.genres);
 
   return new Chart(statisticCtx, {
     type: 'horizontalBar',
     data: {
       labels: genres,
       datasets: [{
-        data: numberOfGenres,
+        data: genresData,
         backgroundColor: '#ffe800',
         hoverBackgroundColor: '#ffe800',
         anchor: 'start',
