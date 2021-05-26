@@ -58,7 +58,7 @@ export default class Board {
     this._sortModel.subscribe(this._handleModelEvent);
 
     this._filmPresenterMap = new Map();
-    this._filmDetailsPresenterMap = new Map();
+    this._filmDetailsPresenter = null;
 
     this._isLoading = true;
   }
@@ -93,7 +93,9 @@ export default class Board {
         break;
 
       case UpdateType.PATCH:
-        this._filmPresenterMap.get(data.id).init(data);
+        if (this._filmPresenterMap.size > 0) {
+          this._filmPresenterMap.get(data.id).init(data);
+        }
         break;
 
       case UpdateType.MINOR:
@@ -163,7 +165,10 @@ export default class Board {
   }
 
   _changeMode(film) {
-    this._filmDetailsPresenterMap.forEach((presenter) => presenter.resetView());
+    if (this._filmDetailsPresenter !== null) {
+      this._filmDetailsPresenter.resetView();
+    }
+
     this._showFilmDetails(film);
   }
 
@@ -191,7 +196,6 @@ export default class Board {
     );
 
     this._filmDetailsPresenter.init(film);
-    this._filmDetailsPresenterMap.set(film.id, this._filmDetailsPresenter);
   }
 
   _showFilmDetails(film) {
@@ -255,13 +259,9 @@ export default class Board {
 
     this._filmsSortPresenter.destroy();
 
-    this._renderedFilmCount = resetRenderedFilmCount
+    this._renderedFilmCount = resetRenderedFilmCount || this._renderedFilmCount === 0
       ? FilmCount.STEP
       : Math.min(this._getFilms().length, this._renderedFilmCount);
-
-    if (this._renderedFilmCount === 0) {
-      this._filmDetailsPresenterMap.forEach((presenter) => presenter.resetView());
-    }
   }
 
   _renderFilmsBoard() {

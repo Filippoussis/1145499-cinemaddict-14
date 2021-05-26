@@ -85,7 +85,7 @@ export default class FilmDetails {
               movie,
             );
           })
-          .catch(() => this._formView.shake());
+          .catch(() => this.setErrorEffect());
         break;
 
       case UserAction.DELETE_COMMENT:

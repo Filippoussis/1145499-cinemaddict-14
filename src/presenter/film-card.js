@@ -31,9 +31,7 @@ export default class FilmCard {
 
     this._sectionView = new FilmCardView(this._film);
 
-    this._sectionView.setClickHandler(() => {
-      this._changeMode(this._film);
-    });
+    this._sectionView.setClickHandler(() => this._changeMode(this._film));
 
     this._disableConrols(this._isDisabled);
 
