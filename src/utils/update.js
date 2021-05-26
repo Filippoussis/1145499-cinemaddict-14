@@ -1,4 +1,4 @@
-export const updateFilmProperty = (film, prop) => {
+export const updateUserDetails = (film, prop) => {
   return (
     Object.assign(
       {},

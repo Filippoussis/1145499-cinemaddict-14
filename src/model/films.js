@@ -55,9 +55,9 @@ export default class Films extends Observer {
         stars: info.actors,
         writers: info.writers,
         age: info.age_rating,
-        isWatchlist: user.watchlist,
-        isWatched: user.already_watched,
-        isFavorite: user.favorite,
+        watchlist: user.watchlist,
+        watched: user.already_watched,
+        favorite: user.favorite,
         watchingDate: user.watching_date !== null
           ? new Date(user.watching_date)
           : user.watching_date,
@@ -91,9 +91,9 @@ export default class Films extends Observer {
           'description': item.description,
         },
         'user_details': {
-          'watchlist': item.isWatchlist,
-          'already_watched': item.isWatched,
-          'favorite': item.isFavorite,
+          'watchlist': item.watchlist,
+          'already_watched': item.watched,
+          'favorite': item.favorite,
           'watching_date': item.watchingDate instanceof Date ? item.watchingDate.toISOString() : null,
         },
       },

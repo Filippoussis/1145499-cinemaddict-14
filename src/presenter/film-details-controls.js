@@ -1,9 +1,9 @@
 // const
-import {UserAction, UpdateType, FilterType} from '../const';
+import {UserAction, UserDetail, UpdateType} from '../const';
 
 // utils
 import {render, replace, remove} from '../utils/render';
-import {updateFilmProperty} from '../utils/update';
+import {updateUserDetails} from '../utils/update';
 
 // view
 import FilmDetailsControlsView from '../view/film-details-controls';
@@ -34,9 +34,9 @@ export default class FilmDetailsControls {
 
     this._sectionView = new FilmDetailsControlsView(this._film);
 
-    this._sectionView.setWatchlistChangeHandler(this._handleWatchlist);
-    this._sectionView.setWatchedChangeHandler(this._handleWatched);
-    this._sectionView.setFavoriteChangeHandler(this._handleFavorite);
+    this._sectionView.setWatchlistClickHandler(this._handleWatchlist);
+    this._sectionView.setWatchedClickHandler(this._handleWatched);
+    this._sectionView.setFavoriteClickHandler(this._handleFavorite);
 
     if (prevSectionView === null) {
       render(this._containerView, this._sectionView);
@@ -47,6 +47,10 @@ export default class FilmDetailsControls {
     remove(prevSectionView);
   }
 
+  destroy() {
+    remove(this._sectionView);
+  }
+
   _handleModelEvent(_, data) {
     this.init(data);
   }
@@ -55,7 +59,7 @@ export default class FilmDetailsControls {
     this._changeData(
       UserAction.UPDATE_WATHLIST,
       UpdateType.PATCH,
-      updateFilmProperty(this._film, FilterType.WATCHLIST),
+      updateUserDetails(this._film, UserDetail.WATCHLIST),
     );
   }
 
@@ -63,7 +67,7 @@ export default class FilmDetailsControls {
     this._changeData(
       UserAction.UPDATE_WATCHED,
       UpdateType.PATCH,
-      updateFilmProperty(this._film, FilterType.WATCHED),
+      updateUserDetails(this._film, UserDetail.WATCHED),
     );
   }
 
@@ -71,7 +75,7 @@ export default class FilmDetailsControls {
     this._changeData(
       UserAction.UPDATE_FAVORITE,
       UpdateType.PATCH,
-      updateFilmProperty(this._film, FilterType.FAVORITE),
+      updateUserDetails(this._film, UserDetail.FAVORITE),
     );
   }
 }

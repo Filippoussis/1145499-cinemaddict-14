@@ -24,7 +24,7 @@ const createControlTemplate = (id, text, isActive = false) => {
 
 const createFilmCardTemplate = (film) => {
 
-  const {id, title, rating, release, time, genres, poster, description, isWatchlist, isWatched, isFavorite, comments} = film;
+  const {id, title, rating, release, time, genres, poster, description, watchlist, watched, favorite, comments} = film;
 
   const previewRelease = dayjs(release).format('YYYY');
   const previewTime = getFormattedTime(time);
@@ -45,9 +45,9 @@ const createFilmCardTemplate = (film) => {
       <p class="film-card__description">${previewDescription}</p>
       <a class="film-card__comments">${commentsCount} comments</a>
       <div class="film-card__controls">
-        ${createControlTemplate('add-to-watchlist', 'Add to watchlist', isWatchlist)}
-        ${createControlTemplate('mark-as-watched', 'Mark as watched', isWatched)}
-        ${createControlTemplate('favorite', 'Mark as favorite', isFavorite)}
+        ${createControlTemplate('add-to-watchlist', 'Add to watchlist', watchlist)}
+        ${createControlTemplate('mark-as-watched', 'Mark as watched', watched)}
+        ${createControlTemplate('favorite', 'Mark as favorite', favorite)}
       </div>
     </article>`
   );
@@ -71,7 +71,10 @@ export default class FilmCard extends AbstractView {
   disableConrols(isDisabled) {
     this.getElement()
       .querySelectorAll('.film-card__controls-item')
-      .forEach((item) => item.disabled = isDisabled);
+      .forEach((item) => {
+        item.disabled = isDisabled;
+        return item;
+      });
   }
 
   setClickHandler(callback) {

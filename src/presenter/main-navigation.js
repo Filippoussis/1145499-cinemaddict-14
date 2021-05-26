@@ -1,9 +1,9 @@
-import FilterView from '../view/films-filter';
+import MainNavigationView from '../view/main-navigation';
 import {render, replace, remove} from '../utils/render';
 import {getFilterStats} from '../utils/filter';
-import {UpdateType, InsertPlace, UserAction} from '../const';
+import {UpdateType, InsertPlace, UserAction, FilterType} from '../const';
 
-export default class FilmsFilter {
+export default class MainNavigation {
   constructor(container, filterModel, filmsModel, changeData) {
     this._containerView = container;
     this._filterModel = filterModel;
@@ -23,7 +23,7 @@ export default class FilmsFilter {
     const filtersStats = this._getStats();
     const prevSectionView = this._sectionView;
 
-    this._sectionView = new FilterView(filtersStats, this._filterModel.getType());
+    this._sectionView = new MainNavigationView(filtersStats, this._filterModel.getType());
     this._sectionView.setTypeChangeHandler(this._handleTypeChange);
 
     if (prevSectionView === null) {
@@ -48,9 +48,11 @@ export default class FilmsFilter {
       return;
     }
 
+    const isUpdateFilter = FilterType[filterType];
+
     this._changeData(
-      UserAction.UPDATE_FILTER,
-      UpdateType.MAJOR,
+      isUpdateFilter ? UserAction.UPDATE_FILTER : UserAction.GO_TO_STATISTIC,
+      isUpdateFilter? UpdateType.MAJOR : UpdateType.CLEAR,
       filterType,
     );
   }

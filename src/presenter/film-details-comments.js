@@ -16,10 +16,10 @@ export default class FilmDetailsComments {
     this._commentsModel = commentsModel;
     this._changeData = changeData;
 
-    this._handleModelEvent = this._handleModelEvent.bind(this);
-    this._handleButtonDeleteClick = this._handleButtonDeleteClick.bind(this);
-    this._handleFormKeyDown = this._handleFormKeyDown.bind(this);
+    this._handleDelete = this._handleDelete.bind(this);
+    this._handleSubmit = this._handleSubmit.bind(this);
 
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._commentsModel.subscribe(this._handleModelEvent);
 
     this._isLoading = true;
@@ -30,6 +30,12 @@ export default class FilmDetailsComments {
 
     this._renderComments();
     this._renderNewComment();
+  }
+
+  destroy() {
+    this._newCommentView.destroy();
+    remove(this._listView);
+    remove(this._titleView);
   }
 
   setErrorEffect() {
@@ -74,18 +80,18 @@ export default class FilmDetailsComments {
 
     if (commentsCount > 0) {
       this._listView = new FilmDetailsCommentsListView(comments);
-      this._listView.setButtonDeleteClickHandler(this._handleButtonDeleteClick);
+      this._listView.setDeleteHandler(this._handleDelete);
       render(this._titleView, this._listView, InsertPlace.AFTER_END);
     }
   }
 
   _renderNewComment() {
-    const newCommentView = new FilmDetailsNewCommentView();
-    newCommentView.setFormKeyDownHandler(this._handleFormKeyDown);
-    render(this._containerView, newCommentView);
+    this._newCommentView = new FilmDetailsNewCommentView(this._commentsModel);
+    this._newCommentView.setSubmitHandler(this._handleSubmit);
+    render(this._containerView, this._newCommentView);
   }
 
-  _handleFormKeyDown(localComment) {
+  _handleSubmit(localComment) {
     this._isLoading = true;
 
     const requestBody = {
@@ -100,7 +106,7 @@ export default class FilmDetailsComments {
     );
   }
 
-  _handleButtonDeleteClick(deletedCommentId) {
+  _handleDelete(deletedCommentId) {
     this._isLoading = true;
 
     const updatedFilm = {

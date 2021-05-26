@@ -1,7 +1,12 @@
+// libs
 import he from 'he';
 import SmartView from './smart';
 
-import {KeyName} from '../const';
+// const
+import {UpdateType} from '../const';
+
+// utils
+import {isControlEnterEvent} from '../utils/keyboard-event';
 
 const COMMENT_EMOJIS = ['smile', 'sleeping', 'puke', 'angry'];
 
@@ -54,8 +59,10 @@ const createFilmDetailsNewCommentTemplate = (state) => {
 };
 
 export default class FilmDetailsNewComment extends SmartView {
-  constructor() {
+  constructor(commentsModel) {
     super();
+
+    this._commentsModel = commentsModel;
 
     this._state = {
       emotion: '',
@@ -64,8 +71,10 @@ export default class FilmDetailsNewComment extends SmartView {
 
     this._emojiListChangeHandler = this._emojiListChangeHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
+    this._formPressKeyDownHandler = this._formPressKeyDownHandler.bind(this);
 
-    this._formKeyDownHandler = this._formKeyDownHandler.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._commentsModel.subscribe(this._handleModelEvent);
 
     this._setInnerHandlers();
   }
@@ -74,13 +83,29 @@ export default class FilmDetailsNewComment extends SmartView {
     return createFilmDetailsNewCommentTemplate(this._state);
   }
 
-  setFormKeyDownHandler(callback) {
-    this._callback.keyDownForm = callback;
-    document.addEventListener('keydown', this._formKeyDownHandler);
-  }
-
   restoreHandlers() {
     this._setInnerHandlers();
+  }
+
+  destroy() {
+    super.removeElement();
+    document.removeEventListener('keydown', this._formPressKeyDownHandler);
+  }
+
+  setSubmitHandler(callback) {
+    this._callback.pressKeyDownForm = callback;
+    document.addEventListener('keydown', this._formPressKeyDownHandler);
+  }
+
+  _handleModelEvent(updateType) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.updateData({
+          emotion: '',
+          comment: '',
+        });
+        break;
+    }
   }
 
   _setInnerHandlers() {
@@ -109,15 +134,10 @@ export default class FilmDetailsNewComment extends SmartView {
     }, true);
   }
 
-  _formKeyDownHandler(evt) {
-    if (evt.key === KeyName.ENTER && (evt.ctrlKey || evt.metaKey)) {
+  _formPressKeyDownHandler(evt) {
+    if (isControlEnterEvent(evt)) {
       evt.preventDefault();
-      this._callback.keyDownForm(this._state);
-
-      this.updateData({
-        emotion: '',
-        comment: '',
-      });
+      this._callback.pressKeyDownForm(this._state);
     }
   }
 }

@@ -1,8 +1,9 @@
 // const
-import {UpdateType, UserAction, KeyName} from '../const';
+import {UpdateType, UserAction} from '../const';
 
 // utils
 import {render, remove} from '../utils/render';
+import {isEscapeEvent} from '../utils/keyboard-event';
 
 // view
 import FilmDetailsSectionView from '../view/film-details-section';
@@ -47,6 +48,16 @@ export default class FilmDetails {
     this._setDocumentKeyDownHandler();
   }
 
+  resetView() {
+    if (this._isActive) {
+      this._closePopup();
+    }
+  }
+
+  setErrorEffect() {
+    this._formView.shake();
+  }
+
   _getCommentsData(id) {
     this._api.getComments(id)
       .then((comments) => {
@@ -74,7 +85,7 @@ export default class FilmDetails {
               movie,
             );
           })
-          .catch(() => this._formView.shake());
+          .catch(() => this.setErrorEffect());
         break;
 
       case UserAction.DELETE_COMMENT:
@@ -113,9 +124,9 @@ export default class FilmDetails {
   }
 
   _renderCloseButton() {
-    const closeButtonView = new FilmDetailsCloseButtonView();
-    closeButtonView.setCloseButtonClickHandler(this._closePopup);
-    render(this._topContainerView, closeButtonView);
+    this._closeButtonView = new FilmDetailsCloseButtonView();
+    this._closeButtonView.setCloseButtonClickHandler(this._closePopup);
+    render(this._topContainerView, this._closeButtonView);
   }
 
   _renderInfo() {
@@ -124,12 +135,12 @@ export default class FilmDetails {
   }
 
   _renderControls() {
-    const controlsPresenter = new FilmDetailsControlsPresenter(
+    this._controlsPresenter = new FilmDetailsControlsPresenter(
       this._topContainerView,
       this._filmsModel,
       this._changeData,
     );
-    controlsPresenter.init(this._film);
+    this._controlsPresenter.init(this._film);
   }
 
   _renderBottomContainer() {
@@ -164,16 +175,18 @@ export default class FilmDetails {
   }
 
   _closePopup() {
-    remove(this._sectionView);
     this._unlockControls();
     this._removeBodyNoScroll();
     this._removeDocumentKeyDownHandler();
-  }
-
-  resetView() {
-    if (this._isActive) {
-      this._closePopup();
-    }
+    this._commentsListPresenter.destroy();
+    this._controlsPresenter.destroy();
+    remove(this._commentsWrapView);
+    remove(this._bottomContainerView);
+    remove(this._infoView);
+    remove(this._closeButtonView);
+    remove(this._topContainerView);
+    remove(this._formView);
+    remove(this._sectionView);
   }
 
   _setBodyNoScroll() {
@@ -193,7 +206,7 @@ export default class FilmDetails {
   }
 
   _buttonEscKeyDownHandler(evt) {
-    if (evt.key === KeyName.ESC) {
+    if (isEscapeEvent(evt)) {
       this._closePopup();
     }
   }

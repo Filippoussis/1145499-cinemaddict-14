@@ -20,6 +20,7 @@ export const UserAction = {
   UPDATE_FAVORITE: 'UPDATE_FAVORITE',
   ADD_COMMENT: 'ADD_COMMENT',
   DELETE_COMMENT: 'DELETE_COMMENT',
+  GO_TO_STATISTIC: 'GO_TO_STATISTIC',
 };
 
 export const UpdateType = {
@@ -27,16 +28,31 @@ export const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
+  CLEAR: 'CLEAR',
 };
 
 export const FilterType = {
-  ALL: 'all',
-  WATCHLIST: 'isWatchlist',
-  WATCHED: 'isWatched',
-  FAVORITE: 'isFavorite',
+  ALL: 'ALL',
+  WATCHLIST: 'WATCHLIST',
+  HISTORY: 'HISTORY',
+  FAVORITES: 'FAVORITES',
 };
 
-export const KeyName = {
-  ESC: 'Escape',
+export const KeyboardName = {
+  ESCAPE: 'Escape',
   ENTER: 'Enter',
+};
+
+export const UserDetail = {
+  WATCHLIST: 'watchlist',
+  WATCHED: 'watched',
+  FAVORITE: 'favorite',
+};
+
+export const StatsFilter = {
+  ALL_TIME: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };
