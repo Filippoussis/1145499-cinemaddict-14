@@ -54,7 +54,7 @@ export default class FilmDetailsCommentsList extends AbstractView {
     this._unlockButton();
   }
 
-  setButtonDeleteClickHandler(callback) {
+  setDeleteHandler(callback) {
     this._callback.clickCommentDelete = callback;
     this.getElement().addEventListener('click', this._buttonDeleteClickHandler);
   }

@@ -2,6 +2,9 @@
 import he from 'he';
 import SmartView from './smart';
 
+// const
+import {UpdateType} from '../const';
+
 // utils
 import {isControlEnterEvent} from '../utils/keyboard-event';
 
@@ -56,8 +59,10 @@ const createFilmDetailsNewCommentTemplate = (state) => {
 };
 
 export default class FilmDetailsNewComment extends SmartView {
-  constructor() {
+  constructor(commentsModel) {
     super();
+
+    this._commentsModel = commentsModel;
 
     this._state = {
       emotion: '',
@@ -66,8 +71,10 @@ export default class FilmDetailsNewComment extends SmartView {
 
     this._emojiListChangeHandler = this._emojiListChangeHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
-
     this._formPressKeyDownHandler = this._formPressKeyDownHandler.bind(this);
+
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._commentsModel.subscribe(this._handleModelEvent);
 
     this._setInnerHandlers();
   }
@@ -76,13 +83,29 @@ export default class FilmDetailsNewComment extends SmartView {
     return createFilmDetailsNewCommentTemplate(this._state);
   }
 
-  setFormPressKeyDownHandler(callback) {
+  restoreHandlers() {
+    this._setInnerHandlers();
+  }
+
+  destroy() {
+    super.removeElement();
+    document.removeEventListener('keydown', this._formPressKeyDownHandler);
+  }
+
+  setSubmitHandler(callback) {
     this._callback.pressKeyDownForm = callback;
     document.addEventListener('keydown', this._formPressKeyDownHandler);
   }
 
-  restoreHandlers() {
-    this._setInnerHandlers();
+  _handleModelEvent(updateType) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.updateData({
+          emotion: '',
+          comment: '',
+        });
+        break;
+    }
   }
 
   _setInnerHandlers() {
@@ -115,11 +138,6 @@ export default class FilmDetailsNewComment extends SmartView {
     if (isControlEnterEvent(evt)) {
       evt.preventDefault();
       this._callback.pressKeyDownForm(this._state);
-
-      this.updateData({
-        emotion: '',
-        comment: '',
-      });
     }
   }
 }

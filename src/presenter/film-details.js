@@ -114,9 +114,9 @@ export default class FilmDetails {
   }
 
   _renderCloseButton() {
-    const closeButtonView = new FilmDetailsCloseButtonView();
-    closeButtonView.setCloseButtonClickHandler(this._closePopup);
-    render(this._topContainerView, closeButtonView);
+    this._closeButtonView = new FilmDetailsCloseButtonView();
+    this._closeButtonView.setCloseButtonClickHandler(this._closePopup);
+    render(this._topContainerView, this._closeButtonView);
   }
 
   _renderInfo() {
@@ -125,12 +125,12 @@ export default class FilmDetails {
   }
 
   _renderControls() {
-    const controlsPresenter = new FilmDetailsControlsPresenter(
+    this._controlsPresenter = new FilmDetailsControlsPresenter(
       this._topContainerView,
       this._filmsModel,
       this._changeData,
     );
-    controlsPresenter.init(this._film);
+    this._controlsPresenter.init(this._film);
   }
 
   _renderBottomContainer() {
@@ -165,10 +165,18 @@ export default class FilmDetails {
   }
 
   _closePopup() {
-    remove(this._sectionView);
     this._unlockControls();
     this._removeBodyNoScroll();
     this._removeDocumentKeyDownHandler();
+    this._commentsListPresenter.destroy();
+    this._controlsPresenter.destroy();
+    remove(this._commentsWrapView);
+    remove(this._bottomContainerView);
+    remove(this._infoView);
+    remove(this._closeButtonView);
+    remove(this._topContainerView);
+    remove(this._formView);
+    remove(this._sectionView);
   }
 
   resetView() {

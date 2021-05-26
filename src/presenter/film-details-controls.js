@@ -47,6 +47,10 @@ export default class FilmDetailsControls {
     remove(prevSectionView);
   }
 
+  destroy() {
+    remove(this._sectionView);
+  }
+
   _handleModelEvent(_, data) {
     this.init(data);
   }
