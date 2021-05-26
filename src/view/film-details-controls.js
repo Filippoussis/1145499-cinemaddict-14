@@ -39,21 +39,21 @@ export default class FilmDetailsControls extends AbstractView {
     this._callback.changeWatchlist = callback;
     this.getElement()
       .querySelector('#watchlist')
-      .addEventListener('change', this._watchlistChangeHandler);
+      .addEventListener('click', this._watchlistChangeHandler);
   }
 
   setWatchedChangeHandler(callback) {
     this._callback.changeWatched = callback;
     this.getElement()
       .querySelector('#watched')
-      .addEventListener('change', this._watchedChangeHandler);
+      .addEventListener('click', this._watchedChangeHandler);
   }
 
   setFavoriteChangeHandler(callback) {
     this._callback.changeFavorite = callback;
     this.getElement()
       .querySelector('#favorite')
-      .addEventListener('change', this._favoriteChangeHandler);
+      .addEventListener('click', this._favoriteChangeHandler);
   }
 
   _watchlistChangeHandler(evt) {

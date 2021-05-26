@@ -48,6 +48,16 @@ export default class FilmDetails {
     this._setDocumentKeyDownHandler();
   }
 
+  resetView() {
+    if (this._isActive) {
+      this._closePopup();
+    }
+  }
+
+  setErrorEffect() {
+    this._formView.shake();
+  }
+
   _getCommentsData(id) {
     this._api.getComments(id)
       .then((comments) => {
@@ -177,12 +187,6 @@ export default class FilmDetails {
     remove(this._topContainerView);
     remove(this._formView);
     remove(this._sectionView);
-  }
-
-  resetView() {
-    if (this._isActive) {
-      this._closePopup();
-    }
   }
 
   _setBodyNoScroll() {

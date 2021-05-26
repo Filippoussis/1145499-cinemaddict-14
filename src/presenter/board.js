@@ -117,12 +117,14 @@ export default class Board {
       case UserAction.UPDATE_WATHLIST:
       case UserAction.UPDATE_WATCHED:
       case UserAction.UPDATE_FAVORITE:
-        this._api.updateFilm(update).then((response) => {
-          this._filmsModel.updateItem(
-            this._filterModel.getType() === actionTypeToFilterType[actionType] ? UpdateType.MINOR : updateType,
-            response,
-          );
-        });
+        this._api.updateFilm(update)
+          .then((response) => {
+            this._filmsModel.updateItem(
+              this._filterModel.getType() === actionTypeToFilterType[actionType] ? UpdateType.MINOR : updateType,
+              response,
+            );
+          })
+          .catch(() => this._filmDetailsPresenter.setErrorEffect());
         break;
 
       case UserAction.UPDATE_SORT:
@@ -180,7 +182,7 @@ export default class Board {
   }
 
   _renderFilmDetails(film) {
-    const filmDetailsPresenter = new FilmDetailsPresenter(
+    this._filmDetailsPresenter = new FilmDetailsPresenter(
       this._filmsModel,
       this._commentsModel,
       this._handleViewAction,
@@ -188,8 +190,8 @@ export default class Board {
       this._api,
     );
 
-    filmDetailsPresenter.init(film);
-    this._filmDetailsPresenterMap.set(film.id, filmDetailsPresenter);
+    this._filmDetailsPresenter.init(film);
+    this._filmDetailsPresenterMap.set(film.id, this._filmDetailsPresenter);
   }
 
   _showFilmDetails(film) {
