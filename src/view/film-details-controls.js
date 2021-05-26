@@ -26,48 +26,48 @@ export default class FilmDetailsControls extends AbstractView {
 
     this._userDetails = {watchlist, watched, favorite};
 
-    this._watchlistChangeHandler = this._watchlistChangeHandler.bind(this);
-    this._watchedChangeHandler = this._watchedChangeHandler.bind(this);
-    this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmDetailsControlsTemplate(this._userDetails);
   }
 
-  setWatchlistChangeHandler(callback) {
-    this._callback.changeWatchlist = callback;
+  setWatchlistClickHandler(callback) {
+    this._callback.clickWatchlist = callback;
     this.getElement()
       .querySelector('#watchlist')
-      .addEventListener('click', this._watchlistChangeHandler);
+      .addEventListener('click', this._watchlistClickHandler);
   }
 
-  setWatchedChangeHandler(callback) {
-    this._callback.changeWatched = callback;
+  setWatchedClickHandler(callback) {
+    this._callback.clickWatched = callback;
     this.getElement()
       .querySelector('#watched')
-      .addEventListener('click', this._watchedChangeHandler);
+      .addEventListener('click', this._watchedClickHandler);
   }
 
-  setFavoriteChangeHandler(callback) {
-    this._callback.changeFavorite = callback;
+  setFavoriteClickHandler(callback) {
+    this._callback.clickFavorite = callback;
     this.getElement()
       .querySelector('#favorite')
-      .addEventListener('click', this._favoriteChangeHandler);
+      .addEventListener('click', this._favoriteClickHandler);
   }
 
-  _watchlistChangeHandler(evt) {
+  _watchlistClickHandler(evt) {
     evt.preventDefault();
-    this._callback.changeWatchlist();
+    this._callback.clickWatchlist();
   }
 
-  _watchedChangeHandler(evt) {
+  _watchedClickHandler(evt) {
     evt.preventDefault();
-    this._callback.changeWatched();
+    this._callback.clickWatched();
   }
 
-  _favoriteChangeHandler(evt) {
+  _favoriteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.changeFavorite();
+    this._callback.clickFavorite();
   }
 }

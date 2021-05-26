@@ -34,9 +34,9 @@ export default class FilmDetailsControls {
 
     this._sectionView = new FilmDetailsControlsView(this._film);
 
-    this._sectionView.setWatchlistChangeHandler(this._handleWatchlist);
-    this._sectionView.setWatchedChangeHandler(this._handleWatched);
-    this._sectionView.setFavoriteChangeHandler(this._handleFavorite);
+    this._sectionView.setWatchlistClickHandler(this._handleWatchlist);
+    this._sectionView.setWatchedClickHandler(this._handleWatched);
+    this._sectionView.setFavoriteClickHandler(this._handleFavorite);
 
     if (prevSectionView === null) {
       render(this._containerView, this._sectionView);
