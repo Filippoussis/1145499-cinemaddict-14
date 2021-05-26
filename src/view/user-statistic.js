@@ -2,7 +2,7 @@
 import dayjs from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
 import Chart from 'chart.js';
-import 'chartjs-plugin-datalabels';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 // const
 import {StatsFilter} from '../const';
@@ -27,6 +27,7 @@ const renderStatisticChart = (statisticCtx, stats) => {
 
   return new Chart(statisticCtx, {
     type: 'horizontalBar',
+    plugins: [ChartDataLabels],
     data: {
       labels: genres,
       datasets: [{
@@ -157,7 +158,7 @@ export default class UserStatistic extends SmartView {
       stats: this._filmsCount > 0 ? getStats(this._films) : this._films,
     };
 
-    this._filtersInputChangeHandler = this._filtersInputChangeHandler.bind(this);
+    this._filtersChangeHandler = this._filtersChangeHandler.bind(this);
 
     this._setChart();
     this._setInnerHandlers();
@@ -199,10 +200,10 @@ export default class UserStatistic extends SmartView {
   _setInnerHandlers() {
     this.getElement()
       .querySelector('.statistic__filters')
-      .addEventListener('change', this._filtersInputChangeHandler);
+      .addEventListener('change', this._filtersChangeHandler);
   }
 
-  _filtersInputChangeHandler(evt) {
+  _filtersChangeHandler(evt) {
     evt.preventDefault();
 
     const updatedFilter = evt.target.value;
