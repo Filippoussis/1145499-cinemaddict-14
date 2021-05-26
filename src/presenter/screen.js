@@ -13,7 +13,7 @@ import UserStatisticView from '../view/user-statistic';
 // presenter
 import UserProfilePresenter from './user-profile';
 import MainNavigationPresenter from './main-navigation';
-import BoardPresenter from './board';
+import AllMoviesPresenter from './all-movies';
 import FilmsTotalPresenter from './films-total';
 
 export default class Screen {
@@ -37,7 +37,7 @@ export default class Screen {
     this._renderPageHeader();
     this._renderPageMain();
     this._renderPageFooter();
-    this._renderBoard();
+    this._renderAllMovies();
   }
 
   _renderPageHeader() {
@@ -61,13 +61,13 @@ export default class Screen {
   }
 
   _renderMainNavigation() {
-    this._mainNavigationPresenter = new MainNavigationPresenter(
+    const mainNavigationPresenter = new MainNavigationPresenter(
       this._pageMainView,
       this._filterModel,
       this._filmsModel,
       this._handleViewAction,
     );
-    this._mainNavigationPresenter.init();
+    mainNavigationPresenter.init();
   }
 
   _renderUserStatistic() {
@@ -81,8 +81,8 @@ export default class Screen {
     filmsTotalPresenter.init();
   }
 
-  _renderBoard() {
-    this._boardPresenter = new BoardPresenter(
+  _renderAllMovies() {
+    const allMoviesPresenter = new AllMoviesPresenter(
       this._pageMainView,
       this._filmsModel,
       this._commentsModel,
@@ -90,7 +90,7 @@ export default class Screen {
       this._sortModel,
       this._api,
     );
-    this._boardPresenter.init();
+    allMoviesPresenter.init();
   }
 
   _handleViewAction(actionType, updateType, update) {

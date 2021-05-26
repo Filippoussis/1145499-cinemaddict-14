@@ -17,10 +17,7 @@ import FilmsSortPresenter from './films-sort';
 import FilmCardPresenter from './film-card';
 import FilmDetailsPresenter from './film-details';
 
-const FilmCount = {
-  STEP: 5,
-  EXTRA: 2,
-};
+const FILMS_COUNT_STEP = 5;
 
 const actionTypeToFilterType = {
   [UserAction.UPDATE_WATHLIST]: FilterType.WATCHLIST,
@@ -34,7 +31,7 @@ const filterTypeToUserDetail = {
   [FilterType.FAVORITES]: UserDetail.FAVORITE,
 };
 
-export default class Board {
+export default class AllMovies {
   constructor(container, filmsModel, commentsModel, filterModel, sortModel, api) {
     this._containerView = container;
 
@@ -44,7 +41,7 @@ export default class Board {
     this._sortModel = sortModel;
     this._api = api;
 
-    this._renderedFilmCount = FilmCount.STEP;
+    this._renderedFilmCount = FILMS_COUNT_STEP;
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._changeMode = this._changeMode.bind(this);
@@ -64,7 +61,7 @@ export default class Board {
   }
 
   init() {
-    this._renderFilmsBoard();
+    this._renderFilmsList();
   }
 
   _getFilms() {
@@ -89,7 +86,7 @@ export default class Board {
       case UpdateType.INIT:
         this._isLoading = false;
         remove(this._loadingTitleView);
-        this._renderFilmsBoard();
+        this._renderFilmsList();
         break;
 
       case UpdateType.PATCH:
@@ -99,17 +96,17 @@ export default class Board {
         break;
 
       case UpdateType.MINOR:
-        this._clearFilmsBoard();
-        this._renderFilmsBoard();
+        this._clearFilmsList();
+        this._renderFilmsList();
         break;
 
       case UpdateType.MAJOR:
-        this._clearFilmsBoard({resetRenderedFilmCount: true});
-        this._renderFilmsBoard();
+        this._clearFilmsList({resetRenderedFilmCount: true});
+        this._renderFilmsList();
         break;
 
       case UpdateType.CLEAR:
-        this._clearFilmsBoard({resetRenderedFilmCount: true});
+        this._clearFilmsList({resetRenderedFilmCount: true});
         break;
     }
   }
@@ -182,7 +179,7 @@ export default class Board {
     this._filmPresenterMap.set(film.id, filmPresenter);
   }
 
-  _renderFilmsList(films) {
+  _renderFilmCardList(films) {
     films.forEach((film) => this._renderFilmCard(film));
   }
 
@@ -220,10 +217,10 @@ export default class Board {
   _handleShowMoreButtonClick() {
     const films = this._getFilms();
     const filmCount = films.length;
-    const newRenderedFilmCount = Math.min(filmCount, this._renderedFilmCount + FilmCount.STEP);
+    const newRenderedFilmCount = Math.min(filmCount, this._renderedFilmCount + FILMS_COUNT_STEP);
     const nextFilms = films.slice(this._renderedFilmCount, newRenderedFilmCount);
 
-    this._renderFilmsList(nextFilms);
+    this._renderFilmCardList(nextFilms);
     this._renderedFilmCount = newRenderedFilmCount;
 
     if (this._renderedFilmCount >= filmCount) {
@@ -238,7 +235,7 @@ export default class Board {
 
     this._listContainerView = new FilmsListContainerView();
 
-    this._renderFilmsList(films.slice(0, Math.min(count, this._renderedFilmCount)));
+    this._renderFilmCardList(films.slice(0, Math.min(count, this._renderedFilmCount)));
     render(this._listSectionView, this._listContainerView);
 
     if (count > this._renderedFilmCount) {
@@ -246,7 +243,7 @@ export default class Board {
     }
   }
 
-  _clearFilmsBoard({resetRenderedFilmCount = false} = {}) {
+  _clearFilmsList({resetRenderedFilmCount = false} = {}) {
 
     this._filmPresenterMap.forEach((presenter) => presenter.destroy());
     this._filmPresenterMap.clear();
@@ -260,11 +257,11 @@ export default class Board {
     this._filmsSortPresenter.destroy();
 
     this._renderedFilmCount = resetRenderedFilmCount || this._renderedFilmCount === 0
-      ? FilmCount.STEP
+      ? FILMS_COUNT_STEP
       : Math.min(this._getFilms().length, this._renderedFilmCount);
   }
 
-  _renderFilmsBoard() {
+  _renderFilmsList() {
     if (this._isLoading) {
       this._renderLoadingTitle();
       return;
