@@ -17,6 +17,8 @@ export default class FilmDetailsComments {
     this._commentsModel = commentsModel;
     this._changeData = changeData;
 
+    this._titleView = null;
+    this._listView = null;
     this._newCommentView = null;
 
     this._handleDelete = this._handleDelete.bind(this);
@@ -36,11 +38,11 @@ export default class FilmDetailsComments {
   }
 
   destroy() {
-    if (this._newCommentView !== null) {
+    if (this._newCommentView !== null && this._listView !== null && this._titleView !== null) {
       this._newCommentView.destroy();
+      remove(this._listView);
+      remove(this._titleView);
     }
-    remove(this._listView);
-    remove(this._titleView);
   }
 
   setErrorEffect() {
