@@ -4,6 +4,7 @@ import {UpdateType, UserAction} from '../const';
 // utils
 import {render, remove} from '../utils/render';
 import {isEscapeEvent} from '../utils/keyboard-event';
+import {isOnline} from '../utils/online';
 
 // view
 import FilmDetailsSectionView from '../view/film-details-section';
@@ -59,6 +60,10 @@ export default class FilmDetails {
   }
 
   _getCommentsData(id) {
+    if (!isOnline()) {
+      return;
+    }
+
     this._api.getComments(id)
       .then((comments) => {
         this._commentsModel.setItems(UpdateType.INIT, comments);

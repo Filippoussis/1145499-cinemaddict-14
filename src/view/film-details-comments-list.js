@@ -1,11 +1,14 @@
 import he from 'he';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
+
 import AbstractView from './abstract';
 
 const createCommentTemplate = (item) => {
 
   const {id, emotion, comment, author, date} = item;
-  const commentDateFormated = dayjs(date).format('YYYY/MM/DD H:m');
+  const commentDateFormated = dayjs(date).fromNow();
 
   return (
     `<li class="film-details__comment" data-id=${id}>

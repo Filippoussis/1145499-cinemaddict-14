@@ -3,6 +3,7 @@ import {UpdateType, InsertPlace, UserAction} from '../const';
 
 // utils
 import {render, remove} from '../utils/render';
+import {isOnline} from '../utils/online';
 
 // view
 import FilmDetailsCommentsTitleView from '../view//film-details-comments-title';
@@ -15,6 +16,8 @@ export default class FilmDetailsComments {
 
     this._commentsModel = commentsModel;
     this._changeData = changeData;
+
+    this._newCommentView = null;
 
     this._handleDelete = this._handleDelete.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
@@ -33,7 +36,9 @@ export default class FilmDetailsComments {
   }
 
   destroy() {
-    this._newCommentView.destroy();
+    if (this._newCommentView !== null) {
+      this._newCommentView.destroy();
+    }
     remove(this._listView);
     remove(this._titleView);
   }
@@ -86,6 +91,9 @@ export default class FilmDetailsComments {
   }
 
   _renderNewComment() {
+    if (!isOnline()) {
+      return;
+    }
     this._newCommentView = new FilmDetailsNewCommentView(this._commentsModel);
     this._newCommentView.setSubmitHandler(this._handleSubmit);
     render(this._containerView, this._newCommentView);
