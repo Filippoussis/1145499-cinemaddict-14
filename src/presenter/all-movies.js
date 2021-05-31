@@ -122,8 +122,7 @@ export default class AllMovies {
               this._filterModel.getType() === actionTypeToFilterType[actionType] ? UpdateType.MINOR : updateType,
               response,
             );
-          })
-          .catch(() => this._filmDetailsPresenter.setErrorEffect());
+          });
         break;
 
       case UserAction.UPDATE_SORT:
